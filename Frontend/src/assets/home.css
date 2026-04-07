@@ -61,30 +61,27 @@
 }
 
 .brand-mark {
-  width: 42px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
-  background: #ff8c00;
-  box-shadow: 0 14px 28px rgba(255, 140, 0, 0.22);
+  border-radius: 16px;
+  padding: 0.45rem;
 }
 
 .brand-mark.compact {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
   box-shadow: none;
 }
 
-.brand-mark-icon {
-  color: #fff;
-  font-size: 1.6rem;
-}
-
-.brand-mark-icon.compact {
-  font-size: 1.25rem;
+.brand-logo {
+  width: 10vw;
+  height: 13vh;
+  object-fit: contain;
+  margin-right: 3vw;
 }
 
 .brand-text {

@@ -1,16 +1,10 @@
+import logo from '../assets/images/logo_no_bg.png'
+
 const navLinks = [
   { label: 'Pr\u00E1cticas', href: '#practicas' },
   { label: 'Empresas', href: '#empresas' },
   { label: 'Consejos', href: '#consejos' },
 ]
-
-function Icon({ name, className = '' }) {
-  return (
-    <span className={`material-symbols-outlined ${className}`.trim()} aria-hidden="true">
-      {name}
-    </span>
-  )
-}
 
 export default function Header() {
   return (
@@ -19,9 +13,9 @@ export default function Header() {
         <div className="site-brand-area">
           <a href="#" className="site-brand">
             <span className="brand-mark">
-              <Icon name="rocket_launch" className="brand-mark-icon" />
+              <img src={logo} alt="InternHub" className="brand-logo" />
             </span>
-            <span className="brand-text">InternshipPortal</span>
+            <span className="brand-text">InternHub</span>
           </a>
 
           <nav className="site-nav" aria-label="Principal">

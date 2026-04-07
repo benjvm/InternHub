@@ -1,0 +1,236 @@
+.register-shell {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255, 140, 0, 0.12), transparent 22%),
+    radial-gradient(circle at 85% 80%, rgba(255, 140, 0, 0.08), transparent 25%),
+    linear-gradient(180deg, #fffdf9 0%, #f8f7f5 100%);
+}
+
+.register-layout {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 1100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.register-heading,
+.register-copy,
+.register-actions,
+.register-login-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.register-brand-logo {
+  width: 20vw;
+  height: 20vh;
+  object-fit: contain;
+}
+
+.register-copy {
+  max-width: 620px;
+  text-align: center;
+}
+
+.register-copy h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2.2rem, 4vw, 3.3rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+.register-copy p,
+.register-role-card p,
+.register-login-block p {
+  margin: 0;
+  color: #64748b;
+}
+
+.register-copy p {
+  font-size: 1.08rem;
+}
+
+.register-role-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.register-role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 24px;
+  border: 2px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.register-role-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 40px rgba(15, 23, 42, 0.1);
+}
+
+.register-role-card.is-selected {
+  border-color: #ff8c00;
+  background: rgba(255, 140, 0, 0.05);
+  box-shadow: 0 24px 42px rgba(255, 140, 0, 0.15);
+}
+
+.register-role-icon {
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 140, 0, 0.1);
+  transition: background 0.2s ease;
+}
+
+.register-role-card.is-selected .register-role-icon {
+  background: #ff8c00;
+}
+
+.register-role-icon-symbol {
+  font-size: 2.7rem;
+  color: #ff8c00;
+}
+
+.register-role-card.is-selected .register-role-icon-symbol {
+  color: #fff;
+}
+
+.register-role-card h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.register-role-card p {
+  line-height: 1.65;
+}
+
+.register-actions {
+  width: min(100%, 430px);
+  gap: 1.5rem;
+}
+
+.register-continue-button,
+.register-login-link {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.register-continue-button {
+  width: 100%;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff8c00, #ea580c);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  box-shadow: 0 22px 38px rgba(255, 140, 0, 0.22);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.register-continue-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 28px 42px rgba(255, 140, 0, 0.28);
+}
+
+.register-login-block {
+  gap: 0.35rem;
+}
+
+.register-login-link {
+  background: transparent;
+  color: #ff8c00;
+  font-weight: 800;
+}
+
+.register-glow,
+.register-bottom-line {
+  position: fixed;
+  pointer-events: none;
+}
+
+.register-glow {
+  width: 320px;
+  height: 320px;
+  border-radius: 999px;
+  background: #ff8c00;
+  filter: blur(110px);
+}
+
+.register-glow-bottom {
+  right: -90px;
+  bottom: -90px;
+  opacity: 0.12;
+}
+
+.register-glow-top {
+  top: -90px;
+  left: -90px;
+  opacity: 0.08;
+}
+
+.register-bottom-line {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(255, 140, 0, 0.08), #ff8c00, rgba(255, 140, 0, 0.08));
+}
+
+@media (max-width: 900px) {
+  .register-role-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .register-shell {
+    padding: 2rem 1rem;
+  }
+
+  .register-brand {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .register-role-card {
+    padding: 1.5rem;
+  }
+}
