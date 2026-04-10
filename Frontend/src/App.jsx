@@ -1,9 +1,11 @@
-import Home from './pages/home'
-import RegisterRoleSelection from './components/RegisterRoleSelection'
+import TeacherRegister from './pages/TeacherRegister'
+import StudentRegister from './pages/studentRegister'
+import CompanyRegister from './pages/companyRegister'
 
 function App() {
-  /*return <Home />*/
-  return <RegisterRoleSelection />
+  /*return <TeacherRegister />*/
+  return <StudentRegister/>
+  /*return <CompanyRegister/>*/
 }
 
 export default App

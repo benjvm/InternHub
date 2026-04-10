@@ -1,0 +1,204 @@
+.teacher-register-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  background:
+    radial-gradient(circle at top, rgba(255, 140, 0, 0.11), transparent 24%),
+    linear-gradient(180deg, #fffdf8 0%, #f8f7f5 60%, #f2eee8 100%);
+}
+
+.teacher-register-layout {
+  width: min(100%, 520px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.teacher-register-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.teacher-register-header h1,
+.teacher-register-copy h2 {
+  margin: 0;
+  color: #0f172a;
+  letter-spacing: -0.04em;
+}
+
+.teacher-register-header h1 {
+  font-size: clamp(1.9rem, 4vw, 2.35rem);
+  font-weight: 900;
+}
+
+.teacher-register-copy p,
+.teacher-register-footer p {
+  margin: 0;
+  color: #64748b;
+}
+
+.teacher-register-card {
+  width: 100%;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.teacher-register-copy {
+  margin-bottom: 2rem;
+}
+
+.teacher-register-copy h2 {
+  font-size: 1.9rem;
+  font-weight: 800;
+}
+
+.teacher-register-copy p {
+  margin-top: 0.5rem;
+}
+
+.teacher-register-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.teacher-register-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.teacher-register-field label {
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.teacher-register-input-wrap {
+  position: relative;
+}
+
+.teacher-register-field input {
+  width: 100%;
+  min-height: 3.2rem;
+  padding: 0.9rem 1rem 0.9rem 2.9rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.95rem;
+  background: #fff;
+  color: #0f172a;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.teacher-register-input-wrap input {
+  padding-right: 2.9rem;
+}
+
+.teacher-register-field input::placeholder {
+  color: #94a3b8;
+}
+
+.teacher-register-field input:focus {
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.14);
+}
+
+.teacher-register-input-icon,
+.teacher-register-visibility-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.teacher-register-input-icon {
+  left: 0.85rem;
+  color: #94a3b8;
+  font-size: 1.25rem;
+}
+
+.teacher-register-visibility-button {
+  right: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.teacher-register-visibility-button:hover {
+  color: #475569;
+}
+
+.teacher-register-submit {
+  width: 100%;
+  min-height: 3.5rem;
+  margin-top: 0.25rem;
+  border: 0;
+  border-radius: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, #ff8c00, #ea580c);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 18px 36px rgba(255, 140, 0, 0.24);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.teacher-register-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 24px 42px rgba(255, 140, 0, 0.28);
+}
+
+.teacher-register-submit:hover .teacher-register-submit-icon {
+  transform: translateX(0.2rem);
+}
+
+.teacher-register-submit-icon {
+  transition: transform 0.2s ease;
+}
+
+.teacher-register-footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.teacher-register-footer a {
+  margin-left: 0.35rem;
+  color: #ff8c00;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.teacher-register-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .teacher-register-shell {
+    padding: 1.5rem 0.9rem;
+  }
+
+  .teacher-register-card {
+    padding: 1.4rem;
+  }
+
+  .teacher-register-copy h2 {
+    font-size: 1.55rem;
+  }
+}

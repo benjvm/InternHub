@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import logo from '../assets/images/logo_no_bg.png'
-import '../assets/register.css'
+import '../assets/styles/register.css'
 
 const roles = [
   {
@@ -56,7 +56,7 @@ export default function RegisterRoleSelection({
           </div>
 
           <div className="register-copy">
-            <h2>{'únete a InternHub'}</h2>
+            <h2>{'Únete a InternHub'}</h2>
             <p>Selecciona tu perfil para comenzar tu experiencia</p>
           </div>
         </div>

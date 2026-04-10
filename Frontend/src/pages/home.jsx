@@ -10,10 +10,10 @@ const quickFilters = [
 
 const categories = [
   { icon: 'campaign', title: 'Marketing' },
-  { icon: 'engineering', title: 'Ingenier\u00EDa' },
-  { icon: 'palette', title: 'Dise\u00F1o' },
+  { icon: 'engineering', title: 'Ingeniería' },
+  { icon: 'palette', title: 'Diseño' },
   { icon: 'payments', title: 'Ventas' },
-  { icon: 'business_center', title: 'Administraci\u00F3n' },
+  { icon: 'business_center', title: 'Administración' },
   { icon: 'code', title: 'IT & Software' },
 ]
 
@@ -21,9 +21,9 @@ const featuredInternships = [
   {
     title: 'Product Designer Intern',
     company: 'Innovate Tech S.A.',
-    location: 'Madrid, Espa\u00F1a (H\u00EDbrido)',
-    salary: '800\u20AC - 1.000\u20AC / mes',
-    publishedAt: 'Publicado hace 2 d\u00EDas',
+    location: 'Madrid, España (Hibrido)',
+    salary: '800€ - 1.000€ / mes',
+    publishedAt: 'Publicado hace 2 días',
     badge: 'Nuevo',
     badgeVariant: 'success',
     logo:
@@ -32,17 +32,17 @@ const featuredInternships = [
   {
     title: 'Junior Frontend Developer',
     company: 'FinanzGlobal Corp',
-    location: 'Barcelona, Espa\u00F1a (Remoto)',
-    salary: '1.200\u20AC / mes',
-    publishedAt: 'Publicado hace 5 d\u00EDas',
+    location: 'Barcelona, España (Remoto)',
+    salary: '1.200€ / mes',
+    publishedAt: 'Publicado hace 5 días',
     logo:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuBAPn2AzmqeBtiSGhJrig8hfSJw62QKEZpa75ilsrm2BU8_RI7pAWJbX4FmIvcWaC773X6CG-vH8S9JHi9VVNyRbfDBj8wDBWcuUjX-dRd2whstmDKxBKkL1kf2xrRzsAN_1-riArbiVO5pJM-HGAc6EE0k7Kl_tYB-W9q22A_arDk3QdeIe6-cJpJWYyYHvNhkRaGDR1TS0hNM7KR-X66S4JEyOHHdj-rXnaIBa1Ox4BpEV8qQdoNl3_X3dzA_xXGbR18z5JjeV5s',
   },
   {
     title: 'Marketing Assistant',
     company: 'Creative Minds Agency',
-    location: 'Valencia, Espa\u00F1a',
-    salary: '600\u20AC / mes (Media jornada)',
+    location: 'Valencia, España',
+    salary: '600€ / mes (Media jornada)',
     publishedAt: 'Publicado ayer',
     badge: 'Destacada',
     badgeVariant: 'primary',
@@ -68,11 +68,11 @@ export default function Home() {
         <section className="hero-section">
           <div className="container hero-content">
             <h1>
-              {'Encuentra las pr\u00E1cticas'}
-              <br className="hero-break" /> {'de tus '}<span>{'sue\u00F1os'}</span>
+              {'Encuentra las prácticas'}
+              <br className="hero-break" /> {'de tus '}<span>{'sueños'}</span>
             </h1>
             <p>
-              {'La plataforma l\u00EDder para estudiantes y reci\u00E9n graduados. Conectamos '}
+              {'La plataforma líder para estudiantes y recién graduados. Conectamos '}
               {'talento joven con las mejores empresas.'}
             </p>
 
@@ -85,7 +85,7 @@ export default function Home() {
 
                 <label className="search-field">
                   <Icon name="location_on" className="search-icon" />
-                  <input type="text" placeholder={'Ciudad o c\u00F3digo postal'} />
+                  <input type="text" placeholder={'Ciudad o código postal'} />
                 </label>
 
                 <button type="button" className="primary-button search-button">
@@ -95,7 +95,7 @@ export default function Home() {
             </div>
 
             <div className="quick-filters">
-              <span className="quick-filters-label">{'Filtros r\u00E1pidos:'}</span>
+              <span className="quick-filters-label">{'Filtros rápidos:'}</span>
               {quickFilters.map((filter) => (
                 <button key={filter.label} type="button" className="filter-pill">
                   <Icon name={filter.icon} className="filter-pill-icon" />
@@ -110,10 +110,10 @@ export default function Home() {
           <div className="container">
             <div className="section-heading">
               <div>
-                <h2>{'Explora por categor\u00EDa'}</h2>
-                <p>{'Descubre oportunidades en el sector que m\u00E1s te apasione'}</p>
+                <h2>{'Explora por categoría'}</h2>
+                <p>{'Descubre oportunidades en el sector que más te apasione'}</p>
               </div>
-              <a href="#categorias">{'Ver todas las categor\u00EDas'}</a>
+              <a href="#categorias">{'Ver todas las categorías'}</a>
             </div>
 
             <div className="category-grid" id="categorias">
@@ -131,7 +131,7 @@ export default function Home() {
 
         <section className="featured-section">
           <div className="container">
-            <h2 className="featured-title">{'Pr\u00E1cticas destacadas'}</h2>
+            <h2 className="featured-title">{'Prácticas destacadas'}</h2>
 
             <div className="internship-grid">
               {featuredInternships.map((internship) => (
@@ -164,7 +164,7 @@ export default function Home() {
                   <div className="internship-footer">
                     <span>{internship.publishedAt}</span>
                     <a href="#detalle">
-                      {'Ver m\u00E1s'}
+                      {'Ver más'}
                       <Icon name="arrow_forward" className="meta-icon small" />
                     </a>
                   </div>
@@ -184,10 +184,10 @@ export default function Home() {
           <div className="container">
             <div className="company-cta-card">
               <div className="company-cta-copy">
-                <h2>{'\u00BFBuscas el mejor talento joven?'}</h2>
+                <h2>{'¿Buscas el mejor talento joven?'}</h2>
                 <p>
-                  {'Publica tu oferta de pr\u00E1cticas hoy y llega a miles de estudiantes y'}
-                  {' reci\u00E9n graduados cualificados.'}
+                  {'Publica tu oferta de prácticas hoy y llega a miles de estudiantes y'}
+                  {' recién graduados cualificados.'}
                 </p>
               </div>
 
@@ -197,7 +197,7 @@ export default function Home() {
                   Publicar una oferta
                 </button>
                 <button type="button" className="secondary-button">
-                  {'M\u00E1s informaci\u00F3n'}
+                  {'Más información'}
                 </button>
               </div>
             </div>

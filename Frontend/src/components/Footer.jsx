@@ -1,15 +1,15 @@
 const footerColumns = [
   {
     title: 'Candidatos',
-    links: ['Buscar Pr\u00E1cticas', 'Crear Alertas', 'Consejos de CV', 'Directorio de Empresas'],
+    links: ['Buscar Prácticas', 'Crear Alertas', 'Consejos de CV', 'Directorio de Empresas'],
   },
   {
     title: 'Soporte',
-    links: ['Centro de Ayuda', 'Cont\u00E1ctanos', 'Acerca de', 'Seguridad'],
+    links: ['Centro de Ayuda', 'Contáctanos', 'Acerca de', 'Seguridad'],
   },
   {
     title: 'Legal',
-    links: ['T\u00E9rminos y condiciones', 'Pol\u00EDtica de Privacidad', 'Cookies'],
+    links: ['Términos y condiciones', 'Política de Privacidad', 'Cookies'],
   },
 ]
 
@@ -64,9 +64,9 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>{'\u00A9 2024 InternshipPortal. Todos los derechos reservados.'}</p>
+          <p>{'© 2024 InternshipPortal. Todos los derechos reservados.'}</p>
           <div>
-            <span>{'Espa\u00F1ol (ES)'}</span>
+            <span>{'Español (ES)'}</span>
             <span>Accesibilidad</span>
           </div>
         </div>

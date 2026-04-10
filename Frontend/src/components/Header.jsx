@@ -1,7 +1,7 @@
 import logo from '../assets/images/logo_no_bg.png'
 
 const navLinks = [
-  { label: 'Pr\u00E1cticas', href: '#practicas' },
+  { label: 'Prácticas', href: '#practicas' },
   { label: 'Empresas', href: '#empresas' },
   { label: 'Consejos', href: '#consejos' },
 ]
@@ -32,7 +32,7 @@ export default function Header() {
             Para Empresas
           </button>
           <button type="button" className="secondary-button">
-            {'Iniciar Sesi\u00F3n'}
+            {'Iniciar Sesión'}
           </button>
         </div>
       </div>
