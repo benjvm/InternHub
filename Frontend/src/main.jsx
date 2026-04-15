@@ -4,6 +4,7 @@ import { UserProvider } from './services/userService'
 import './index.css'
 import './assets/styles/home.css'
 
+
 createRoot(document.getElementById('root')).render(
   <UserProvider>
     <App />

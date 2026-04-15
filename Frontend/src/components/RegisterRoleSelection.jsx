@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import logo from '../assets/images/logo_no_bg.png'
 import '../assets/styles/register.css'
+import { ROUTES } from '../routes/paths'
+import { useRouter } from '../routes/router'
 
 const roles = [
   {
@@ -8,23 +10,29 @@ const roles = [
     icon: 'school',
     title: 'Estudiante',
     description:
-      'Encuentra prácticas profesionales, accede a formación exclusiva y despega tu carrera.',
+      'Encuentra practicas profesionales, crea tu perfil y postulate a oportunidades reales.',
   },
   {
     id: 'company',
     icon: 'business',
     title: 'Empresa',
     description:
-      'Publica vacantes, gestiona procesos de selección y encuentra el talento que necesitas.',
+      'Publica vacantes, gestiona procesos y encuentra talento joven preparado para crecer.',
   },
   {
     id: 'teacher',
     icon: 'co_present',
     title: 'Profesor',
     description:
-      'Supervisa el progreso de tus alumnos, gestiona convenios y orienta su futuro profesional.',
+      'Acompana el progreso de tus estudiantes y conecta academia con oportunidades concretas.',
   },
 ]
+
+const roleDestinationMap = {
+  student: ROUTES.registerStudent,
+  company: ROUTES.registerCompany,
+  teacher: ROUTES.registerTeacher,
+}
 
 function Icon({ name, className = '' }) {
   return (
@@ -39,9 +47,28 @@ export default function RegisterRoleSelection({
   onContinue,
   onLoginClick,
 }) {
+  const { navigate } = useRouter()
   const [selectedRole, setSelectedRole] = useState(defaultRole)
 
   const activeRole = roles.find((role) => role.id === selectedRole) ?? roles[1]
+
+  function handleContinue() {
+    if (onContinue) {
+      onContinue(activeRole)
+      return
+    }
+
+    navigate(roleDestinationMap[activeRole.id] ?? ROUTES.registerCompany)
+  }
+
+  function handleLogin() {
+    if (onLoginClick) {
+      onLoginClick()
+      return
+    }
+
+    navigate(ROUTES.login)
+  }
 
   return (
     <section className="register-shell">
@@ -56,7 +83,7 @@ export default function RegisterRoleSelection({
           </div>
 
           <div className="register-copy">
-            <h2>{'Únete a InternHub'}</h2>
+            <h2>{'Unete a InternHub'}</h2>
             <p>Selecciona tu perfil para comenzar tu experiencia</p>
           </div>
         </div>
@@ -84,23 +111,15 @@ export default function RegisterRoleSelection({
         </div>
 
         <div className="register-actions">
-          <button
-            type="button"
-            className="register-continue-button"
-            onClick={() => onContinue?.(activeRole)}
-          >
+          <button type="button" className="register-continue-button" onClick={handleContinue}>
             <span>Continuar</span>
             <Icon name="arrow_forward" />
           </button>
 
           <div className="register-login-block">
-            <p>¿Ya tienes una cuenta?</p>
-            <button
-              type="button"
-              className="register-login-link"
-              onClick={() => onLoginClick?.()}
-            >
-              Iniciar sesión
+            <p>Ya tienes una cuenta?</p>
+            <button type="button" className="register-login-link" onClick={handleLogin}>
+              Iniciar sesion
             </button>
           </div>
         </div>

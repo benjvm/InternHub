@@ -1,5 +1,9 @@
 import { useState } from 'react'
 import '../assets/styles/studentRegister.css'
+import { registerUser } from '../services/authService'
+import { useUser } from '../services/userService'
+import { ROUTES } from '../routes/paths'
+import { Link, useRouter } from '../routes/router'
 
 function Icon({ name, className = '' }) {
   return (
@@ -10,7 +14,48 @@ function Icon({ name, className = '' }) {
 }
 
 export default function StudentRegisterCard() {
+  const { refreshUserProfile } = useUser()
+  const { navigate } = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellido: '',
+    universidad: '',
+    carrera: '',
+    correo: '',
+    password: '',
+  })
+
+  function handleChange(event) {
+    const { id, value } = event.target
+
+    setFormData((current) => ({
+      ...current,
+      [id]: value,
+    }))
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    setErrorMessage('')
+    setIsSubmitting(true)
+
+    try {
+      const registeredUser = await registerUser({
+        rol: 1,
+        ...formData,
+      })
+
+      await refreshUserProfile(registeredUser.uid)
+      navigate(ROUTES.studentProfile, { replace: true })
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo crear la cuenta.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <section className="student-register-shell">
@@ -23,72 +68,99 @@ export default function StudentRegisterCard() {
         <article className="student-register-card">
           <div className="student-register-copy">
             <h2>Crea tu perfil de estudiante</h2>
-            <p>Completa tus datos para encontrar tu próxima pasantía.</p>
+            <p>Completa tus datos para encontrar tu proxima pasantia.</p>
           </div>
 
-          <form className="student-register-form">
+          <form className="student-register-form" onSubmit={handleSubmit}>
             <div className="student-register-grid">
               <div className="student-register-field">
-                <label htmlFor="student-name">Nombre</label>
-                <input id="student-name" type="text" placeholder="Ej. Juan" />
+                <label htmlFor="nombre">Nombre</label>
+                <input
+                  id="nombre"
+                  type="text"
+                  placeholder="Ej. Juan"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="student-register-field">
-                <label htmlFor="student-lastname">Apellido</label>
-                <input id="student-lastname" type="text" placeholder="Ej. Pérez" />
+                <label htmlFor="apellido">Apellido</label>
+                <input
+                  id="apellido"
+                  type="text"
+                  placeholder="Ej. Perez"
+                  value={formData.apellido}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
             <div className="student-register-field">
-              <label htmlFor="student-university">Universidad</label>
+              <label htmlFor="universidad">Universidad</label>
               <div className="student-register-input-wrap">
                 <Icon name="account_balance" className="student-register-input-icon" />
                 <input
-                  id="student-university"
+                  id="universidad"
                   type="text"
-                  placeholder="Nombre de tu institución"
+                  placeholder="Nombre de tu institucion"
+                  value={formData.universidad}
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>
 
             <div className="student-register-field">
-              <label htmlFor="student-major">Carrera</label>
+              <label htmlFor="carrera">Carrera</label>
               <div className="student-register-input-wrap">
                 <Icon name="history_edu" className="student-register-input-icon" />
                 <input
-                  id="student-major"
+                  id="carrera"
                   type="text"
-                  placeholder="Ej. Ingeniería de Sistemas"
+                  placeholder="Ej. Ingenieria de Sistemas"
+                  value={formData.carrera}
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>
 
             <div className="student-register-field">
-              <label htmlFor="student-email">Correo electrónico</label>
+              <label htmlFor="correo">Correo electronico</label>
               <div className="student-register-input-wrap">
                 <Icon name="mail" className="student-register-input-icon" />
                 <input
-                  id="student-email"
+                  id="correo"
                   type="email"
                   placeholder="estudiante@ejemplo.com"
+                  value={formData.correo}
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>
 
             <div className="student-register-field">
-              <label htmlFor="student-password">Contraseña</label>
+              <label htmlFor="password">Contrasena</label>
               <div className="student-register-input-wrap">
                 <Icon name="lock" className="student-register-input-icon" />
                 <input
-                  id="student-password"
+                  id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder="Minimo 8 caracteres"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength={8}
                 />
                 <button
                   type="button"
                   className="student-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
-                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
                   aria-pressed={showPassword}
                 >
                   <Icon name={showPassword ? 'visibility_off' : 'visibility'} />
@@ -96,16 +168,24 @@ export default function StudentRegisterCard() {
               </div>
             </div>
 
-            <button type="submit" className="student-register-submit">
-              <span>Crear cuenta de estudiante</span>
+            {errorMessage ? (
+              <p role="alert" style={{ color: '#b91c1c', margin: 0 }}>
+                {errorMessage}
+              </p>
+            ) : null}
+
+            <button type="submit" className="student-register-submit" disabled={isSubmitting}>
+              <span>
+                {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta de estudiante'}
+              </span>
               <Icon name="arrow_forward" className="student-register-submit-icon" />
             </button>
           </form>
 
           <footer className="student-register-footer">
             <p>
-              ¿Ya tienes cuenta?
-              <a href="#login">Inicia sesión</a>
+              Ya tienes cuenta?
+              <Link to={ROUTES.login}>Inicia sesion</Link>
             </p>
           </footer>
         </article>

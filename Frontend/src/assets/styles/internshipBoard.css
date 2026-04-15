@@ -1,0 +1,303 @@
+.internship-board-page {
+  min-height: 100vh;
+  padding: 2rem 0 4rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 140, 0, 0.16), transparent 32%),
+    linear-gradient(180deg, #fffdf9 0%, #f8f7f5 52%, #f2eee7 100%);
+}
+
+.internship-board-hero {
+  padding-top: 1.5rem;
+}
+
+.internship-board-copy {
+  margin-bottom: 2.25rem;
+}
+
+.internship-board-copy h1 {
+  margin: 0;
+  font-size: clamp(2.8rem, 6vw, 4.6rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.internship-board-copy h1 span {
+  color: #ff8c00;
+}
+
+.internship-board-copy p {
+  max-width: 760px;
+  margin: 1rem 0 0;
+  color: #64748b;
+  font-size: 1.05rem;
+}
+
+.internship-board-filters {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  padding: 0.85rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.internship-board-filter-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.internship-board-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.internship-board-field span {
+  padding-left: 0.35rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.internship-board-field select {
+  width: 100%;
+  padding: 1rem 3rem 1rem 1rem;
+  border: 0;
+  border-radius: 18px;
+  outline: 0;
+  color: #334155;
+  background:
+    linear-gradient(180deg, #f8fafc, #eef2f7),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%2364758b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center, right 1rem center;
+  background-size: auto, 1.2rem;
+  appearance: none;
+}
+
+.internship-board-search-button,
+.internship-board-outline-button,
+.internship-board-link-button {
+  border: 0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+
+.internship-board-search-button,
+.internship-board-outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.internship-board-search-button {
+  min-width: 220px;
+  min-height: 56px;
+  padding: 0 1.5rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0f172a, #ff8c00);
+  color: #fff;
+  box-shadow: 0 18px 36px rgba(255, 140, 0, 0.22);
+}
+
+.internship-board-outline-button {
+  padding: 0.95rem 1.6rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f172a;
+}
+
+.internship-board-search-button:hover,
+.internship-board-outline-button:hover,
+.internship-board-card:hover,
+.internship-board-link-button:hover {
+  transform: translateY(-2px);
+}
+
+.internship-board-results {
+  margin-top: 2.5rem;
+}
+
+.internship-board-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.internship-board-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 1.6rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    border-color 0.24s ease;
+}
+
+.internship-board-card:hover {
+  border-color: rgba(255, 140, 0, 0.4);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.1);
+}
+
+.internship-board-card-top,
+.internship-board-action-row,
+.internship-board-meta div {
+  display: flex;
+  align-items: center;
+}
+
+.internship-board-card-top,
+.internship-board-action-row {
+  justify-content: space-between;
+}
+
+.internship-board-icon-wrap {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.internship-board-icon,
+.internship-board-meta .material-symbols-outlined,
+.internship-board-link-icon,
+.internship-board-search-icon {
+  color: #ff8c00;
+}
+
+.internship-board-icon {
+  font-size: 1.9rem;
+}
+
+.internship-board-tag,
+.internship-board-modality {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.internship-board-tag {
+  background: rgba(255, 140, 0, 0.12);
+  color: #ea580c;
+}
+
+.internship-board-card h3 {
+  margin: 1.25rem 0 0.65rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+}
+
+.internship-board-card > p {
+  margin: 0 0 1.5rem;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.internship-board-card-footer {
+  margin-top: auto;
+}
+
+.internship-board-meta {
+  display: grid;
+  gap: 0.8rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.internship-board-meta div {
+  gap: 0.45rem;
+}
+
+.internship-board-action-row {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  gap: 0.75rem;
+}
+
+.internship-board-modality {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.internship-board-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  background: transparent;
+  color: #ea580c;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.internship-board-more {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+@media (max-width: 960px) {
+  .internship-board-filters,
+  .internship-board-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .internship-board-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .internship-board-search-button {
+    width: 100%;
+  }
+
+  .internship-board-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .internship-board-page {
+    padding-top: 1rem;
+  }
+
+  .internship-board-copy h1 {
+    font-size: clamp(2.35rem, 11vw, 3.4rem);
+  }
+
+  .internship-board-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .internship-board-action-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

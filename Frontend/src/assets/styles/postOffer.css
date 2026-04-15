@@ -1,0 +1,302 @@
+.post-offer-page {
+  min-height: 100vh;
+  padding: 2.5rem 0 4rem;
+  background:
+    radial-gradient(circle at top, rgba(255, 140, 0, 0.16), transparent 28%),
+    linear-gradient(180deg, #fffdf9 0%, #f8f7f5 52%, #f2eee7 100%);
+}
+
+.post-offer-shell {
+  width: min(860px, calc(100% - 2rem));
+}
+
+.post-offer-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.post-offer-header h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  letter-spacing: -0.05em;
+}
+
+.post-offer-header p,
+.post-offer-help {
+  color: #64748b;
+}
+
+.post-offer-header p {
+  margin: 0.7rem auto 0;
+  max-width: 620px;
+  font-size: 1.05rem;
+}
+
+.post-offer-card {
+  padding: 2rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+}
+
+.post-offer-form {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.post-offer-field,
+.post-offer-modality-group {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.post-offer-field > span,
+.post-offer-modality-group legend {
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.post-offer-field input,
+.post-offer-field select,
+.post-offer-editor textarea {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  color: #0f172a;
+  outline: 0;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.post-offer-field input,
+.post-offer-field select {
+  min-height: 54px;
+  padding: 0 1rem;
+}
+
+.post-offer-field input:focus,
+.post-offer-field select:focus,
+.post-offer-editor textarea:focus {
+  border-color: rgba(255, 140, 0, 0.72);
+  box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.12);
+}
+
+.post-offer-select-wrap,
+.post-offer-input-icon-wrap {
+  position: relative;
+}
+
+.post-offer-select-wrap select {
+  padding-right: 3rem;
+  appearance: none;
+}
+
+.post-offer-select-icon,
+.post-offer-input-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.post-offer-select-icon {
+  right: 1rem;
+}
+
+.post-offer-input-icon {
+  left: 0.9rem;
+}
+
+.post-offer-input-icon-wrap input {
+  padding-left: 2.85rem;
+}
+
+.post-offer-editor {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  background: #fff;
+}
+
+.post-offer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+}
+
+.post-offer-toolbar-button,
+.post-offer-secondary-button,
+.post-offer-primary-button {
+  border: 0;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+}
+
+.post-offer-toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+}
+
+.post-offer-toolbar-button:hover,
+.post-offer-secondary-button:hover,
+.post-offer-primary-button:hover,
+.post-offer-pill-item label:hover {
+  transform: translateY(-1px);
+}
+
+.post-offer-toolbar-button:hover {
+  background: #e2e8f0;
+}
+
+.post-offer-editor textarea {
+  min-height: 220px;
+  padding: 1rem 1.1rem;
+  border: 0;
+  border-radius: 0;
+  resize: vertical;
+}
+
+.post-offer-two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.post-offer-pills,
+.post-offer-actions {
+  display: flex;
+  align-items: center;
+}
+
+.post-offer-pills {
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.post-offer-pill-item {
+  position: relative;
+}
+
+.post-offer-pill-item input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.post-offer-pill-item label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.post-offer-pill-item input:checked + label {
+  border-color: #ff8c00;
+  background: #ff8c00;
+  color: #fff;
+  box-shadow: 0 14px 24px rgba(255, 140, 0, 0.24);
+}
+
+.post-offer-actions {
+  justify-content: flex-end;
+  gap: 0.85rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.post-offer-secondary-button,
+.post-offer-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 1.4rem;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.post-offer-secondary-button {
+  background: transparent;
+  color: #64748b;
+}
+
+.post-offer-secondary-button:hover {
+  background: #f8fafc;
+}
+
+.post-offer-primary-button {
+  background: linear-gradient(135deg, #ff8c00, #ea580c);
+  color: #fff;
+  box-shadow: 0 18px 36px rgba(255, 140, 0, 0.22);
+}
+
+.post-offer-help {
+  margin: 1.5rem 0 0;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.post-offer-help a {
+  color: #ea580c;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .post-offer-page {
+    padding-top: 1.5rem;
+  }
+
+  .post-offer-card {
+    padding: 1.35rem;
+    border-radius: 22px;
+  }
+
+  .post-offer-two-column,
+  .post-offer-actions {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .post-offer-secondary-button,
+  .post-offer-primary-button {
+    width: 100%;
+  }
+}

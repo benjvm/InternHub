@@ -1,39 +1,86 @@
+import { useState } from 'react'
 import logo from '../assets/images/logo_no_bg.png'
+import { logoutUser } from '../services/authService'
+import { useUser } from '../services/userService'
+import { getDefaultRouteForRole, ROUTES } from '../routes/paths'
+import { Link, useRouter } from '../routes/router'
 
 const navLinks = [
-  { label: 'Prácticas', href: '#practicas' },
-  { label: 'Empresas', href: '#empresas' },
-  { label: 'Consejos', href: '#consejos' },
+  { label: 'Home', to: ROUTES.home },
+  { label: 'Practicas', to: ROUTES.internships },
 ]
 
 export default function Header() {
+  const { currentUser } = useUser()
+  const { navigate } = useRouter()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const isCompany = Number(currentUser?.rol) === 2
+  const isStudent = Number(currentUser?.rol) === 1
+
+  async function handleLogout() {
+    try {
+      setIsLoggingOut(true)
+      await logoutUser()
+      navigate(ROUTES.home, { replace: true })
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
+
   return (
     <header className="site-header">
       <div className="container site-header-inner">
         <div className="site-brand-area">
-          <a href="#" className="site-brand">
+          <Link to={ROUTES.home} className="site-brand">
             <span className="brand-mark">
               <img src={logo} alt="InternHub" className="brand-logo" />
             </span>
             <span className="brand-text">InternHub</span>
-          </a>
+          </Link>
 
           <nav className="site-nav" aria-label="Principal">
             {navLinks.map((link) => (
-              <a key={link.label} href={link.href}>
+              <Link key={link.label} to={link.to}>
                 {link.label}
-              </a>
+              </Link>
             ))}
+            {isCompany ? <Link to={ROUTES.postOffer}>Publicar oferta</Link> : null}
+            {isStudent ? <Link to={ROUTES.studentProfile}>Mi perfil</Link> : null}
           </nav>
         </div>
 
         <div className="site-header-actions">
-          <button type="button" className="ghost-primary-button header-desktop-only">
-            Para Empresas
-          </button>
-          <button type="button" className="secondary-button">
-            {'Iniciar Sesión'}
-          </button>
+          {currentUser ? (
+            <>
+              <Link
+                to={getDefaultRouteForRole(currentUser.rol)}
+                className="ghost-primary-button header-desktop-only"
+              >
+                {isCompany ? 'Panel empresa' : 'Mi espacio'}
+              </Link>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? 'Cerrando...' : 'Cerrar sesion'}
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to={ROUTES.registerCompany}
+                className="ghost-primary-button header-desktop-only"
+              >
+                Para empresas
+              </Link>
+              <Link to={ROUTES.login} className="secondary-button">
+                Iniciar sesion
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

@@ -1,15 +1,30 @@
+import { ROUTES } from '../routes/paths'
+import { Link } from '../routes/router'
+
 const footerColumns = [
   {
     title: 'Candidatos',
-    links: ['Buscar Prácticas', 'Crear Alertas', 'Consejos de CV', 'Directorio de Empresas'],
+    links: [
+      { label: 'Buscar practicas', to: ROUTES.internships },
+      { label: 'Crear cuenta', to: ROUTES.register },
+      { label: 'Iniciar sesion', to: ROUTES.login },
+    ],
   },
   {
-    title: 'Soporte',
-    links: ['Centro de Ayuda', 'Contáctanos', 'Acerca de', 'Seguridad'],
+    title: 'Empresas',
+    links: [
+      { label: 'Publicar oferta', to: ROUTES.postOffer },
+      { label: 'Registro empresa', to: ROUTES.registerCompany },
+      { label: 'Volver al inicio', to: ROUTES.home },
+    ],
   },
   {
-    title: 'Legal',
-    links: ['Términos y condiciones', 'Política de Privacidad', 'Cookies'],
+    title: 'Cuenta',
+    links: [
+      { label: 'Perfil estudiante', to: ROUTES.studentProfile },
+      { label: 'Practicas', to: ROUTES.internships },
+      { label: 'Home', to: ROUTES.home },
+    ],
   },
 ]
 
@@ -27,25 +42,25 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand-block">
-            <a href="#" className="site-brand footer-brand">
+            <Link to={ROUTES.home} className="site-brand footer-brand">
               <span className="brand-mark compact">
                 <Icon name="rocket_launch" className="brand-mark-icon compact" />
               </span>
-              <span className="brand-text footer-brand-text">InternshipPortal</span>
-            </a>
+              <span className="brand-text footer-brand-text">InternHub</span>
+            </Link>
 
             <p>
-              Conectando el futuro profesional con las mejores oportunidades laborales
-              desde 2024.
+              Connecting students, teachers, and companies through a single internship
+              experience.
             </p>
 
             <div className="footer-socials">
-              <a href="#share" aria-label="Compartir">
-                <Icon name="share" />
-              </a>
-              <a href="#feed" aria-label="RSS">
-                <Icon name="rss_feed" />
-              </a>
+              <Link to={ROUTES.home} aria-label="Home">
+                <Icon name="home" />
+              </Link>
+              <Link to={ROUTES.internships} aria-label="Internships">
+                <Icon name="work" />
+              </Link>
             </div>
           </div>
 
@@ -54,8 +69,8 @@ export default function Footer() {
               <h4>{column.title}</h4>
               <ul>
                 {column.links.map((link) => (
-                  <li key={link}>
-                    <a href="#footer-link">{link}</a>
+                  <li key={link.label}>
+                    <Link to={link.to}>{link.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -64,10 +79,10 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>{'© 2024 InternshipPortal. Todos los derechos reservados.'}</p>
+          <p>© 2026 InternHub. All rights reserved.</p>
           <div>
-            <span>{'Español (ES)'}</span>
-            <span>Accesibilidad</span>
+            <span>Spanish (ES)</span>
+            <span>Accessibility</span>
           </div>
         </div>
       </div>

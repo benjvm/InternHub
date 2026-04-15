@@ -1,0 +1,246 @@
+.student-profile-page {
+  min-height: 100vh;
+  padding: 2.5rem 0 4rem;
+  background:
+    radial-gradient(circle at top, rgba(255, 140, 0, 0.15), transparent 30%),
+    linear-gradient(180deg, #fffdf9 0%, #f8f7f5 52%, #f2eee7 100%);
+}
+
+.student-profile-shell {
+  width: min(920px, calc(100% - 2rem));
+}
+
+.student-profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.student-profile-avatar-wrap {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.student-profile-avatar {
+  width: 128px;
+  height: 128px;
+  overflow: hidden;
+  border: 4px solid #fff;
+  border-radius: 999px;
+  background: #f1f5f9;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
+}
+
+.student-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.student-profile-camera-button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff8c00;
+  color: #fff;
+  box-shadow: 0 14px 24px rgba(255, 140, 0, 0.28);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.student-profile-camera-button:hover,
+.student-profile-reset-button:hover,
+.student-profile-save-button:hover {
+  transform: translateY(-1px);
+}
+
+.student-profile-camera-button:hover,
+.student-profile-save-button:hover {
+  background: #ea580c;
+}
+
+.student-profile-header h2 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  letter-spacing: -0.05em;
+}
+
+.student-profile-header p {
+  max-width: 560px;
+  margin: 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.student-profile-card {
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+}
+
+.student-profile-form-content {
+  padding: 2rem;
+}
+
+.student-profile-form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.student-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.student-profile-field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.student-profile-field span {
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.student-profile-field input,
+.student-profile-field textarea,
+.student-profile-field select {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  color: #0f172a;
+  outline: 0;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.student-profile-field input,
+.student-profile-field select {
+  min-height: 52px;
+  padding: 0 1rem;
+}
+
+.student-profile-field textarea {
+  min-height: 132px;
+  padding: 0.95rem 1rem;
+  resize: none;
+}
+
+.student-profile-field input:focus,
+.student-profile-field textarea:focus,
+.student-profile-field select:focus {
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.14);
+}
+
+.student-profile-field small {
+  color: #94a3b8;
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+.student-profile-select-wrap {
+  position: relative;
+}
+
+.student-profile-select-wrap select {
+  padding-right: 3rem;
+  appearance: none;
+}
+
+.student-profile-select-icon {
+  position: absolute;
+  top: 50%;
+  right: 0.9rem;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.student-profile-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #f8fafc, rgba(241, 245, 249, 0.72));
+}
+
+.student-profile-reset-button,
+.student-profile-save-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0 1.35rem;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.student-profile-reset-button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+}
+
+.student-profile-reset-button:hover {
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.student-profile-save-button {
+  border: 0;
+  background: #ff8c00;
+  color: #fff;
+  box-shadow: 0 16px 30px rgba(255, 140, 0, 0.22);
+}
+
+@media (max-width: 720px) {
+  .student-profile-page {
+    padding-top: 1.5rem;
+  }
+
+  .student-profile-form-content,
+  .student-profile-action-bar {
+    padding: 1.35rem;
+  }
+
+  .student-profile-grid,
+  .student-profile-action-bar {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .student-profile-reset-button,
+  .student-profile-save-button {
+    width: 100%;
+  }
+}

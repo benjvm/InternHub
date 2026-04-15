@@ -1,0 +1,106 @@
+.job-container {
+font-family: Inter, sans-serif;
+padding: 24px;
+background: #f8f7f5;
+}
+
+.breadcrumbs {
+margin-bottom: 20px;
+color: #666;
+}
+
+.breadcrumbs a {
+color: inherit;
+text-decoration: none;
+}
+
+.breadcrumbs .current {
+font-weight: bold;
+color: #000;
+}
+
+.card {
+background: #fff;
+border-radius: 12px;
+padding: 20px;
+margin-bottom: 20px;
+border: 1px solid #eee;
+}
+
+.header-content {
+display: flex;
+gap: 20px;
+}
+
+.logo img {
+width: 80px;
+height: 80px;
+border-radius: 12px;
+object-fit: cover;
+}
+
+.info h1 {
+margin: 0 0 10px;
+}
+
+.meta {
+color: #777;
+}
+
+.tags {
+display: flex;
+gap: 8px;
+margin-top: 10px;
+}
+
+.tag {
+padding: 4px 10px;
+border-radius: 999px;
+font-size: 12px;
+background: #eee;
+}
+
+.tag.primary {
+background: rgba(255,140,0,0.1);
+color: #ff8c00;
+}
+
+.tag.success {
+background: #d1fae5;
+color: #059669;
+}
+
+.cta {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.btn {
+padding: 10px 20px;
+border-radius: 8px;
+border: none;
+cursor: pointer;
+}
+
+.btn.primary {
+background: #ff8c00;
+color: white;
+}
+
+.icon-btn {
+width: 40px;
+height: 40px;
+margin-left: 8px;
+}
+
+section {
+margin-top: 30px;
+}
+
+.location-box {
+background: #eee;
+padding: 20px;
+border-radius: 12px;
+text-align: center;
+}

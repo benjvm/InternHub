@@ -1,17 +1,12 @@
-import TeacherRegister from './pages/TeacherRegister'
-import StudentRegister from './pages/studentRegister'
-import CompanyRegister from './pages/companyRegister'
-import LoginPage from './pages/login'
-import Home from './pages/home'
-
-
+import { RouterProvider } from './routes/router'
+import AppRouter from './routes/AppRouter'
 
 function App() {
-  /*return <TeacherRegister />*/
-  /*return <StudentRegister/>*/
-  /*return <CompanyRegister/>*/
-  /*return <LoginPage/>*/
-  return <Home/>
+  return (
+    <RouterProvider>
+      <AppRouter />
+    </RouterProvider>
+  )
 }
 
 export default App

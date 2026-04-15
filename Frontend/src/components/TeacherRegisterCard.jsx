@@ -1,5 +1,9 @@
 import { useState } from 'react'
 import '../assets/styles/teacherRegister.css'
+import { registerUser } from '../services/authService'
+import { useUser } from '../services/userService'
+import { ROUTES } from '../routes/paths'
+import { Link, useRouter } from '../routes/router'
 
 function Icon({ name, className = '' }) {
   return (
@@ -10,7 +14,46 @@ function Icon({ name, className = '' }) {
 }
 
 export default function TeacherRegisterCard() {
+  const { refreshUserProfile } = useUser()
+  const { navigate } = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [formData, setFormData] = useState({
+    nombreCompleto: '',
+    correo: '',
+    telefono: '',
+    password: '',
+  })
+
+  function handleChange(event) {
+    const { id, value } = event.target
+
+    setFormData((current) => ({
+      ...current,
+      [id]: value,
+    }))
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    setErrorMessage('')
+    setIsSubmitting(true)
+
+    try {
+      const registeredUser = await registerUser({
+        rol: 3,
+        ...formData,
+      })
+
+      await refreshUserProfile(registeredUser.uid)
+      navigate(ROUTES.home, { replace: true })
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo crear la cuenta.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <section className="teacher-register-shell">
@@ -21,53 +64,74 @@ export default function TeacherRegisterCard() {
 
         <article className="teacher-register-card">
           <div className="teacher-register-copy">
-            <h2>Registro de Profesor</h2>
-            <p>Únete a la red de mentores de InternHub</p>
+            <h2>Registro de profesor</h2>
+            <p>Unete a la red de mentores de InternHub</p>
           </div>
 
-          <form className="teacher-register-form">
+          <form className="teacher-register-form" onSubmit={handleSubmit}>
             <div className="teacher-register-field">
-              <label htmlFor="teacher-name">Nombre completo</label>
+              <label htmlFor="nombreCompleto">Nombre completo</label>
               <div className="teacher-register-input-wrap">
                 <Icon name="person" className="teacher-register-input-icon" />
-                <input id="teacher-name" type="text" placeholder="Ej. Juan Pérez" />
-              </div>
-            </div>
-
-            <div className="teacher-register-field">
-              <label htmlFor="teacher-email">Correo electrónico</label>
-              <div className="teacher-register-input-wrap">
-                <Icon name="mail" className="teacher-register-input-icon" />
                 <input
-                  id="teacher-email"
-                  type="email"
-                  placeholder="profesor@ejemplo.com"
+                  id="nombreCompleto"
+                  type="text"
+                  placeholder="Ej. Juan Perez"
+                  value={formData.nombreCompleto}
+                  onChange={handleChange}
+                  required
                 />
               </div>
             </div>
 
             <div className="teacher-register-field">
-              <label htmlFor="teacher-phone">Teléfono</label>
+              <label htmlFor="correo">Correo electronico</label>
               <div className="teacher-register-input-wrap">
-                <Icon name="call" className="teacher-register-input-icon" />
-                <input id="teacher-phone" type="tel" placeholder="+51 987 654 321" />
+                <Icon name="mail" className="teacher-register-input-icon" />
+                <input
+                  id="correo"
+                  type="email"
+                  placeholder="profesor@ejemplo.com"
+                  value={formData.correo}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
             <div className="teacher-register-field">
-              <label htmlFor="teacher-password">Contraseña</label>
+              <label htmlFor="telefono">Telefono</label>
+              <div className="teacher-register-input-wrap">
+                <Icon name="call" className="teacher-register-input-icon" />
+                <input
+                  id="telefono"
+                  type="tel"
+                  placeholder="+34 600 123 456"
+                  value={formData.telefono}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="teacher-register-field">
+              <label htmlFor="password">Contrasena</label>
               <div className="teacher-register-input-wrap">
                 <Icon name="lock" className="teacher-register-input-icon" />
                 <input
-                  id="teacher-password"
+                  id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Mínimo 8 caracteres"
+                  placeholder="Minimo 8 caracteres"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength={8}
                 />
                 <button
                   type="button"
                   className="teacher-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
-                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
                   aria-pressed={showPassword}
                 >
                   <Icon name={showPassword ? 'visibility_off' : 'visibility'} />
@@ -75,16 +139,22 @@ export default function TeacherRegisterCard() {
               </div>
             </div>
 
-            <button type="submit" className="teacher-register-submit">
-              <span>Crear cuenta de profesor</span>
+            {errorMessage ? (
+              <p role="alert" style={{ color: '#b91c1c', margin: 0 }}>
+                {errorMessage}
+              </p>
+            ) : null}
+
+            <button type="submit" className="teacher-register-submit" disabled={isSubmitting}>
+              <span>{isSubmitting ? 'Creando cuenta...' : 'Crear cuenta de profesor'}</span>
               <Icon name="arrow_forward" className="teacher-register-submit-icon" />
             </button>
           </form>
 
           <footer className="teacher-register-footer">
             <p>
-              ¿Ya tienes cuenta?
-              <a href="#login">Inicia sesión</a>
+              Ya tienes cuenta?
+              <Link to={ROUTES.login}>Inicia sesion</Link>
             </p>
           </footer>
         </article>
