@@ -8,6 +8,8 @@ import InternshipBoardPage from '../pages/internshipBoard'
 import JobDetailPage from '../pages/jobDetail'
 import PostOfferPage from '../pages/postOffer'
 import StudentProfileSettingsPage from '../pages/studentProfileSettings'
+import CompanyProfileSettingsPage from '../pages/companyProfileSettings'
+import TeacherProfileSettingsPage from '../pages/teacherProfileSettings'
 import { ROUTES } from './paths'
 
 export const appRoutes = [
@@ -25,5 +27,17 @@ export const appRoutes = [
     component: StudentProfileSettingsPage,
     protected: true,
     roles: [1],
+  },
+  {
+    path: ROUTES.companyProfile,
+    component: CompanyProfileSettingsPage,
+    protected: true,
+    roles: [2],
+  },
+  {
+    path: ROUTES.teacherProfile,
+    component: TeacherProfileSettingsPage,
+    protected: true,
+    roles: [3],
   },
 ]

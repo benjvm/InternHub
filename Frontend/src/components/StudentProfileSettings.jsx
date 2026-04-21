@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { deleteField } from 'firebase/firestore'
 import '../assets/styles/studentProfileSettings.css'
 import { updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
@@ -30,7 +31,7 @@ export default function StudentProfileSettings() {
     apellido: '',
     bio: '',
     universidad: '',
-    careerFocus: '',
+    carrera: '',
   })
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export default function StudentProfileSettings() {
       apellido: currentUser?.apellido || '',
       bio: currentUser?.bio || '',
       universidad: currentUser?.universidad || '',
-      careerFocus: currentUser?.careerFocus || currentUser?.carrera || '',
+      carrera: currentUser?.carrera || currentUser?.careerFocus || currentUser?.carrerFocus || '',
     })
   }, [currentUser])
 
@@ -47,7 +48,7 @@ export default function StudentProfileSettings() {
     new Set([formData.universidad, ...universities].filter(Boolean)),
   )
   const focusOptions = Array.from(
-    new Set([formData.careerFocus, ...careerFocusOptions].filter(Boolean)),
+    new Set([formData.carrera, ...careerFocusOptions].filter(Boolean)),
   )
 
   function handleChange(event) {
@@ -67,7 +68,7 @@ export default function StudentProfileSettings() {
       apellido: currentUser?.apellido || '',
       bio: currentUser?.bio || '',
       universidad: currentUser?.universidad || '',
-      careerFocus: currentUser?.careerFocus || currentUser?.carrera || '',
+      carrera: currentUser?.carrera || currentUser?.careerFocus || currentUser?.carrerFocus || '',
     })
   }
 
@@ -83,8 +84,10 @@ export default function StudentProfileSettings() {
         apellido: formData.apellido,
         bio: formData.bio,
         universidad: formData.universidad,
-        carrera: formData.careerFocus,
-        careerFocus: formData.careerFocus,
+        carrera: formData.carrera,
+        authEmail: deleteField(),
+        careerFocus: deleteField(),
+        carrerFocus: deleteField(),
       })
 
       await refreshUserProfile(currentUser?.uid)
@@ -182,16 +185,16 @@ export default function StudentProfileSettings() {
                 </label>
 
                 <label className="student-profile-field">
-                  <span>Career Focus</span>
+                  <span>Carrera</span>
                   <div className="student-profile-select-wrap">
                     <select
-                      name="careerFocus"
-                      value={formData.careerFocus}
+                      name="carrera"
+                      value={formData.carrera}
                       onChange={handleChange}
                       required
                     >
                       <option value="" disabled>
-                        Target industry
+                        Selecciona tu carrera
                       </option>
                       {focusOptions.map((option) => (
                         <option key={option} value={option}>

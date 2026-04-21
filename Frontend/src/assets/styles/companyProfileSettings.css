@@ -1,0 +1,513 @@
+.company-profile-page {
+  min-height: 100vh;
+  padding: 3rem 0 4rem;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 140, 0, 0.13), transparent 30%),
+    linear-gradient(180deg, #fffdf9 0%, #f8f7f5 52%, #eef2f7 100%);
+}
+
+.company-profile-shell {
+  width: min(1020px, calc(100% - 2rem));
+}
+
+.company-profile-header {
+  margin-bottom: 2rem;
+}
+
+.company-profile-header h1 {
+  margin: 0 0 0.45rem;
+  color: #0f172a;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.company-profile-header p {
+  max-width: 720px;
+  margin: 0;
+  color: #64748b;
+  font-size: 1.05rem;
+}
+
+.company-profile-form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.company-profile-card {
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.08);
+}
+
+.company-profile-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.company-profile-section-title > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.company-profile-section-title h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.company-profile-section-icon {
+  color: #ff8c00;
+}
+
+.company-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem;
+  padding: 1.5rem;
+}
+
+.company-profile-full {
+  grid-column: 1 / -1;
+}
+
+.company-profile-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.company-profile-field span {
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 750;
+}
+
+.company-profile-field.compact span {
+  color: #64748b;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.company-profile-field input,
+.company-profile-field textarea,
+.company-profile-field select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #0f172a;
+  outline: 0;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.company-profile-field input,
+.company-profile-field select {
+  min-height: 48px;
+  padding: 0 0.95rem;
+}
+
+.company-profile-field textarea {
+  min-height: 136px;
+  padding: 0.95rem;
+  resize: vertical;
+}
+
+.company-profile-field input::placeholder,
+.company-profile-field textarea::placeholder {
+  color: #94a3b8;
+}
+
+.company-profile-field input:focus,
+.company-profile-field textarea:focus,
+.company-profile-field select:focus {
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.16);
+}
+
+.company-profile-field small {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.company-profile-select-wrap {
+  position: relative;
+}
+
+.company-profile-select-wrap select {
+  padding-right: 2.8rem;
+  appearance: none;
+}
+
+.company-profile-select-icon {
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  color: #94a3b8;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.company-profile-add-location-button,
+.company-profile-light-button,
+.company-profile-save-button,
+.company-profile-reset-button,
+.company-profile-text-button,
+.company-profile-icon-button {
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.company-profile-add-location-button,
+.company-profile-save-button,
+.company-profile-light-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.company-profile-add-location-button {
+  min-height: 42px;
+  padding: 0 1rem;
+  border: 0;
+  background: #ff8c00;
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(255, 140, 0, 0.2);
+}
+
+.company-profile-add-location-button:hover,
+.company-profile-save-button:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+}
+
+.company-profile-location-list {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.company-profile-location-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+  background: #fff;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.company-profile-location-item:hover {
+  border-color: #fed7aa;
+  background: #fffaf4;
+}
+
+.company-profile-location-main {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.company-profile-location-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 8px;
+  background: rgba(255, 140, 0, 0.11);
+  color: #ff8c00;
+}
+
+.company-profile-location-main h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.company-profile-location-main p {
+  margin: 0.15rem 0 0;
+  color: #64748b;
+  font-size: 0.92rem;
+}
+
+.company-profile-location-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.9rem;
+  margin-top: 0.35rem;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.company-profile-location-type {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.company-profile-location-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+
+.company-profile-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+}
+
+.company-profile-icon-button:hover {
+  background: rgba(255, 140, 0, 0.1);
+  color: #ff8c00;
+}
+
+.company-profile-icon-button.danger:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.company-profile-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  padding: 2rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+}
+
+.company-profile-empty-state p {
+  max-width: 420px;
+  margin: 0;
+}
+
+.company-profile-location-editor {
+  padding: 1.25rem;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.75);
+}
+
+.company-profile-location-editor h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  color: #0f172a;
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+.company-profile-location-editor h3 .material-symbols-outlined {
+  color: #ff8c00;
+  font-size: 1.2rem;
+}
+
+.company-profile-location-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.company-profile-location-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.company-profile-text-button {
+  min-height: 42px;
+  padding: 0 1rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  font-weight: 800;
+}
+
+.company-profile-text-button:hover,
+.company-profile-reset-button:hover {
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.company-profile-light-button {
+  min-height: 42px;
+  padding: 0 1.2rem;
+  border: 1px solid rgba(255, 140, 0, 0.28);
+  background: rgba(255, 140, 0, 0.12);
+  color: #c45d00;
+}
+
+.company-profile-light-button:hover {
+  background: rgba(255, 140, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.company-profile-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.company-profile-messages {
+  min-height: 1.5rem;
+}
+
+.company-profile-success,
+.company-profile-error {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.company-profile-success {
+  color: #166534;
+}
+
+.company-profile-error {
+  color: #b91c1c;
+}
+
+.company-profile-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  flex: 0 0 auto;
+}
+
+.company-profile-reset-button,
+.company-profile-save-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0 1.35rem;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.company-profile-reset-button {
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+}
+
+.company-profile-save-button {
+  border: 0;
+  background: #ff8c00;
+  color: #fff;
+  box-shadow: 0 16px 30px rgba(255, 140, 0, 0.22);
+}
+
+.company-profile-button-icon {
+  font-size: 1.15rem;
+}
+
+.company-profile-add-location-button:disabled,
+.company-profile-light-button:disabled,
+.company-profile-save-button:disabled,
+.company-profile-reset-button:disabled,
+.company-profile-text-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+@media (max-width: 820px) {
+  .company-profile-grid,
+  .company-profile-location-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .company-profile-section-title,
+  .company-profile-location-item,
+  .company-profile-action-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .company-profile-action-buttons,
+  .company-profile-location-editor-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .company-profile-add-location-button,
+  .company-profile-light-button,
+  .company-profile-reset-button,
+  .company-profile-save-button,
+  .company-profile-text-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .company-profile-page {
+    padding: 1.5rem 0 3rem;
+  }
+
+  .company-profile-grid,
+  .company-profile-location-list,
+  .company-profile-section-title {
+    padding: 1.15rem;
+  }
+
+  .company-profile-location-main {
+    flex-direction: column;
+  }
+
+  .company-profile-location-actions {
+    justify-content: flex-end;
+  }
+}

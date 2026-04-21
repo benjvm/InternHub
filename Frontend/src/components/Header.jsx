@@ -17,6 +17,7 @@ export default function Header() {
 
   const isCompany = Number(currentUser?.rol) === 2
   const isStudent = Number(currentUser?.rol) === 1
+  const isTeacher = Number(currentUser?.rol) === 3
 
   async function handleLogout() {
     try {
@@ -36,7 +37,6 @@ export default function Header() {
             <span className="brand-mark">
               <img src={logo} alt="InternHub" className="brand-logo" />
             </span>
-            <span className="brand-text">InternHub</span>
           </Link>
 
           <nav className="site-nav" aria-label="Principal">
@@ -45,8 +45,10 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {isCompany ? <Link to={ROUTES.companyProfile}>Perfil empresa</Link> : null}
             {isCompany ? <Link to={ROUTES.postOffer}>Publicar oferta</Link> : null}
             {isStudent ? <Link to={ROUTES.studentProfile}>Mi perfil</Link> : null}
+            {isTeacher ? <Link to={ROUTES.teacherProfile}>Perfil profesor</Link> : null}
           </nav>
         </div>
 

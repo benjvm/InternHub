@@ -57,11 +57,12 @@ export async function registerUser(userData) {
   const { user } = credential
 
   const profile = buildUserProfile(role, userData)
+  const emailField = role === 2 ? 'email' : 'correo'
+  profile[emailField] = email
 
   await setDoc(doc(db, USERS_COLLECTION, user.uid), {
     uid: user.uid,
     ...profile,
-    authEmail: email,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })

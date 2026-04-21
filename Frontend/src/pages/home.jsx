@@ -47,7 +47,7 @@ export default function Home() {
           <div className="container hero-content">
             <h1>
               {'Encuentra las practicas'}
-              <br className="hero-break" /> {'de tus '}<span>{'suenos'}</span>
+              <br className="hero-break" /> {'de tus '}<span>{'sueños'}</span>
             </h1>
             <p>
               {'InternHub conecta talento joven con empresas reales, procesos rapidos y '}

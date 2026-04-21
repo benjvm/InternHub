@@ -9,6 +9,8 @@ export const ROUTES = {
   internshipDetail: (offerId = ':offerId') => `/internships/${offerId}`,
   postOffer: '/offers/new',
   studentProfile: '/profile/student',
+  companyProfile: '/profile/company',
+  teacherProfile: '/profile/teacher',
 }
 
 export function getDefaultRouteForRole(role) {
@@ -16,7 +18,9 @@ export function getDefaultRouteForRole(role) {
     case 1:
       return ROUTES.studentProfile
     case 2:
-      return ROUTES.postOffer
+      return ROUTES.companyProfile
+    case 3:
+      return ROUTES.teacherProfile
     default:
       return ROUTES.home
   }

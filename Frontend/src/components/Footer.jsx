@@ -13,15 +13,16 @@ const footerColumns = [
   {
     title: 'Empresas',
     links: [
+      { label: 'Perfil empresa', to: ROUTES.companyProfile },
       { label: 'Publicar oferta', to: ROUTES.postOffer },
       { label: 'Registro empresa', to: ROUTES.registerCompany },
-      { label: 'Volver al inicio', to: ROUTES.home },
     ],
   },
   {
     title: 'Cuenta',
     links: [
       { label: 'Perfil estudiante', to: ROUTES.studentProfile },
+      { label: 'Perfil profesor', to: ROUTES.teacherProfile },
       { label: 'Practicas', to: ROUTES.internships },
       { label: 'Home', to: ROUTES.home },
     ],
