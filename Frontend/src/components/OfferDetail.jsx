@@ -4,6 +4,7 @@ import { getMockOfferById } from '../data/mockOffers'
 import { ROUTES } from '../routes/paths'
 import { Link, useRouteParams } from '../routes/router'
 import { getOfferById } from '../services/offerService'
+import OfferMap from './OfferMap'
 
 function formatPublishedAt(createdAt, fallbackLabel) {
   if (fallbackLabel) {
@@ -16,6 +17,48 @@ function formatPublishedAt(createdAt, fallbackLabel) {
 
   const createdDate = new Date(createdAt.seconds * 1000)
   return `Published on ${createdDate.toLocaleDateString()}`
+}
+
+function parseCoordinate(value) {
+  if (value === null || value === undefined || value === '') {
+    return null
+  }
+
+  const normalizedValue = typeof value === 'string' ? value.trim().replace(',', '.') : value
+  const coordinate = Number(normalizedValue)
+
+  return Number.isFinite(coordinate) ? coordinate : null
+}
+
+function hasValidCoordinates(latitude, longitude) {
+  return (
+    latitude !== null &&
+    longitude !== null &&
+    latitude >= -90 &&
+    latitude <= 90 &&
+    longitude >= -180 &&
+    longitude <= 180
+  )
+}
+
+function getOfferLocation(offer) {
+  if (offer?.ubicacion && typeof offer.ubicacion === 'object' && !Array.isArray(offer.ubicacion)) {
+    return offer.ubicacion
+  }
+
+  if (Array.isArray(offer?.ubicaciones) && offer.ubicaciones.length > 0) {
+    return offer.ubicaciones[0]
+  }
+
+  return null
+}
+
+function Icon({ name, className = '' }) {
+  return (
+    <span className={`material-symbols-outlined ${className}`.trim()} aria-hidden="true">
+      {name}
+    </span>
+  )
 }
 
 export default function JobDetails() {
@@ -77,13 +120,17 @@ export default function JobDetails() {
     )
   }
 
+  const offerLocation = getOfferLocation(offer)
+  const locationLatitude = parseCoordinate(offerLocation?.latitud)
+  const locationLongitude = parseCoordinate(offerLocation?.longitud)
+  const hasLocationCoordinates = hasValidCoordinates(locationLatitude, locationLongitude)
   return (
     <div className="job-container">
       <nav className="breadcrumbs">
         <Link to={ROUTES.home}>Home</Link>
-        <span>{'>'}</span>
+        <span>{' > '}</span>
         <Link to={ROUTES.internships}>Practicas</Link>
-        <span>{'>'}</span>
+        <span>{' > '}</span>
         <span className="current">{offer.title}</span>
       </nav>
 
@@ -98,9 +145,9 @@ export default function JobDetails() {
           <div className="info">
             <h1>{offer.title}</h1>
             <p className="meta">
-              {(offer.companyName || offer.company || 'InternHub company') +
-                ' - ' +
-                formatPublishedAt(offer.createdAt, offer.publishedAtLabel)}
+              <span>{offer.companyName || offer.company || 'InternHub company'}</span>
+              <span aria-hidden="true">{'\u2022'}</span>
+              <span>{formatPublishedAt(offer.createdAt, offer.publishedAtLabel)}</span>
             </p>
 
             <div className="tags">
@@ -121,9 +168,12 @@ export default function JobDetails() {
           <Link to={ROUTES.login} className="btn primary">
             Apply Now
           </Link>
-          <Link to={ROUTES.internships} className="icon-btn">
-            Browse
+          <Link to={ROUTES.internships} className="icon-btn" aria-label="Save offer">
+            <Icon name="bookmark" />
           </Link>
+          <button type="button" className="icon-btn" aria-label="Share offer">
+            <Icon name="share" />
+          </button>
         </div>
       </div>
 
@@ -155,8 +205,11 @@ export default function JobDetails() {
       <section>
         <h2>Location</h2>
         <div className="location-box">
-          <p>{offer.location || 'Remote'}</p>
-          <span>{offer.companyName || offer.company || 'InternHub company'}</span>
+          {hasLocationCoordinates ? (
+            <OfferMap latitude={locationLatitude} longitude={locationLongitude} />
+          ) : (
+            <span>Coordinates not available for this offer.</span>
+          )}
         </div>
       </section>
     </div>

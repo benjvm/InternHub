@@ -4,18 +4,42 @@ import { db } from '../firebase'
 const OFFERS_COLLECTION = 'offers'
 
 function mapOfferDocument(documentSnapshot) {
+  const data = documentSnapshot.data()
+
   return {
     id: documentSnapshot.id,
-    ...documentSnapshot.data(),
+    ...data,
+    ubicacion: cleanOfferLocation(data.ubicacion),
+  }
+}
+
+function cleanOfferLocation(location) {
+  if (!location || typeof location !== 'object' || Array.isArray(location)) {
+    return null
+  }
+
+  const latitude = Number(location.latitud)
+  const longitude = Number(location.longitud)
+
+  return {
+    id: location.id ?? '',
+    nombre: location.nombre?.trim() ?? '',
+    ciudad: location.ciudad?.trim() ?? '',
+    pais: location.pais?.trim() ?? '',
+    latitud: Number.isNaN(latitude) ? null : latitude,
+    longitud: Number.isNaN(longitude) ? null : longitude,
+    tipo: location.tipo ?? '',
   }
 }
 
 export async function createOffer(offerData) {
+  const offerLocation = cleanOfferLocation(offerData.ubicacion || offerData.locationDetails)
   const payload = {
     title: offerData.title?.trim() ?? '',
     category: offerData.category?.trim() ?? '',
     description: offerData.description?.trim() ?? '',
     location: offerData.location?.trim() ?? '',
+    locationId: offerData.locationId ?? offerLocation?.id ?? '',
     salary: offerData.salary?.trim() ?? '',
     modality: offerData.modality?.trim() ?? '',
     companyId: offerData.companyId ?? '',
@@ -24,6 +48,10 @@ export async function createOffer(offerData) {
     status: offerData.status ?? 'published',
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
+  }
+
+  if (offerLocation) {
+    payload.ubicacion = offerLocation
   }
 
   if (!payload.title || !payload.description) {

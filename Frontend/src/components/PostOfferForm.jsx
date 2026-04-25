@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import '../assets/styles/postOffer.css'
 import { ROUTES } from '../routes/paths'
 import { Link, useRouter } from '../routes/router'
@@ -22,6 +22,18 @@ const modalities = [
 
 const toolbarActions = ['format_bold', 'format_italic', 'format_list_bulleted', 'link']
 
+const locationTypes = ['Office', 'Factory', 'Remote Hub', 'Warehouse']
+
+const emptyLocation = {
+  id: '',
+  nombre: '',
+  ciudad: '',
+  pais: '',
+  latitud: '',
+  longitud: '',
+  tipo: locationTypes[0],
+}
+
 function Icon({ name, className = '' }) {
   return (
     <span className={`material-symbols-outlined ${className}`.trim()} aria-hidden="true">
@@ -30,19 +42,73 @@ function Icon({ name, className = '' }) {
   )
 }
 
+function getCompanyLocations(user) {
+  const locations = user?.ubicaciones || user?.officeLocations || user?.locations || []
+
+  if (!Array.isArray(locations)) {
+    return []
+  }
+
+  return locations.map((location, index) => ({
+    id: location.id || `location-${index}`,
+    nombre: location.nombre || location.name || '',
+    ciudad: location.ciudad || location.city || '',
+    pais: location.pais || location.country || '',
+    latitud: location.latitud ?? location.latitude ?? '',
+    longitud: location.longitud ?? location.longitude ?? '',
+    tipo: location.tipo || location.label || location.type || locationTypes[0],
+  }))
+}
+
+function cleanLocation(location) {
+  return {
+    id: location.id || `offer-location-${Date.now()}`,
+    nombre: location.nombre.trim(),
+    ciudad: location.ciudad.trim(),
+    pais: location.pais.trim(),
+    latitud: Number(location.latitud),
+    longitud: Number(location.longitud),
+    tipo: location.tipo,
+  }
+}
+
+function formatLocationLabel(location) {
+  if (!location) {
+    return ''
+  }
+
+  return [location.nombre, location.ciudad, location.pais].filter(Boolean).join(' - ')
+}
+
 export default function PostOfferForm() {
   const { currentUser } = useUser()
   const { navigate } = useRouter()
+  const companyLocations = useMemo(() => getCompanyLocations(currentUser), [currentUser])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [locationDraft, setLocationDraft] = useState(emptyLocation)
+  const [isLocationFormOpen, setIsLocationFormOpen] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     category: '',
     description: '',
     location: '',
+    locationId: '',
+    offerLocation: null,
     salary: '',
     modality: modalities[0].id,
   })
+
+  const locationOptions = useMemo(() => {
+    if (
+      formData.offerLocation &&
+      !companyLocations.some((location) => location.id === formData.offerLocation.id)
+    ) {
+      return [...companyLocations, formData.offerLocation]
+    }
+
+    return companyLocations
+  }, [companyLocations, formData.offerLocation])
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -53,13 +119,96 @@ export default function PostOfferForm() {
     }))
   }
 
+  function handleLocationSelect(event) {
+    const selectedLocation =
+      locationOptions.find((location) => location.id === event.target.value) ?? null
+
+    setFormData((current) => ({
+      ...current,
+      locationId: selectedLocation?.id ?? '',
+      location: formatLocationLabel(selectedLocation),
+      offerLocation: selectedLocation,
+    }))
+  }
+
+  function handleLocationChange(event) {
+    const { name, value } = event.target
+
+    setLocationDraft((current) => ({
+      ...current,
+      [name]: value,
+    }))
+  }
+
+  function handleOpenLocationForm() {
+    setLocationDraft({
+      ...emptyLocation,
+      id: `offer-location-${Date.now()}`,
+    })
+    setIsLocationFormOpen(true)
+    setErrorMessage('')
+  }
+
+  function handleCancelLocation() {
+    setLocationDraft(emptyLocation)
+    setIsLocationFormOpen(false)
+  }
+
+  function handleSaveLocation() {
+    setErrorMessage('')
+
+    if (
+      !locationDraft.nombre.trim() ||
+      !locationDraft.ciudad.trim() ||
+      !locationDraft.pais.trim() ||
+      locationDraft.latitud === '' ||
+      locationDraft.longitud === ''
+    ) {
+      setErrorMessage('Completa todos los datos de la sede antes de guardarla.')
+      return
+    }
+
+    const latitude = Number(locationDraft.latitud)
+    const longitude = Number(locationDraft.longitud)
+
+    if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+      setErrorMessage('La latitud y longitud deben ser valores numericos.')
+      return
+    }
+
+    const normalizedLocation = cleanLocation(locationDraft)
+
+    setFormData((current) => ({
+      ...current,
+      locationId: normalizedLocation.id,
+      location: formatLocationLabel(normalizedLocation),
+      offerLocation: normalizedLocation,
+    }))
+    setLocationDraft(emptyLocation)
+    setIsLocationFormOpen(false)
+  }
+
   async function submitOffer(status) {
     setErrorMessage('')
     setIsSubmitting(true)
 
     try {
+      const selectedLocation =
+        formData.offerLocation ||
+        locationOptions.find((location) => location.id === formData.locationId)
+
+      if (!selectedLocation) {
+        throw new Error('Selecciona una ubicacion o anade una ubicacion especifica para la oferta.')
+      }
+
+      const offerFormData = { ...formData }
+      delete offerFormData.offerLocation
+
       const createdOffer = await createOffer({
-        ...formData,
+        ...offerFormData,
+        location: formatLocationLabel(selectedLocation),
+        locationId: selectedLocation.id,
+        ubicacion: selectedLocation,
         status,
         companyId: currentUser?.uid,
         companyName: currentUser?.nombreEmpresa || currentUser?.email,
@@ -152,21 +301,38 @@ export default function PostOfferForm() {
             </div>
 
             <div className="post-offer-two-column">
-              <label className="post-offer-field" htmlFor="location">
-                <span>Location</span>
-                <div className="post-offer-input-icon-wrap">
-                  <Icon name="location_on" className="post-offer-input-icon" />
-                  <input
-                    id="location"
-                    name="location"
-                    type="text"
-                    placeholder="e.g. Madrid, Spain"
-                    value={formData.location}
-                    onChange={handleChange}
-                    required
-                  />
+              <div className="post-offer-field">
+                <div className="post-offer-location-header">
+                  <span>Location</span>
+                  <button
+                    className="post-offer-add-location-button"
+                    type="button"
+                    onClick={handleOpenLocationForm}
+                  >
+                    <Icon name="add" className="post-offer-button-icon" />
+                    Add location
+                  </button>
                 </div>
-              </label>
+                <div className="post-offer-select-wrap">
+                  <select
+                    id="locationId"
+                    name="locationId"
+                    value={formData.locationId}
+                    onChange={handleLocationSelect}
+                    disabled={!locationOptions.length}
+                  >
+                    <option value="" disabled>
+                      {locationOptions.length ? 'Select a saved location' : 'No saved locations'}
+                    </option>
+                    {locationOptions.map((location) => (
+                      <option key={location.id} value={location.id}>
+                        {formatLocationLabel(location)}
+                      </option>
+                    ))}
+                  </select>
+                  <Icon name="expand_more" className="post-offer-select-icon" />
+                </div>
+              </div>
 
               <label className="post-offer-field" htmlFor="salary">
                 <span>Salary</span>
@@ -184,6 +350,118 @@ export default function PostOfferForm() {
                 </div>
               </label>
             </div>
+
+            {isLocationFormOpen ? (
+              <div className="post-offer-location-editor">
+                <h3>
+                  <Icon name="add_circle" />
+                  New Location Details
+                </h3>
+
+                <div className="post-offer-location-grid">
+                  <label className="post-offer-field compact" htmlFor="location-name">
+                    <span>Name</span>
+                    <input
+                      id="location-name"
+                      name="nombre"
+                      type="text"
+                      placeholder="e.g. Engineering Hub"
+                      value={locationDraft.nombre}
+                      onChange={handleLocationChange}
+                    />
+                  </label>
+
+                  <label className="post-offer-field compact" htmlFor="location-city">
+                    <span>City</span>
+                    <input
+                      id="location-city"
+                      name="ciudad"
+                      type="text"
+                      placeholder="London"
+                      value={locationDraft.ciudad}
+                      onChange={handleLocationChange}
+                    />
+                  </label>
+
+                  <label className="post-offer-field compact" htmlFor="location-country">
+                    <span>Country</span>
+                    <input
+                      id="location-country"
+                      name="pais"
+                      type="text"
+                      placeholder="United Kingdom"
+                      value={locationDraft.pais}
+                      onChange={handleLocationChange}
+                    />
+                  </label>
+
+                  <label className="post-offer-field compact" htmlFor="location-latitude">
+                    <span>Latitude</span>
+                    <input
+                      id="location-latitude"
+                      name="latitud"
+                      type="number"
+                      step="any"
+                      placeholder="51.5074"
+                      value={locationDraft.latitud}
+                      onChange={handleLocationChange}
+                    />
+                  </label>
+
+                  <label className="post-offer-field compact" htmlFor="location-longitude">
+                    <span>Longitude</span>
+                    <input
+                      id="location-longitude"
+                      name="longitud"
+                      type="number"
+                      step="any"
+                      placeholder="-0.1278"
+                      value={locationDraft.longitud}
+                      onChange={handleLocationChange}
+                    />
+                  </label>
+
+                  <label className="post-offer-field compact" htmlFor="location-type">
+                    <span>Label</span>
+                    <div className="post-offer-select-wrap">
+                      <select
+                        id="location-type"
+                        name="tipo"
+                        value={locationDraft.tipo}
+                        onChange={handleLocationChange}
+                      >
+                        {locationTypes.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                      <Icon name="expand_more" className="post-offer-select-icon" />
+                    </div>
+                  </label>
+                </div>
+
+                <p className="post-offer-coordinate-help">
+                  <span>No encuentras las coordenadas?</span>{' '}
+                  <a
+                    href="https://www.coordenadas-gps.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    https://www.coordenadas-gps.com/
+                  </a>
+                </p>
+
+                <div className="post-offer-location-editor-actions">
+                  <button type="button" className="post-offer-text-button" onClick={handleCancelLocation}>
+                    Cancel
+                  </button>
+                  <button type="button" className="post-offer-light-button" onClick={handleSaveLocation}>
+                    Save Location
+                  </button>
+                </div>
+              </div>
+            ) : null}
 
             <fieldset className="post-offer-modality-group">
               <legend>Modality</legend>
