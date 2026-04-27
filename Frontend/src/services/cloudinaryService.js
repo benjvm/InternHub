@@ -1,7 +1,6 @@
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
-const CLOUDINARY_PROFILE_FOLDER =
-  import.meta.env.VITE_CLOUDINARY_PROFILE_FOLDER || 'internhub/profile-images'
+const CLOUDINARY_PROFILE_FOLDER = import.meta.env.VITE_CLOUDINARY_PROFILE_FOLDER || 'internhub/profile-images'
 
 const DEFAULT_PROFILE_IMAGE_URL =
   'https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png'

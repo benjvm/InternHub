@@ -32,11 +32,12 @@ function Icon({ name, className = '' }) {
 export default function Home() {
   const { currentUser } = useUser()
   const featuredInternships = mockOffers.slice(0, 3)
-  const companyActionTo =
-    Number(currentUser?.rol) === 2 ? ROUTES.postOffer : ROUTES.registerCompany
+  const isCompany = Number(currentUser?.rol) === 2
+  const shouldShowCompanyCta = !currentUser || isCompany
+  const companyActionTo = currentUser ? ROUTES.postOffer : ROUTES.register
   const secondaryActionTo = currentUser
     ? getDefaultRouteForRole(currentUser.rol)
-    : ROUTES.login
+    : ROUTES.register
 
   return (
     <div className="homepage-shell">
@@ -156,29 +157,31 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="company-cta-section">
-          <div className="container">
-            <div className="company-cta-card">
-              <div className="company-cta-copy">
-                <h2>{'Buscas el mejor talento joven?'}</h2>
-                <p>
-                  {'Publica tu oferta hoy y deja que estudiantes, profesores y recruiters '}
-                  {'se muevan por una app conectada de punta a punta.'}
-                </p>
-              </div>
+        {shouldShowCompanyCta ? (
+          <section className="company-cta-section">
+            <div className="container">
+              <div className="company-cta-card">
+                <div className="company-cta-copy">
+                  <h2>{'Buscas el mejor talento joven?'}</h2>
+                  <p>
+                    {'Publica tu oferta hoy y deja que estudiantes, profesores y recruiters '}
+                    {'se muevan por una app conectada de punta a punta.'}
+                  </p>
+                </div>
 
-              <div className="company-cta-actions">
-                <Link to={companyActionTo} className="primary-button">
-                  <Icon name="add_circle" className="button-icon" />
-                  Publicar una oferta
-                </Link>
-                <Link to={secondaryActionTo} className="secondary-button">
-                  {currentUser ? 'Ir a mi cuenta' : 'Iniciar sesion'}
-                </Link>
+                <div className="company-cta-actions">
+                  <Link to={companyActionTo} className="primary-button">
+                    <Icon name="add_circle" className="button-icon" />
+                    Publicar una oferta
+                  </Link>
+                  <Link to={secondaryActionTo} className="secondary-button">
+                    {currentUser ? 'Ir a mi cuenta' : 'Iniciar sesion'}
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
       </main>
 
       <Footer />

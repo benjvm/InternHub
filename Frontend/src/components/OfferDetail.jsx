@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import '../assets/styles/offer.css'
 import { getMockOfferById } from '../data/mockOffers'
-import { ROUTES } from '../routes/paths'
+import { getDefaultRouteForRole, ROUTES } from '../routes/paths'
 import { Link, useRouteParams } from '../routes/router'
 import { getOfferById } from '../services/offerService'
+import { useUser } from '../services/userService'
 import OfferMap from './OfferMap'
 
 function formatPublishedAt(createdAt, fallbackLabel) {
@@ -63,9 +64,13 @@ function Icon({ name, className = '' }) {
 
 export default function JobDetails() {
   const { offerId } = useRouteParams()
+  const { currentUser } = useUser()
   const [offer, setOffer] = useState(() => getMockOfferById(offerId))
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const applyActionTo = currentUser
+    ? getDefaultRouteForRole(currentUser.rol)
+    : ROUTES.register
 
   useEffect(() => {
     let isMounted = true
@@ -165,7 +170,7 @@ export default function JobDetails() {
           <p className="cta-sub">Review the details and continue your journey in the app.</p>
         </div>
         <div className="cta-actions">
-          <Link to={ROUTES.login} className="btn primary">
+          <Link to={applyActionTo} className="btn primary">
             Apply Now
           </Link>
           <Link to={ROUTES.internships} className="icon-btn" aria-label="Save offer">

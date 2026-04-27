@@ -236,9 +236,12 @@
 .search-icon,
 .filter-pill-icon,
 .category-icon,
-.meta-icon,
-.button-icon {
+.meta-icon{
   color: #ff8c00;
+}
+
+.button-icon {
+  color: #ffffff;
 }
 
 .search-icon {
