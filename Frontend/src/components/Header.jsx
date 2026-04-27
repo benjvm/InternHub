@@ -59,7 +59,7 @@ export default function Header() {
                 to={getDefaultRouteForRole(currentUser.rol)}
                 className="ghost-primary-button header-desktop-only"
               >
-                {isCompany ? 'Panel empresa' : 'Mi espacio'}
+                {isCompany ? 'Panel empresa' : 'Mi perfil'}
               </Link>
               <button
                 type="button"

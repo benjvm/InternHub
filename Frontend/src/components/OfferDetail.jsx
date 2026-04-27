@@ -208,7 +208,7 @@ export default function JobDetails() {
           {hasLocationCoordinates ? (
             <OfferMap latitude={locationLatitude} longitude={locationLongitude} />
           ) : (
-            <span>Coordinates not available for this offer.</span>
+            <span>Coordenadas no disponibles para esta oferta.</span>
           )}
         </div>
       </section>

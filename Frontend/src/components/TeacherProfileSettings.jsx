@@ -1,6 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { deleteField } from 'firebase/firestore'
 import '../assets/styles/teacherProfileSettings.css'
+import {
+  getProfileImageUrl,
+  uploadProfileImage,
+} from '../services/cloudinaryService'
 import { updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
 
@@ -32,19 +36,31 @@ function getInitialFormData(user) {
 
 export default function TeacherProfileSettings() {
   const { currentUser, refreshUserProfile } = useUser()
+  const fileInputRef = useRef(null)
   const [isSaving, setIsSaving] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedImagePreview, setSelectedImagePreview] = useState('')
   const [formData, setFormData] = useState(() => getInitialFormData(currentUser))
 
   useEffect(() => {
     setFormData(getInitialFormData(currentUser))
   }, [currentUser])
 
+  useEffect(() => {
+    return () => {
+      if (selectedImagePreview) {
+        URL.revokeObjectURL(selectedImagePreview)
+      }
+    }
+  }, [selectedImagePreview])
+
   const areaOptions = useMemo(
     () => Array.from(new Set([formData.areaEducativa, ...educationalAreas].filter(Boolean))),
     [formData.areaEducativa],
   )
+  const displayedProfileImage = selectedImagePreview || getProfileImageUrl(currentUser)
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -58,7 +74,31 @@ export default function TeacherProfileSettings() {
   function handleReset() {
     setStatusMessage('')
     setErrorMessage('')
+    setSelectedImage(null)
+    setSelectedImagePreview('')
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+
     setFormData(getInitialFormData(currentUser))
+  }
+
+  function handleImageButtonClick() {
+    fileInputRef.current?.click()
+  }
+
+  function handleImageChange(event) {
+    const file = event.target.files?.[0]
+
+    if (!file) {
+      return
+    }
+
+    setStatusMessage('')
+    setErrorMessage('')
+    setSelectedImage(file)
+    setSelectedImagePreview(URL.createObjectURL(file))
   }
 
   async function handleSubmit(event) {
@@ -68,11 +108,22 @@ export default function TeacherProfileSettings() {
     setIsSaving(true)
 
     try {
+      let uploadedImageUrl = null
+
+      if (selectedImage) {
+        const uploadResult = await uploadProfileImage(selectedImage, {
+          publicId: `teacher-${currentUser?.uid}-${Date.now()}`,
+        })
+
+        uploadedImageUrl = uploadResult.url
+      }
+
       await updateUserProfile(currentUser?.uid, {
         nombreCompleto: formData.nombreCompleto,
         correo: formData.correo,
         telefono: formData.telefono,
         areaEducativa: formData.areaEducativa,
+        ...(uploadedImageUrl ? { photoURL: uploadedImageUrl } : {}),
         full_name: deleteField(),
         fullName: deleteField(),
         email: deleteField(),
@@ -83,7 +134,18 @@ export default function TeacherProfileSettings() {
       })
 
       await refreshUserProfile(currentUser?.uid)
-      setStatusMessage('Perfil de profesor guardado correctamente.')
+      setSelectedImage(null)
+      setSelectedImagePreview('')
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+
+      setStatusMessage(
+        uploadedImageUrl
+          ? 'Perfil de profesor e imagen guardados correctamente.'
+          : 'Perfil de profesor guardado correctamente.',
+      )
     } catch (error) {
       setErrorMessage(error.message || 'No se pudo guardar el perfil de profesor.')
     } finally {
@@ -96,14 +158,24 @@ export default function TeacherProfileSettings() {
       <section className="container teacher-profile-hero">
         <div className="teacher-profile-avatar-wrap">
           <div className="teacher-profile-avatar">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDueM9RrrsKIFwnA4Lf_XEnWW-5cE93XCRUPmKhrAeIWWJfleHMXjEDJPBi5-8me_fk3L8hOQajXRv5ljJUTAKiPvzXEioCOqCwqaB8DokHdE96MhNc2E6HI4_6tFBClj8ubzvZOX9ml_Z7A-_kC8TUS-KblOHEH0A8BdiokgzYuk5thESCDVmTaLplf34RuaRaLGmOHKS6NLBJDVR5a0ClE4-JQBVsNZL4ANlGXpyhDrtOLPzLYgkAJk7QzeaIYUVSruG_FE_ZAA4"
-              alt="Profile"
-            />
+            <img src={displayedProfileImage} alt="Profile" />
           </div>
-          <button type="button" className="teacher-profile-edit-photo-button" aria-label="Edit photo">
+          <button
+            type="button"
+            className="teacher-profile-edit-photo-button"
+            aria-label="Edit photo"
+            onClick={handleImageButtonClick}
+            disabled={isSaving}
+          >
             <Icon name="edit" className="teacher-profile-edit-photo-icon" />
           </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            hidden
+            onChange={handleImageChange}
+          />
         </div>
 
         <h1>Teacher Profile</h1>
@@ -111,6 +183,7 @@ export default function TeacherProfileSettings() {
           Manage your academic credentials and contact information to better guide your
           student cohort.
         </p>
+        {selectedImage ? <p>Selected image ready to upload when you save the profile.</p> : null}
       </section>
 
       <section className="container teacher-profile-shell">
