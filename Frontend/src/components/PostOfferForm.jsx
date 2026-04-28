@@ -34,6 +34,8 @@ const emptyLocation = {
   tipo: locationTypes[0],
 }
 
+const maxResponsibilities = 5
+
 function Icon({ name, className = '' }) {
   return (
     <span className={`material-symbols-outlined ${className}`.trim()} aria-hidden="true">
@@ -97,6 +99,7 @@ export default function PostOfferForm() {
     offerLocation: null,
     salary: '',
     modality: modalities[0].id,
+    responsibilities: [''],
   })
 
   const locationOptions = useMemo(() => {
@@ -138,6 +141,46 @@ export default function PostOfferForm() {
       ...current,
       [name]: value,
     }))
+  }
+
+  function handleResponsibilityChange(index, value) {
+    setFormData((current) => ({
+      ...current,
+      responsibilities: current.responsibilities.map((responsibility, responsibilityIndex) =>
+        responsibilityIndex === index ? value : responsibility,
+      ),
+    }))
+  }
+
+  function handleAddResponsibility() {
+    setFormData((current) => {
+      if (current.responsibilities.length >= maxResponsibilities) {
+        return current
+      }
+
+      return {
+        ...current,
+        responsibilities: [...current.responsibilities, ''],
+      }
+    })
+  }
+
+  function handleRemoveResponsibility(index) {
+    setFormData((current) => {
+      if (current.responsibilities.length === 1) {
+        return {
+          ...current,
+          responsibilities: [''],
+        }
+      }
+
+      return {
+        ...current,
+        responsibilities: current.responsibilities.filter(
+          (_, responsibilityIndex) => responsibilityIndex !== index,
+        ),
+      }
+    })
   }
 
   function handleOpenLocationForm() {
@@ -201,11 +244,20 @@ export default function PostOfferForm() {
         throw new Error('Selecciona una ubicacion o anade una ubicacion especifica para la oferta.')
       }
 
+      const normalizedResponsibilities = formData.responsibilities
+        .map((responsibility) => responsibility.trim())
+        .filter(Boolean)
+
+      if (!normalizedResponsibilities.length) {
+        throw new Error('Anade al menos una responsabilidad para la oferta.')
+      }
+
       const offerFormData = { ...formData }
       delete offerFormData.offerLocation
 
       const createdOffer = await createOffer({
         ...offerFormData,
+        responsibilities: normalizedResponsibilities,
         location: formatLocationLabel(selectedLocation),
         locationId: selectedLocation.id,
         ubicacion: selectedLocation,
@@ -298,6 +350,51 @@ export default function PostOfferForm() {
                   required
                 />
               </div>
+            </div>
+
+            <div className="post-offer-field">
+              <div className="post-offer-responsibility-header">
+                <span>Responsibilities</span>
+                <button
+                  type="button"
+                  className="post-offer-add-location-button"
+                  onClick={handleAddResponsibility}
+                  disabled={formData.responsibilities.length >= maxResponsibilities}
+                >
+                  <Icon name="add" className="post-offer-button-icon" />
+                  Add responsibility
+                </button>
+              </div>
+
+              <div className="post-offer-responsibility-list">
+                {formData.responsibilities.map((responsibility, index) => (
+                  <div key={`responsibility-${index}`} className="post-offer-responsibility-item">
+                    <div className="post-offer-input-icon-wrap">
+                      <Icon name="task_alt" className="post-offer-input-icon" />
+                      <input
+                        type="text"
+                        placeholder={`Responsibility ${index + 1}`}
+                        value={responsibility}
+                        onChange={(event) => handleResponsibilityChange(index, event.target.value)}
+                        required={index === 0}
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      className="post-offer-text-button"
+                      onClick={() => handleRemoveResponsibility(index)}
+                      disabled={formData.responsibilities.length === 1}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <small className="post-offer-responsibility-help">
+                Add between 1 and 5 responsibilities to show in the offer detail.
+              </small>
             </div>
 
             <div className="post-offer-two-column">

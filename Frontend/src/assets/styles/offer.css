@@ -155,6 +155,16 @@
   box-shadow: 0 14px 24px rgba(255, 140, 0, 0.22);
 }
 
+button.btn.primary {
+  font: inherit;
+}
+
+.btn.primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+  box-shadow: none;
+}
+
 .icon-btn {
   min-width: 46px;
   height: 46px;
@@ -166,6 +176,20 @@
 
 button.icon-btn {
   font: inherit;
+}
+
+.cta-feedback {
+  margin: 0.75rem 0 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.cta-feedback.success {
+  color: #166534;
+}
+
+.cta-feedback.error {
+  color: #b91c1c;
 }
 
 .job-container section {
@@ -263,6 +287,208 @@ button.icon-btn {
   font-weight: 600;
 }
 
+.offer-application-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.56);
+}
+
+.offer-application-modal {
+  width: min(100%, 760px);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 32px 80px rgba(15, 23, 42, 0.28);
+}
+
+.offer-application-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.offer-application-modal-eyebrow {
+  margin: 0 0 0.35rem;
+  color: #ea580c;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.offer-application-modal-header h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.35rem;
+}
+
+.offer-application-modal-header p:last-child {
+  margin: 0.45rem 0 0;
+  color: #64748b;
+}
+
+.offer-application-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.offer-application-modal-form {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.offer-application-modal-section,
+.offer-application-field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.offer-application-modal-label,
+.offer-application-field > span {
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.offer-application-cv-card {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #f8fafc;
+}
+
+.offer-application-cv-card p {
+  margin: 0;
+}
+
+.offer-application-cv-card a {
+  color: #ea580c;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.offer-application-cv-card.missing {
+  border-color: #fed7aa;
+  background: rgba(255, 140, 0, 0.08);
+}
+
+.offer-application-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.offer-application-field input,
+.offer-application-field select,
+.offer-application-field textarea {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  color: #0f172a;
+  outline: 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.offer-application-field input,
+.offer-application-field select {
+  min-height: 52px;
+  padding: 0 1rem;
+}
+
+.offer-application-field textarea {
+  min-height: 140px;
+  padding: 0.95rem 1rem;
+  resize: vertical;
+}
+
+.offer-application-field input:focus,
+.offer-application-field select:focus,
+.offer-application-field textarea:focus {
+  border-color: rgba(255, 140, 0, 0.72);
+  box-shadow: 0 0 0 4px rgba(255, 140, 0, 0.12);
+}
+
+.offer-application-select-wrap {
+  position: relative;
+}
+
+.offer-application-select-wrap select {
+  padding-right: 3rem;
+  appearance: none;
+}
+
+.offer-application-select-icon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.offer-application-modal-error {
+  margin: 0;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.offer-application-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.offer-application-secondary-button,
+.offer-application-primary-button {
+  min-height: 46px;
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: 14px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.offer-application-secondary-button {
+  background: #f8fafc;
+  color: #475569;
+}
+
+.offer-application-primary-button {
+  background: linear-gradient(135deg, #ff8c00, #ea580c);
+  color: #fff;
+  box-shadow: 0 16px 28px rgba(255, 140, 0, 0.22);
+}
+
+.offer-application-primary-button:disabled,
+.offer-application-secondary-button:disabled,
+.offer-application-modal-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
 @media (max-width: 640px) {
   .job-container {
     width: min(100% - 1.5rem, 720px);
@@ -298,5 +524,16 @@ button.icon-btn {
   .offer-map {
     min-height: 260px;
     height: 260px;
+  }
+
+  .offer-application-modal-grid,
+  .offer-application-modal-actions {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .offer-application-secondary-button,
+  .offer-application-primary-button {
+    width: 100%;
   }
 }

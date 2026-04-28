@@ -10,6 +10,7 @@ function mapOfferDocument(documentSnapshot) {
     id: documentSnapshot.id,
     ...data,
     ubicacion: cleanOfferLocation(data.ubicacion),
+    responsibilities: cleanResponsibilities(data.responsibilities),
   }
 }
 
@@ -32,12 +33,27 @@ function cleanOfferLocation(location) {
   }
 }
 
+function cleanResponsibilities(responsibilities) {
+  if (!Array.isArray(responsibilities)) {
+    return []
+  }
+
+  return responsibilities
+    .map((responsibility) =>
+      typeof responsibility === 'string' ? responsibility.trim() : '',
+    )
+    .filter(Boolean)
+    .slice(0, 5)
+}
+
 export async function createOffer(offerData) {
   const offerLocation = cleanOfferLocation(offerData.ubicacion || offerData.locationDetails)
+  const responsibilities = cleanResponsibilities(offerData.responsibilities)
   const payload = {
     title: offerData.title?.trim() ?? '',
     category: offerData.category?.trim() ?? '',
     description: offerData.description?.trim() ?? '',
+    responsibilities,
     location: offerData.location?.trim() ?? '',
     locationId: offerData.locationId ?? offerLocation?.id ?? '',
     salary: offerData.salary?.trim() ?? '',
@@ -56,6 +72,10 @@ export async function createOffer(offerData) {
 
   if (!payload.title || !payload.description) {
     throw new Error('Title and description are required.')
+  }
+
+  if (!payload.responsibilities.length) {
+    throw new Error('Add at least one responsibility for the offer.')
   }
 
   const documentReference = await addDoc(collection(db, OFFERS_COLLECTION), payload)

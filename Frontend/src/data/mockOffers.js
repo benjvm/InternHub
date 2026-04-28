@@ -13,6 +13,11 @@ export const mockOffers = [
     publishedAtLabel: 'Published 2 days ago',
     summary:
       'Great role for students who want to work on UX research, wireframes, and polished interface systems.',
+    responsibilities: [
+      'Apoyar la investigacion UX con entrevistas y benchmarks.',
+      'Crear wireframes y prototipos para nuevas funcionalidades.',
+      'Documentar decisiones de diseno junto al equipo de producto.',
+    ],
   },
   {
     id: 'frontend-developer-intern',
@@ -28,6 +33,11 @@ export const mockOffers = [
     publishedAtLabel: 'Published 5 days ago',
     summary:
       'Perfect for candidates who enjoy modern frontend work and want real product ownership from day one.',
+    responsibilities: [
+      'Desarrollar interfaces React para nuevas vistas del producto.',
+      'Corregir bugs y mejorar la calidad visual de la aplicacion.',
+      'Colaborar con diseno y producto en iteraciones rapidas.',
+    ],
   },
   {
     id: 'marketing-assistant-intern',
@@ -43,6 +53,11 @@ export const mockOffers = [
     publishedAtLabel: 'Published yesterday',
     summary:
       'A hands-on internship for students who want to learn campaign execution and content strategy.',
+    responsibilities: [
+      'Apoyar la planificacion de contenidos para redes sociales.',
+      'Ejecutar tareas de seguimiento de campanas y reporting.',
+      'Coordinar materiales de marca con el equipo creativo.',
+    ],
   },
 ]
 
