@@ -6,8 +6,8 @@ import { getDefaultRouteForRole, ROUTES } from '../routes/paths'
 import { Link, useRouter } from '../routes/router'
 
 const navLinks = [
-  { label: 'Home', to: ROUTES.home },
-  { label: 'Practicas', to: ROUTES.internships },
+  { label: 'Inicio', to: ROUTES.home },
+  { label: 'Prácticas', to: ROUTES.internships },
 ]
 
 export default function Header() {
@@ -45,6 +45,7 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            {isStudent ? <Link to={ROUTES.studentApplications}>Candidaturas</Link> : null}
             {isCompany ? <Link to={ROUTES.companyProfile}>Perfil empresa</Link> : null}
             {isCompany ? <Link to={ROUTES.postOffer}>Publicar oferta</Link> : null}
             {isStudent ? <Link to={ROUTES.studentProfile}>Mi perfil</Link> : null}
@@ -67,7 +68,7 @@ export default function Header() {
                 onClick={handleLogout}
                 disabled={isLoggingOut}
               >
-                {isLoggingOut ? 'Cerrando...' : 'Cerrar sesion'}
+                {isLoggingOut ? 'Cerrando...' : 'Cerrar sesión'}
               </button>
             </>
           ) : (
@@ -79,7 +80,7 @@ export default function Header() {
                 Para empresas
               </Link>
               <Link to={ROUTES.login} className="secondary-button">
-                Iniciar sesion
+                Iniciar sesión
               </Link>
             </>
           )}

@@ -58,7 +58,7 @@ export default function CompanyRegisterCard() {
     <section className="company-register-shell">
       <div className="company-register-layout">
         <header className="company-register-header">
-          <h1>Registrate como compania</h1>
+          <h1>Regístrate como empresa</h1>
           <p>Empieza a contratar el mejor talento joven.</p>
         </header>
 
@@ -91,13 +91,13 @@ export default function CompanyRegisterCard() {
             </div>
 
             <div className="company-register-field">
-              <label htmlFor="password">Contrasena</label>
+              <label htmlFor="password">Contraseña</label>
               <div className="company-register-password-wrap">
                 <input
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Minimo 8 caracteres"
+                  placeholder="Mínimo 8 caracteres"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -107,7 +107,7 @@ export default function CompanyRegisterCard() {
                   type="button"
                   className="company-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
-                  aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   aria-pressed={showPassword}
                 >
                   <Icon name={showPassword ? 'visibility_off' : 'visibility'} />
@@ -130,8 +130,8 @@ export default function CompanyRegisterCard() {
 
           <footer className="company-register-footer">
             <p>
-              Ya tienes cuenta?
-              <Link to={ROUTES.login}>Inicia sesion</Link>
+              ¿Ya tienes cuenta?
+              <Link to={ROUTES.login}>Inicia sesión</Link>
             </p>
           </footer>
         </article>

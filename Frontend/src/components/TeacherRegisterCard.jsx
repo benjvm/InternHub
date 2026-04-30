@@ -59,13 +59,13 @@ export default function TeacherRegisterCard() {
     <section className="teacher-register-shell">
       <div className="teacher-register-layout">
         <header className="teacher-register-header">
-          <h1>Registrate como profesor</h1>
+          <h1>Regístrate como profesor</h1>
         </header>
 
         <article className="teacher-register-card">
           <div className="teacher-register-copy">
             <h2>Registro de profesor</h2>
-            <p>Unete a la red de mentores de InternHub</p>
+            <p>Únete a la red de mentores de InternHub</p>
           </div>
 
           <form className="teacher-register-form" onSubmit={handleSubmit}>
@@ -85,7 +85,7 @@ export default function TeacherRegisterCard() {
             </div>
 
             <div className="teacher-register-field">
-              <label htmlFor="correo">Correo electronico</label>
+              <label htmlFor="correo">Correo electrónico</label>
               <div className="teacher-register-input-wrap">
                 <Icon name="mail" className="teacher-register-input-icon" />
                 <input
@@ -100,7 +100,7 @@ export default function TeacherRegisterCard() {
             </div>
 
             <div className="teacher-register-field">
-              <label htmlFor="telefono">Telefono</label>
+              <label htmlFor="telefono">Teléfono</label>
               <div className="teacher-register-input-wrap">
                 <Icon name="call" className="teacher-register-input-icon" />
                 <input
@@ -115,13 +115,13 @@ export default function TeacherRegisterCard() {
             </div>
 
             <div className="teacher-register-field">
-              <label htmlFor="password">Contrasena</label>
+              <label htmlFor="password">Contraseña</label>
               <div className="teacher-register-input-wrap">
                 <Icon name="lock" className="teacher-register-input-icon" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Minimo 8 caracteres"
+                  placeholder="Mínimo 8 caracteres"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -131,7 +131,7 @@ export default function TeacherRegisterCard() {
                   type="button"
                   className="teacher-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
-                  aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   aria-pressed={showPassword}
                 >
                   <Icon name={showPassword ? 'visibility_off' : 'visibility'} />
@@ -153,8 +153,8 @@ export default function TeacherRegisterCard() {
 
           <footer className="teacher-register-footer">
             <p>
-              Ya tienes cuenta?
-              <Link to={ROUTES.login}>Inicia sesion</Link>
+              ¿Ya tienes cuenta?
+              <Link to={ROUTES.login}>Inicia sesión</Link>
             </p>
           </footer>
         </article>

@@ -10,7 +10,7 @@ const roles = [
     icon: 'school',
     title: 'Estudiante',
     description:
-      'Encuentra practicas profesionales, crea tu perfil y postulate a oportunidades reales.',
+      'Encuentra prácticas profesionales, crea tu perfil y postúlate a oportunidades reales.',
   },
   {
     id: 'company',
@@ -24,7 +24,7 @@ const roles = [
     icon: 'co_present',
     title: 'Profesor',
     description:
-      'Acompana el progreso de tus estudiantes y conecta academia con oportunidades concretas.',
+      'Acompaña el progreso de tus estudiantes y conecta la academia con oportunidades concretas.',
   },
 ]
 
@@ -83,7 +83,7 @@ export default function RegisterRoleSelection({
           </div>
 
           <div className="register-copy">
-            <h2>{'Unete a InternHub'}</h2>
+            <h2>{'Únete a InternHub'}</h2>
             <p>Selecciona tu perfil para comenzar tu experiencia</p>
           </div>
         </div>
@@ -117,9 +117,9 @@ export default function RegisterRoleSelection({
           </button>
 
           <div className="register-login-block">
-            <p>Ya tienes una cuenta?</p>
+            <p>¿Ya tienes una cuenta?</p>
             <button type="button" className="register-login-link" onClick={handleLogin}>
-              Iniciar sesion
+              Iniciar sesión
             </button>
           </div>
         </div>

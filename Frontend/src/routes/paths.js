@@ -7,6 +7,7 @@ export const ROUTES = {
   registerTeacher: '/register/teacher',
   internships: '/internships',
   internshipDetail: (offerId = ':offerId') => `/internships/${offerId}`,
+  studentApplications: '/student/candidaturas',
   postOffer: '/offers/new',
   studentProfile: '/profile/student',
   companyProfile: '/profile/company',

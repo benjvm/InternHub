@@ -18,7 +18,7 @@ function normalizeRole(role) {
   const normalizedRole = Number(role)
 
   if (!ROLE_FIELD_MAP[normalizedRole]) {
-    throw new Error('Rol de usuario no valido.')
+    throw new Error('Rol de usuario no válido.')
   }
 
   return normalizedRole
@@ -50,7 +50,7 @@ export async function registerUser(userData) {
   const password = userData.password ?? userData.contrasena ?? ''
 
   if (!email || !password) {
-    throw new Error('Correo y contrasena son obligatorios.')
+    throw new Error('Correo y contraseña son obligatorios.')
   }
 
   const credential = await createUserWithEmailAndPassword(auth, email, password)
@@ -76,7 +76,7 @@ export async function registerUser(userData) {
 
 export async function loginUser({ email, password }) {
   if (!email || !password) {
-    throw new Error('Correo y contrasena son obligatorios.')
+    throw new Error('Correo y contraseña son obligatorios.')
   }
 
   const credential = await signInWithEmailAndPassword(auth, email.trim().toLowerCase(), password)

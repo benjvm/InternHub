@@ -6,8 +6,89 @@ import { Link } from '../routes/router'
 import { getOffers } from '../services/offerService'
 
 const filters = {
-  modalities: ['All Types', 'Remote', 'On-site', 'Hybrid'],
-  categories: ['All Categories', 'Engineering', 'Design', 'Marketing', 'Product'],
+  modalities: [
+    { value: 'all', label: 'Todas las modalidades' },
+    { value: 'remote', label: 'Remoto' },
+    { value: 'onsite', label: 'Presencial' },
+    { value: 'hybrid', label: 'Híbrido' },
+  ],
+  categories: [
+    { value: 'all', label: 'Todas las categorías' },
+    { value: 'engineering', label: 'Ingeniería' },
+    { value: 'design', label: 'Diseño' },
+    { value: 'marketing', label: 'Marketing' },
+    { value: 'product', label: 'Producto' },
+  ],
+}
+
+function normalizeModality(modality) {
+  const value = modality?.trim().toLowerCase()
+
+  switch (value) {
+    case 'remote':
+    case 'remoto':
+      return 'remote'
+    case 'on-site':
+    case 'onsite':
+    case 'presencial':
+      return 'onsite'
+    case 'hybrid':
+    case 'híbrido':
+    case 'hibrido':
+      return 'hybrid'
+    default:
+      return value || ''
+  }
+}
+
+function normalizeCategory(category) {
+  const value = category?.trim().toLowerCase()
+
+  switch (value) {
+    case 'engineering':
+    case 'ingeniería':
+    case 'ingenieria':
+      return 'engineering'
+    case 'design':
+    case 'diseño':
+    case 'diseno':
+      return 'design'
+    case 'marketing':
+      return 'marketing'
+    case 'product':
+    case 'producto':
+      return 'product'
+    default:
+      return value || ''
+  }
+}
+
+function translateModality(modality) {
+  switch (normalizeModality(modality)) {
+    case 'remote':
+      return 'Remoto'
+    case 'onsite':
+      return 'Presencial'
+    case 'hybrid':
+      return 'Híbrido'
+    default:
+      return modality || ''
+  }
+}
+
+function translateCategory(category) {
+  switch (normalizeCategory(category)) {
+    case 'engineering':
+      return 'Ingeniería'
+    case 'design':
+      return 'Diseño'
+    case 'marketing':
+      return 'Marketing'
+    case 'product':
+      return 'Producto'
+    default:
+      return category || ''
+  }
 }
 
 function Icon({ name, className = '' }) {
@@ -25,7 +106,7 @@ function InternshipCard({ internship }) {
         <div className="internship-board-icon-wrap">
           <Icon name={internship.icon || 'work'} className="internship-board-icon" />
         </div>
-        <span className="internship-board-tag">{internship.category}</span>
+        <span className="internship-board-tag">{translateCategory(internship.category)}</span>
       </div>
 
       <h3>{internship.title}</h3>
@@ -34,7 +115,7 @@ function InternshipCard({ internship }) {
       <div className="internship-board-card-footer">
         <div className="internship-board-meta">
           <div>
-            <Icon name={internship.location === 'Remote' ? 'public' : 'location_on'} />
+            <Icon name={normalizeModality(internship.modality) === 'remote' ? 'public' : 'location_on'} />
             <span>{internship.location}</span>
           </div>
           <div>
@@ -44,12 +125,12 @@ function InternshipCard({ internship }) {
         </div>
 
         <div className="internship-board-action-row">
-          <span className="internship-board-modality">{internship.modality}</span>
+          <span className="internship-board-modality">{translateModality(internship.modality)}</span>
           <Link
             to={ROUTES.internshipDetail(internship.id)}
             className="internship-board-link-button"
           >
-            View Details
+            Ver detalles
             <Icon name="arrow_forward" className="internship-board-link-icon" />
           </Link>
         </div>
@@ -59,8 +140,8 @@ function InternshipCard({ internship }) {
 }
 
 export default function InternshipBoard() {
-  const [modalityFilter, setModalityFilter] = useState(filters.modalities[0])
-  const [categoryFilter, setCategoryFilter] = useState(filters.categories[0])
+  const [modalityFilter, setModalityFilter] = useState(filters.modalities[0].value)
+  const [categoryFilter, setCategoryFilter] = useState(filters.categories[0].value)
   const [remoteOffers, setRemoteOffers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -105,10 +186,9 @@ export default function InternshipBoard() {
 
   const filteredOffers = mergedOffers.filter((offer) => {
     const matchesModality =
-      modalityFilter === 'All Types' ||
-      offer.modality?.toLowerCase() === modalityFilter.toLowerCase()
+      modalityFilter === 'all' || normalizeModality(offer.modality) === modalityFilter
     const matchesCategory =
-      categoryFilter === 'All Categories' || offer.category === categoryFilter
+      categoryFilter === 'all' || normalizeCategory(offer.category) === categoryFilter
 
     return matchesModality && matchesCategory
   })
@@ -118,11 +198,11 @@ export default function InternshipBoard() {
       <section className="container internship-board-hero">
         <div className="internship-board-copy">
           <h1>
-            Find your next <span>internship</span>
+            Encuentra tu próxima <span>práctica</span>
           </h1>
           <p>
-            Browse opportunities, open offer details, and move through the platform just
-            like a real production flow.
+            Explora oportunidades, abre el detalle de cada oferta y recorre la plataforma
+            como en una experiencia real.
           </p>
         </div>
 
@@ -136,23 +216,23 @@ export default function InternshipBoard() {
                 onChange={(event) => setModalityFilter(event.target.value)}
               >
                 {filters.modalities.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
             </label>
 
             <label className="internship-board-field" htmlFor="category">
-              <span>Categoria</span>
+              <span>Categoría</span>
               <select
                 id="category"
                 value={categoryFilter}
                 onChange={(event) => setCategoryFilter(event.target.value)}
               >
                 {filters.categories.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -161,14 +241,14 @@ export default function InternshipBoard() {
 
           <button type="button" className="internship-board-search-button">
             <Icon name="search" className="internship-board-search-icon" />
-            Filter Opportunities
+            Filtrar oportunidades
           </button>
         </div>
       </section>
 
       <section className="container internship-board-results">
         {errorMessage ? <p>{errorMessage}</p> : null}
-        {isLoading ? <p>Loading opportunities...</p> : null}
+        {isLoading ? <p>Cargando oportunidades...</p> : null}
 
         <div className="internship-board-grid">
           {filteredOffers.map((internship) => (
@@ -177,12 +257,12 @@ export default function InternshipBoard() {
         </div>
 
         {!isLoading && filteredOffers.length === 0 ? (
-          <p>No opportunities match the selected filters yet.</p>
+          <p>No hay oportunidades que coincidan con los filtros seleccionados.</p>
         ) : null}
 
         <div className="internship-board-more">
           <Link to={ROUTES.home} className="internship-board-outline-button">
-            Back Home
+            Volver al inicio
           </Link>
         </div>
       </section>

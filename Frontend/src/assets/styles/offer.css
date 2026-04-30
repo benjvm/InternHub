@@ -178,6 +178,12 @@ button.icon-btn {
   font: inherit;
 }
 
+.icon-btn.saved {
+  border-color: rgba(255, 140, 0, 0.16);
+  background: rgba(255, 140, 0, 0.08);
+  color: #ea580c;
+}
+
 .cta-feedback {
   margin: 0.75rem 0 0;
   font-size: 0.92rem;

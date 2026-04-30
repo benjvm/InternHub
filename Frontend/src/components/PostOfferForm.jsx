@@ -6,23 +6,28 @@ import { createOffer } from '../services/offerService'
 import { useUser } from '../services/userService'
 
 const categoryOptions = [
-  'Engineering',
-  'Design',
-  'Marketing',
-  'Sales',
-  'Data Science',
-  'Finance',
+  { value: 'Engineering', label: 'Ingeniería' },
+  { value: 'Design', label: 'Diseño' },
+  { value: 'Marketing', label: 'Marketing' },
+  { value: 'Sales', label: 'Ventas' },
+  { value: 'Data Science', label: 'Ciencia de datos' },
+  { value: 'Finance', label: 'Finanzas' },
 ]
 
 const modalities = [
-  { id: 'Remote', label: 'Remote' },
-  { id: 'On-site', label: 'On-site' },
-  { id: 'Hybrid', label: 'Hybrid' },
+  { id: 'Remote', label: 'Remoto' },
+  { id: 'On-site', label: 'Presencial' },
+  { id: 'Hybrid', label: 'Híbrido' },
 ]
 
 const toolbarActions = ['format_bold', 'format_italic', 'format_list_bulleted', 'link']
 
-const locationTypes = ['Office', 'Factory', 'Remote Hub', 'Warehouse']
+const locationTypeOptions = [
+  { value: 'Office', label: 'Oficina' },
+  { value: 'Factory', label: 'Fábrica' },
+  { value: 'Remote Hub', label: 'Centro remoto' },
+  { value: 'Warehouse', label: 'Almacén' },
+]
 
 const emptyLocation = {
   id: '',
@@ -31,7 +36,7 @@ const emptyLocation = {
   pais: '',
   latitud: '',
   longitud: '',
-  tipo: locationTypes[0],
+  tipo: locationTypeOptions[0].value,
 }
 
 const maxResponsibilities = 5
@@ -58,7 +63,7 @@ function getCompanyLocations(user) {
     pais: location.pais || location.country || '',
     latitud: location.latitud ?? location.latitude ?? '',
     longitud: location.longitud ?? location.longitude ?? '',
-    tipo: location.tipo || location.label || location.type || locationTypes[0],
+    tipo: location.tipo || location.label || location.type || locationTypeOptions[0].value,
   }))
 }
 
@@ -215,7 +220,7 @@ export default function PostOfferForm() {
     const longitude = Number(locationDraft.longitud)
 
     if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
-      setErrorMessage('La latitud y longitud deben ser valores numericos.')
+      setErrorMessage('La latitud y longitud deben ser valores numéricos.')
       return
     }
 
@@ -241,7 +246,7 @@ export default function PostOfferForm() {
         locationOptions.find((location) => location.id === formData.locationId)
 
       if (!selectedLocation) {
-        throw new Error('Selecciona una ubicacion o anade una ubicacion especifica para la oferta.')
+        throw new Error('Selecciona una ubicación o añade una ubicación específica para la oferta.')
       }
 
       const normalizedResponsibilities = formData.responsibilities
@@ -249,7 +254,7 @@ export default function PostOfferForm() {
         .filter(Boolean)
 
       if (!normalizedResponsibilities.length) {
-        throw new Error('Anade al menos una responsabilidad para la oferta.')
+        throw new Error('Añade al menos una responsabilidad para la oferta.')
       }
 
       const offerFormData = { ...formData }
@@ -283,19 +288,19 @@ export default function PostOfferForm() {
     <main className="post-offer-page">
       <div className="container post-offer-shell">
         <div className="post-offer-header">
-          <h1>Post Offer</h1>
-          <p>Find your next star intern by providing the details below.</p>
+          <h1>Publicar oferta</h1>
+          <p>Encuentra a tu próximo talento joven completando los detalles a continuación.</p>
         </div>
 
         <section className="post-offer-card">
           <form className="post-offer-form" onSubmit={handleSubmit}>
             <label className="post-offer-field" htmlFor="title">
-              <span>Offer Title</span>
+              <span>Título de la oferta</span>
               <input
                 id="title"
                 name="title"
                 type="text"
-                placeholder="e.g. Software Engineering Intern"
+                placeholder="Ej. Becario/a de Ingeniería de Software"
                 value={formData.title}
                 onChange={handleChange}
                 required
@@ -303,7 +308,7 @@ export default function PostOfferForm() {
             </label>
 
             <label className="post-offer-field" htmlFor="category">
-              <span>Category</span>
+              <span>Categoría</span>
               <div className="post-offer-select-wrap">
                 <select
                   id="category"
@@ -313,11 +318,11 @@ export default function PostOfferForm() {
                   required
                 >
                   <option value="" disabled>
-                    Select a category
+                    Selecciona una categoría
                   </option>
                   {categoryOptions.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                    <option key={category.value} value={category.value}>
+                      {category.label}
                     </option>
                   ))}
                 </select>
@@ -326,7 +331,7 @@ export default function PostOfferForm() {
             </label>
 
             <div className="post-offer-field">
-              <span>Description</span>
+              <span>Descripción</span>
               <div className="post-offer-editor">
                 <div className="post-offer-toolbar">
                   {toolbarActions.map((action) => (
@@ -344,7 +349,7 @@ export default function PostOfferForm() {
                   id="description"
                   name="description"
                   rows="8"
-                  placeholder="Describe the responsibilities, requirements, and benefits..."
+                  placeholder="Describe las responsabilidades, requisitos y beneficios..."
                   value={formData.description}
                   onChange={handleChange}
                   required
@@ -354,7 +359,7 @@ export default function PostOfferForm() {
 
             <div className="post-offer-field">
               <div className="post-offer-responsibility-header">
-                <span>Responsibilities</span>
+                <span>Responsabilidades</span>
                 <button
                   type="button"
                   className="post-offer-add-location-button"
@@ -362,7 +367,7 @@ export default function PostOfferForm() {
                   disabled={formData.responsibilities.length >= maxResponsibilities}
                 >
                   <Icon name="add" className="post-offer-button-icon" />
-                  Add responsibility
+                  Añadir responsabilidad
                 </button>
               </div>
 
@@ -373,7 +378,7 @@ export default function PostOfferForm() {
                       <Icon name="task_alt" className="post-offer-input-icon" />
                       <input
                         type="text"
-                        placeholder={`Responsibility ${index + 1}`}
+                        placeholder={`Responsabilidad ${index + 1}`}
                         value={responsibility}
                         onChange={(event) => handleResponsibilityChange(index, event.target.value)}
                         required={index === 0}
@@ -386,28 +391,28 @@ export default function PostOfferForm() {
                       onClick={() => handleRemoveResponsibility(index)}
                       disabled={formData.responsibilities.length === 1}
                     >
-                      Remove
+                      Eliminar
                     </button>
                   </div>
                 ))}
               </div>
 
               <small className="post-offer-responsibility-help">
-                Add between 1 and 5 responsibilities to show in the offer detail.
+                Añade entre 1 y 5 responsabilidades para mostrarlas en el detalle de la oferta.
               </small>
             </div>
 
             <div className="post-offer-two-column">
               <div className="post-offer-field">
                 <div className="post-offer-location-header">
-                  <span>Location</span>
+                  <span>Ubicación</span>
                   <button
                     className="post-offer-add-location-button"
                     type="button"
                     onClick={handleOpenLocationForm}
                   >
                     <Icon name="add" className="post-offer-button-icon" />
-                    Add location
+                    Añadir ubicación
                   </button>
                 </div>
                 <div className="post-offer-select-wrap">
@@ -419,7 +424,9 @@ export default function PostOfferForm() {
                     disabled={!locationOptions.length}
                   >
                     <option value="" disabled>
-                      {locationOptions.length ? 'Select a saved location' : 'No saved locations'}
+                      {locationOptions.length
+                        ? 'Selecciona una ubicación guardada'
+                        : 'No hay ubicaciones guardadas'}
                     </option>
                     {locationOptions.map((location) => (
                       <option key={location.id} value={location.id}>
@@ -432,14 +439,14 @@ export default function PostOfferForm() {
               </div>
 
               <label className="post-offer-field" htmlFor="salary">
-                <span>Salary</span>
+                <span>Salario</span>
                 <div className="post-offer-input-icon-wrap">
                   <Icon name="payments" className="post-offer-input-icon" />
                   <input
                     id="salary"
                     name="salary"
                     type="text"
-                    placeholder="e.g. EUR 900 / month"
+                    placeholder="Ej. 900 EUR / mes"
                     value={formData.salary}
                     onChange={handleChange}
                     required
@@ -452,48 +459,48 @@ export default function PostOfferForm() {
               <div className="post-offer-location-editor">
                 <h3>
                   <Icon name="add_circle" />
-                  New Location Details
+                  Detalles de la nueva ubicación
                 </h3>
 
                 <div className="post-offer-location-grid">
                   <label className="post-offer-field compact" htmlFor="location-name">
-                    <span>Name</span>
+                    <span>Nombre</span>
                     <input
                       id="location-name"
                       name="nombre"
                       type="text"
-                      placeholder="e.g. Engineering Hub"
+                      placeholder="Ej. Hub de Ingeniería"
                       value={locationDraft.nombre}
                       onChange={handleLocationChange}
                     />
                   </label>
 
                   <label className="post-offer-field compact" htmlFor="location-city">
-                    <span>City</span>
+                    <span>Ciudad</span>
                     <input
                       id="location-city"
                       name="ciudad"
                       type="text"
-                      placeholder="London"
+                      placeholder="Madrid"
                       value={locationDraft.ciudad}
                       onChange={handleLocationChange}
                     />
                   </label>
 
                   <label className="post-offer-field compact" htmlFor="location-country">
-                    <span>Country</span>
+                    <span>País</span>
                     <input
                       id="location-country"
                       name="pais"
                       type="text"
-                      placeholder="United Kingdom"
+                      placeholder="España"
                       value={locationDraft.pais}
                       onChange={handleLocationChange}
                     />
                   </label>
 
                   <label className="post-offer-field compact" htmlFor="location-latitude">
-                    <span>Latitude</span>
+                    <span>Latitud</span>
                     <input
                       id="location-latitude"
                       name="latitud"
@@ -506,7 +513,7 @@ export default function PostOfferForm() {
                   </label>
 
                   <label className="post-offer-field compact" htmlFor="location-longitude">
-                    <span>Longitude</span>
+                    <span>Longitud</span>
                     <input
                       id="location-longitude"
                       name="longitud"
@@ -519,7 +526,7 @@ export default function PostOfferForm() {
                   </label>
 
                   <label className="post-offer-field compact" htmlFor="location-type">
-                    <span>Label</span>
+                    <span>Tipo</span>
                     <div className="post-offer-select-wrap">
                       <select
                         id="location-type"
@@ -527,9 +534,9 @@ export default function PostOfferForm() {
                         value={locationDraft.tipo}
                         onChange={handleLocationChange}
                       >
-                        {locationTypes.map((type) => (
-                          <option key={type} value={type}>
-                            {type}
+                        {locationTypeOptions.map((type) => (
+                          <option key={type.value} value={type.value}>
+                            {type.label}
                           </option>
                         ))}
                       </select>
@@ -539,7 +546,7 @@ export default function PostOfferForm() {
                 </div>
 
                 <p className="post-offer-coordinate-help">
-                  <span>No encuentras las coordenadas?</span>{' '}
+                  <span>¿No encuentras las coordenadas?</span>{' '}
                   <a
                     href="https://www.coordenadas-gps.com/"
                     target="_blank"
@@ -550,18 +557,26 @@ export default function PostOfferForm() {
                 </p>
 
                 <div className="post-offer-location-editor-actions">
-                  <button type="button" className="post-offer-text-button" onClick={handleCancelLocation}>
-                    Cancel
+                  <button
+                    type="button"
+                    className="post-offer-text-button"
+                    onClick={handleCancelLocation}
+                  >
+                    Cancelar
                   </button>
-                  <button type="button" className="post-offer-light-button" onClick={handleSaveLocation}>
-                    Save Location
+                  <button
+                    type="button"
+                    className="post-offer-light-button"
+                    onClick={handleSaveLocation}
+                  >
+                    Guardar ubicación
                   </button>
                 </div>
               </div>
             ) : null}
 
             <fieldset className="post-offer-modality-group">
-              <legend>Modality</legend>
+              <legend>Modalidad</legend>
               <div className="post-offer-pills">
                 {modalities.map((modality) => (
                   <div key={modality.id} className="post-offer-pill-item">
@@ -592,17 +607,17 @@ export default function PostOfferForm() {
                 onClick={() => submitOffer('draft')}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Saving...' : 'Save as Draft'}
+                {isSubmitting ? 'Guardando...' : 'Guardar como borrador'}
               </button>
               <button type="submit" className="post-offer-primary-button" disabled={isSubmitting}>
-                {isSubmitting ? 'Publishing...' : 'Publish Offer'}
+                {isSubmitting ? 'Publicando...' : 'Publicar oferta'}
               </button>
             </div>
           </form>
         </section>
 
         <p className="post-offer-help">
-          Need help? You can always return to the <Link to={ROUTES.home}>home page</Link>.
+          ¿Necesitas ayuda? Siempre puedes volver a la <Link to={ROUTES.home}>página de inicio</Link>.
         </p>
       </div>
     </main>

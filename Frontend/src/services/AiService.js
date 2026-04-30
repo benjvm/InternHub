@@ -11,8 +11,8 @@ const OPENROUTER_APP_NAME = import.meta.env.VITE_OPENROUTER_APP_NAME || 'InternH
 const STUDENT_CV_QUESTIONNAIRE = [
   {
     id: 'targetRole',
-    label: 'Puesto o area objetivo',
-    placeholder: 'Ej. Frontend Developer Intern, Data Analyst Intern...',
+    label: 'Puesto o área objetivo',
+    placeholder: 'Ej. Becario/a de Frontend, Becario/a de análisis de datos...',
     type: 'text',
   },
   {
@@ -23,14 +23,14 @@ const STUDENT_CV_QUESTIONNAIRE = [
   },
   {
     id: 'phone',
-    label: 'Telefono',
+    label: 'Teléfono',
     placeholder: '+34 600 000 000',
     type: 'tel',
   },
   {
     id: 'location',
-    label: 'Ciudad y pais',
-    placeholder: 'Madrid, Espana',
+    label: 'Ciudad y país',
+    placeholder: 'Madrid, España',
     type: 'text',
   },
   {
@@ -55,13 +55,13 @@ const STUDENT_CV_QUESTIONNAIRE = [
   {
     id: 'projects',
     label: 'Proyectos destacados',
-    placeholder: 'Describe proyectos academicos, personales o freelance.',
+    placeholder: 'Describe proyectos académicos, personales o freelance.',
     type: 'textarea',
     rows: 4,
   },
   {
     id: 'experience',
-    label: 'Experiencia, practicas o voluntariado',
+    label: 'Experiencia, prácticas o voluntariado',
     placeholder: 'Incluye responsabilidades, logros y fechas si las conoces.',
     type: 'textarea',
     rows: 4,
@@ -69,14 +69,14 @@ const STUDENT_CV_QUESTIONNAIRE = [
   {
     id: 'languages',
     label: 'Idiomas',
-    placeholder: 'Espanol nativo, Ingles B2, Frances A2...',
+    placeholder: 'Español nativo, Inglés B2, Francés A2...',
     type: 'textarea',
     rows: 2,
   },
   {
     id: 'certifications',
     label: 'Certificaciones o cursos',
-    placeholder: 'Nombre, entidad y ano si aplica.',
+    placeholder: 'Nombre, entidad y año si aplica.',
     type: 'textarea',
     rows: 3,
   },
@@ -85,14 +85,14 @@ const STUDENT_CV_QUESTIONNAIRE = [
 function ensureOpenRouterConfig() {
   if (!OPENROUTER_API_KEY) {
     throw new Error(
-      'OpenRouter is not configured. Add VITE_OPENROUTER_API_KEY to your environment variables.',
+      'OpenRouter no está configurado. Añade VITE_OPENROUTER_API_KEY a tus variables de entorno.',
     )
   }
 }
 
 function parseJsonBlock(content) {
   if (!content || typeof content !== 'string') {
-    throw new Error('The AI response did not include any resume content.')
+    throw new Error('La respuesta de la IA no incluyó contenido para el CV.')
   }
 
   const trimmedContent = content.trim()
@@ -113,7 +113,7 @@ function parseJsonBlock(content) {
       return JSON.parse(trimmedContent.slice(firstBraceIndex, lastBraceIndex + 1))
     }
 
-    throw new Error('The AI response could not be parsed as JSON.')
+    throw new Error('No se pudo interpretar la respuesta de la IA como JSON.')
   }
 }
 
@@ -165,7 +165,7 @@ function normalizeCvData(rawCvData, sourceData) {
   const fullName =
     toTrimmedString(rawCvData?.fullName) ||
     [sourceData.nombre, sourceData.apellido].filter(Boolean).join(' ').trim() ||
-    'Student Candidate'
+    'Candidato/a estudiante'
 
   return {
     fullName,
@@ -178,7 +178,7 @@ function normalizeCvData(rawCvData, sourceData) {
     summary:
       toTrimmedString(rawCvData?.summary) ||
       toTrimmedString(sourceData.bio) ||
-      'Student profile focused on continuous learning and early career growth.',
+      'Perfil estudiantil centrado en el aprendizaje continuo y el crecimiento profesional inicial.',
     education: normalizeEntryList(rawCvData?.education, [
       'institution',
       'degree',
@@ -244,11 +244,11 @@ function createCvPromptPayload(sourceData) {
     },
     instructions: {
       language: 'es',
-      audience: 'student candidate',
-      tone: 'professional, concise, credible, ATS-friendly',
-      honestyPolicy: 'Do not invent facts, employers, dates, links, metrics, or certifications.',
+      audience: 'candidato estudiante',
+      tone: 'profesional, conciso, creíble y apto para ATS',
+      honestyPolicy: 'No inventes datos, empresas, fechas, enlaces, métricas ni certificaciones.',
       missingDataPolicy:
-        'If data is missing, omit that field or describe the profile honestly as entry-level.',
+        'Si faltan datos, omite ese campo o describe el perfil honestamente como nivel inicial.',
     },
     requiredJsonShape: {
       fullName: 'string',
@@ -450,11 +450,11 @@ export async function generateStudentCvContent({ profile = {}, answers = {} }) {
         {
           role: 'system',
           content:
-            'You are a senior career coach. Generate ATS-friendly resume content in Spanish. Return valid JSON only and do not wrap it in markdown. Never invent facts or experience that the candidate did not provide.',
+            'Eres un orientador profesional sénior. Genera contenido de CV apto para ATS en español. Devuelve solo JSON válido y no lo envuelvas en Markdown. Nunca inventes datos ni experiencia que la persona candidata no haya proporcionado.',
         },
         {
           role: 'user',
-          content: `Create a professional student resume from this data:\n${JSON.stringify(
+          content: `Crea un currículum profesional para un estudiante a partir de estos datos:\n${JSON.stringify(
             promptPayload,
             null,
             2,
@@ -468,7 +468,7 @@ export async function generateStudentCvContent({ profile = {}, answers = {} }) {
 
   if (!response.ok) {
     throw new Error(
-      result?.error?.message || 'OpenRouter could not generate the CV content right now.',
+      result?.error?.message || 'OpenRouter no pudo generar el contenido del CV en este momento.',
     )
   }
 
@@ -505,7 +505,7 @@ export function createStudentCvPdfBlob(cvData) {
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(24)
   doc.setTextColor(255, 255, 255)
-  doc.text(cvData.fullName || 'Student Candidate', 48, 42)
+  doc.text(cvData.fullName || 'Candidato/a estudiante', 48, 42)
 
   if (cvData.targetRole) {
     doc.setFont('helvetica', 'normal')

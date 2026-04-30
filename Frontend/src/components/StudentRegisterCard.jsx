@@ -61,14 +61,14 @@ export default function StudentRegisterCard() {
     <section className="student-register-shell">
       <div className="student-register-layout">
         <header className="student-register-brand-block">
-          <h1>Registrate como estudiante</h1>
+          <h1>Regístrate como estudiante</h1>
           <p>Tu portal hacia el mundo profesional.</p>
         </header>
 
         <article className="student-register-card">
           <div className="student-register-copy">
             <h2>Crea tu perfil de estudiante</h2>
-            <p>Completa tus datos para encontrar tu proxima pasantia.</p>
+            <p>Completa tus datos para encontrar tu próxima pasantía.</p>
           </div>
 
           <form className="student-register-form" onSubmit={handleSubmit}>
@@ -90,7 +90,7 @@ export default function StudentRegisterCard() {
                 <input
                   id="apellido"
                   type="text"
-                  placeholder="Ej. Perez"
+                  placeholder="Ej. Pérez"
                   value={formData.apellido}
                   onChange={handleChange}
                   required
@@ -105,7 +105,7 @@ export default function StudentRegisterCard() {
                 <input
                   id="universidad"
                   type="text"
-                  placeholder="Nombre de tu institucion"
+                  placeholder="Nombre de tu institución"
                   value={formData.universidad}
                   onChange={handleChange}
                   required
@@ -120,7 +120,7 @@ export default function StudentRegisterCard() {
                 <input
                   id="carrera"
                   type="text"
-                  placeholder="Ej. Ingenieria de Sistemas"
+                  placeholder="Ej. Ingeniería de Sistemas"
                   value={formData.carrera}
                   onChange={handleChange}
                   required
@@ -129,7 +129,7 @@ export default function StudentRegisterCard() {
             </div>
 
             <div className="student-register-field">
-              <label htmlFor="correo">Correo electronico</label>
+              <label htmlFor="correo">Correo electrónico</label>
               <div className="student-register-input-wrap">
                 <Icon name="mail" className="student-register-input-icon" />
                 <input
@@ -144,13 +144,13 @@ export default function StudentRegisterCard() {
             </div>
 
             <div className="student-register-field">
-              <label htmlFor="password">Contrasena</label>
+              <label htmlFor="password">Contraseña</label>
               <div className="student-register-input-wrap">
                 <Icon name="lock" className="student-register-input-icon" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Minimo 8 caracteres"
+                  placeholder="Mínimo 8 caracteres"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -160,7 +160,7 @@ export default function StudentRegisterCard() {
                   type="button"
                   className="student-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
-                  aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   aria-pressed={showPassword}
                 >
                   <Icon name={showPassword ? 'visibility_off' : 'visibility'} />
@@ -184,8 +184,8 @@ export default function StudentRegisterCard() {
 
           <footer className="student-register-footer">
             <p>
-              Ya tienes cuenta?
-              <Link to={ROUTES.login}>Inicia sesion</Link>
+              ¿Ya tienes cuenta?
+              <Link to={ROUTES.login}>Inicia sesión</Link>
             </p>
           </footer>
         </article>

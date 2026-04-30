@@ -13,7 +13,7 @@ function RouteRedirect({ to, replace = false }) {
 
   return (
     <main style={routeStateStyle}>
-      <p>Redirecting...</p>
+      <p>Redirigiendo...</p>
     </main>
   )
 }
@@ -71,16 +71,16 @@ export default function AppRouter() {
   if (!activeRoute) {
     return (
       <RouteState
-        title="Page not found"
-        description="We could not find the page you were looking for."
-        actionLabel="Back to home"
+        title="Página no encontrada"
+        description="No hemos podido encontrar la página que buscas."
+        actionLabel="Volver al inicio"
         actionTo={ROUTES.home}
       />
     )
   }
 
   if (loadingUser && (activeRoute.protected || activeRoute.publicOnly)) {
-    return <RouteState title="Loading" description="Preparing your session..." />
+    return <RouteState title="Cargando" description="Preparando tu sesión..." />
   }
 
   if (activeRoute.publicOnly && currentUser) {
@@ -98,9 +98,9 @@ export default function AppRouter() {
   ) {
     return (
       <RouteState
-        title="Access restricted"
-        description="This section is only available for the right account type."
-        actionLabel="Go back home"
+        title="Acceso restringido"
+        description="Esta sección solo está disponible para el tipo de cuenta adecuado."
+        actionLabel="Volver al inicio"
         actionTo={ROUTES.home}
       />
     )

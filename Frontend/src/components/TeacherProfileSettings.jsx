@@ -9,13 +9,22 @@ import { updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
 
 const educationalAreas = [
-  'Faculty of Fine Arts',
-  'Department of Computer Science',
-  'Business & Economics',
-  'School of Humanities',
-  'Health Sciences',
-  'Engineering',
+  'Facultad de Bellas Artes',
+  'Departamento de Informática',
+  'Empresa y Economía',
+  'Facultad de Humanidades',
+  'Ciencias de la Salud',
+  'Ingeniería',
 ]
+
+const educationalAreaLabels = {
+  'Faculty of Fine Arts': 'Facultad de Bellas Artes',
+  'Department of Computer Science': 'Departamento de Informática',
+  'Business & Economics': 'Empresa y Economía',
+  'School of Humanities': 'Facultad de Humanidades',
+  'Health Sciences': 'Ciencias de la Salud',
+  Engineering: 'Ingeniería',
+}
 
 function Icon({ name, className = '' }) {
   return (
@@ -158,12 +167,12 @@ export default function TeacherProfileSettings() {
       <section className="container teacher-profile-hero">
         <div className="teacher-profile-avatar-wrap">
           <div className="teacher-profile-avatar">
-            <img src={displayedProfileImage} alt="Profile" />
+            <img src={displayedProfileImage} alt="Perfil" />
           </div>
           <button
             type="button"
             className="teacher-profile-edit-photo-button"
-            aria-label="Edit photo"
+            aria-label="Editar foto"
             onClick={handleImageButtonClick}
             disabled={isSaving}
           >
@@ -178,12 +187,12 @@ export default function TeacherProfileSettings() {
           />
         </div>
 
-        <h1>Teacher Profile</h1>
+        <h1>Perfil del profesor</h1>
         <p>
-          Manage your academic credentials and contact information to better guide your
-          student cohort.
+          Gestiona tus credenciales académicas y tu información de contacto para acompañar
+          mejor a tu grupo de estudiantes.
         </p>
-        {selectedImage ? <p>Selected image ready to upload when you save the profile.</p> : null}
+        {selectedImage ? <p>La imagen seleccionada se subirá cuando guardes el perfil.</p> : null}
       </section>
 
       <section className="container teacher-profile-shell">
@@ -207,7 +216,7 @@ export default function TeacherProfileSettings() {
             </label>
 
             <label className="teacher-profile-field" htmlFor="correo">
-              <span>Correo electronico</span>
+              <span>Correo electrónico</span>
               <input
                 id="correo"
                 name="correo"
@@ -220,7 +229,7 @@ export default function TeacherProfileSettings() {
             </label>
 
             <label className="teacher-profile-field" htmlFor="telefono">
-              <span>Telefono</span>
+              <span>Teléfono</span>
               <input
                 id="telefono"
                 name="telefono"
@@ -233,7 +242,7 @@ export default function TeacherProfileSettings() {
             </label>
 
             <label className="teacher-profile-field" htmlFor="areaEducativa">
-              <span>Area educativa</span>
+              <span>Área educativa</span>
               <div className="teacher-profile-select-wrap">
                 <select
                   id="areaEducativa"
@@ -243,11 +252,11 @@ export default function TeacherProfileSettings() {
                   required
                 >
                   <option value="" disabled>
-                    Select Department / Faculty
+                    Selecciona departamento o facultad
                   </option>
                   {areaOptions.map((area) => (
                     <option key={area} value={area}>
-                      {area}
+                      {educationalAreaLabels[area] || area}
                     </option>
                   ))}
                 </select>
@@ -264,7 +273,7 @@ export default function TeacherProfileSettings() {
               disabled={isSaving}
             >
               <Icon name="save" className="teacher-profile-save-icon" />
-              {isSaving ? 'Saving...' : 'Save Changes'}
+              {isSaving ? 'Guardando...' : 'Guardar cambios'}
             </button>
             <button
               type="button"
@@ -272,7 +281,7 @@ export default function TeacherProfileSettings() {
               onClick={handleReset}
               disabled={isSaving}
             >
-              Discard
+              Descartar
             </button>
           </div>
 

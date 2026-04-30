@@ -59,7 +59,7 @@ export async function createOffer(offerData) {
     salary: offerData.salary?.trim() ?? '',
     modality: offerData.modality?.trim() ?? '',
     companyId: offerData.companyId ?? '',
-    companyName: offerData.companyName?.trim() ?? 'InternHub company',
+    companyName: offerData.companyName?.trim() ?? 'Empresa de InternHub',
     icon: offerData.icon ?? 'business_center',
     status: offerData.status ?? 'published',
     createdAt: serverTimestamp(),
@@ -71,11 +71,11 @@ export async function createOffer(offerData) {
   }
 
   if (!payload.title || !payload.description) {
-    throw new Error('Title and description are required.')
+    throw new Error('El título y la descripción son obligatorios.')
   }
 
   if (!payload.responsibilities.length) {
-    throw new Error('Add at least one responsibility for the offer.')
+    throw new Error('Añade al menos una responsabilidad para la oferta.')
   }
 
   const documentReference = await addDoc(collection(db, OFFERS_COLLECTION), payload)

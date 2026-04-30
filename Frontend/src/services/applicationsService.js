@@ -8,6 +8,7 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '../firebase'
+import { APPLICATION_STATUSES, normalizeApplicationStatus } from './applicationStatus'
 
 const APPLICATIONS_COLLECTION = 'applications'
 
@@ -17,6 +18,7 @@ function mapApplicationDocument(documentSnapshot) {
   return {
     id: documentSnapshot.id,
     ...data,
+    status: normalizeApplicationStatus(data.status),
   }
 }
 
@@ -44,7 +46,7 @@ export async function getApplicationByOfferAndStudent(offerId, studentId) {
 export async function createApplication(applicationData) {
   const offerId = applicationData.offerId?.trim() ?? ''
   const studentId = applicationData.studentId?.trim() ?? ''
-  const status = applicationData.status?.trim() ?? 'submitted'
+  const status = normalizeApplicationStatus(applicationData.status ?? APPLICATION_STATUSES.pending)
   const coverLetter = applicationData.coverLetter?.trim() ?? ''
   const availability = applicationData.availability?.trim() ?? ''
   const availableFromDate = applicationData.availableFromDate?.trim() ?? ''
@@ -53,7 +55,7 @@ export async function createApplication(applicationData) {
   const cvFileName = applicationData.cvFileName?.trim() ?? ''
 
   if (!offerId || !studentId) {
-    throw new Error('Offer ID and student ID are required.')
+    throw new Error('El identificador de la oferta y del estudiante son obligatorios.')
   }
 
   const existingApplication = await getApplicationByOfferAndStudent(offerId, studentId)

@@ -5,9 +5,9 @@ const footerColumns = [
   {
     title: 'Candidatos',
     links: [
-      { label: 'Buscar practicas', to: ROUTES.internships },
+      { label: 'Buscar prácticas', to: ROUTES.internships },
       { label: 'Crear cuenta', to: ROUTES.register },
-      { label: 'Iniciar sesion', to: ROUTES.login },
+      { label: 'Iniciar sesión', to: ROUTES.login },
     ],
   },
   {
@@ -23,8 +23,8 @@ const footerColumns = [
     links: [
       { label: 'Perfil estudiante', to: ROUTES.studentProfile },
       { label: 'Perfil profesor', to: ROUTES.teacherProfile },
-      { label: 'Practicas', to: ROUTES.internships },
-      { label: 'Home', to: ROUTES.home },
+      { label: 'Prácticas', to: ROUTES.internships },
+      { label: 'Inicio', to: ROUTES.home },
     ],
   },
 ]
@@ -51,15 +51,15 @@ export default function Footer() {
             </Link>
 
             <p>
-              Connecting students, teachers, and companies through a single internship
-              experience.
+              Conectamos estudiantes, profesores y empresas en una sola experiencia de
+              prácticas.
             </p>
 
             <div className="footer-socials">
-              <Link to={ROUTES.home} aria-label="Home">
+              <Link to={ROUTES.home} aria-label="Inicio">
                 <Icon name="home" />
               </Link>
-              <Link to={ROUTES.internships} aria-label="Internships">
+              <Link to={ROUTES.internships} aria-label="Prácticas">
                 <Icon name="work" />
               </Link>
             </div>
@@ -80,10 +80,10 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>© 2026 InternHub. All rights reserved.</p>
+          <p>© 2026 InternHub. Todos los derechos reservados.</p>
           <div>
-            <span>Spanish (ES)</span>
-            <span>Accessibility</span>
+            <span>Español (ES)</span>
+            <span>Accesibilidad</span>
           </div>
         </div>
       </div>

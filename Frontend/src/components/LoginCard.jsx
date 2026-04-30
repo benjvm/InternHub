@@ -7,8 +7,8 @@ import { getDefaultRouteForRole, ROUTES } from '../routes/paths'
 import { Link, useRouter } from '../routes/router'
 
 const footerLinks = [
-  { label: 'Home', to: ROUTES.home },
-  { label: 'Practicas', to: ROUTES.internships },
+  { label: 'Inicio', to: ROUTES.home },
+  { label: 'Prácticas', to: ROUTES.internships },
   { label: 'Crear cuenta', to: ROUTES.register },
 ]
 
@@ -50,7 +50,7 @@ export default function LoginCard() {
       const profile = await refreshUserProfile(firebaseUser.uid)
       navigate(getDefaultRouteForRole(profile?.rol), { replace: true })
     } catch (error) {
-      setErrorMessage(error.message || 'No se pudo iniciar sesion.')
+      setErrorMessage(error.message || 'No se pudo iniciar sesión.')
     } finally {
       setIsSubmitting(false)
     }
@@ -66,13 +66,13 @@ export default function LoginCard() {
                 <div className="login-brand-mark">
                   <img src={logo} alt="InternHub Logo" className="login-brand-image" />
                 </div>
-                <h1>Welcome back</h1>
-                <p>Enter your credentials to access your dashboard</p>
+                <h1>Bienvenido de nuevo</h1>
+                <p>Introduce tus credenciales para acceder a tu panel</p>
               </header>
 
               <form className="login-form" onSubmit={handleSubmit}>
                 <div className="login-field-group">
-                  <label htmlFor="email">Email Address</label>
+                  <label htmlFor="email">Correo electrónico</label>
                   <div className="login-input-wrap">
                     <Icon name="mail" className="login-input-icon" />
                     <input
@@ -89,8 +89,8 @@ export default function LoginCard() {
 
                 <div className="login-field-group">
                   <div className="login-field-topline">
-                    <label htmlFor="password">Password</label>
-                    <Link to={ROUTES.register}>Create account</Link>
+                    <label htmlFor="password">Contraseña</label>
+                    <Link to={ROUTES.register}>Crear cuenta</Link>
                   </div>
 
                   <div className="login-input-wrap">
@@ -99,7 +99,7 @@ export default function LoginCard() {
                       id="password"
                       name="password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Your password"
+                      placeholder="Tu contraseña"
                       value={formData.password}
                       onChange={handleChange}
                       required
@@ -108,7 +108,7 @@ export default function LoginCard() {
                       type="button"
                       className="login-visibility-button"
                       onClick={() => setShowPassword((current) => !current)}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                       aria-pressed={showPassword}
                     >
                       <Icon name={showPassword ? 'visibility_off' : 'visibility'} />
@@ -123,20 +123,20 @@ export default function LoginCard() {
                 ) : null}
 
                 <button type="submit" className="login-submit-button" disabled={isSubmitting}>
-                  {isSubmitting ? 'Signing in...' : 'Sign In'}
+                  {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
                 </button>
               </form>
             </div>
 
             <footer className="login-card-footer">
               <p>
-                {"Don't have an account?"}
-                <Link to={ROUTES.register}>Join InternHub</Link>
+                {'¿No tienes una cuenta?'}
+                <Link to={ROUTES.register}>Únete a InternHub</Link>
               </p>
             </footer>
           </article>
 
-          <nav className="login-footer-links" aria-label="Support links">
+          <nav className="login-footer-links" aria-label="Enlaces de soporte">
             {footerLinks.map((link) => (
               <Link key={link.label} to={link.to}>
                 {link.label}

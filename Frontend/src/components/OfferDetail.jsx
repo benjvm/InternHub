@@ -3,12 +3,18 @@ import '../assets/styles/offer.css'
 import { getMockOfferById } from '../data/mockOffers'
 import { getDefaultRouteForRole, ROUTES } from '../routes/paths'
 import { Link, useRouteParams, useRouter } from '../routes/router'
+import { APPLICATION_STATUSES } from '../services/applicationStatus'
 import {
   createApplication,
   getApplicationByOfferAndStudent,
 } from '../services/applicationsService'
 import { getCvDocumentUrl } from '../services/cloudinaryService'
 import { getOfferById } from '../services/offerService'
+import {
+  isOfferSavedByStudent,
+  removeSavedOfferForStudent,
+  saveOfferForStudent,
+} from '../services/studentActivityService'
 import { useUser } from '../services/userService'
 import OfferMap from './OfferMap'
 
@@ -18,11 +24,11 @@ function formatPublishedAt(createdAt, fallbackLabel) {
   }
 
   if (!createdAt?.seconds) {
-    return 'Recently published'
+    return 'Publicado recientemente'
   }
 
   const createdDate = new Date(createdAt.seconds * 1000)
-  return `Published on ${createdDate.toLocaleDateString()}`
+  return `Publicado el ${createdDate.toLocaleDateString('es-ES')}`
 }
 
 function parseCoordinate(value) {
@@ -71,6 +77,76 @@ function getOfferResponsibilities(offer) {
     .filter(Boolean)
 }
 
+function normalizeModality(modality) {
+  const value = modality?.trim().toLowerCase()
+
+  switch (value) {
+    case 'remote':
+    case 'remoto':
+      return 'remote'
+    case 'on-site':
+    case 'onsite':
+    case 'presencial':
+      return 'onsite'
+    case 'hybrid':
+    case 'híbrido':
+    case 'hibrido':
+      return 'hybrid'
+    default:
+      return value || ''
+  }
+}
+
+function normalizeCategory(category) {
+  const value = category?.trim().toLowerCase()
+
+  switch (value) {
+    case 'engineering':
+    case 'ingeniería':
+    case 'ingenieria':
+      return 'engineering'
+    case 'design':
+    case 'diseño':
+    case 'diseno':
+      return 'design'
+    case 'marketing':
+      return 'marketing'
+    case 'product':
+    case 'producto':
+      return 'product'
+    default:
+      return value || ''
+  }
+}
+
+function translateModality(modality) {
+  switch (normalizeModality(modality)) {
+    case 'remote':
+      return 'Remoto'
+    case 'onsite':
+      return 'Presencial'
+    case 'hybrid':
+      return 'Híbrido'
+    default:
+      return modality || ''
+  }
+}
+
+function translateCategory(category) {
+  switch (normalizeCategory(category)) {
+    case 'engineering':
+      return 'Ingeniería'
+    case 'design':
+      return 'Diseño'
+    case 'marketing':
+      return 'Marketing'
+    case 'product':
+      return 'Producto'
+    default:
+      return category || ''
+  }
+}
+
 function Icon({ name, className = '' }) {
   return (
     <span className={`material-symbols-outlined ${className}`.trim()} aria-hidden="true">
@@ -82,25 +158,29 @@ function Icon({ name, className = '' }) {
 export default function JobDetails() {
   const { offerId } = useRouteParams()
   const { navigate } = useRouter()
-  const { currentUser } = useUser()
+  const { currentUser, refreshUserProfile } = useUser()
   const [offer, setOffer] = useState(() => getMockOfferById(offerId))
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [isApplying, setIsApplying] = useState(false)
+  const [isSavingOffer, setIsSavingOffer] = useState(false)
   const [applicationMessage, setApplicationMessage] = useState('')
   const [applicationError, setApplicationError] = useState('')
+  const [saveOfferMessage, setSaveOfferMessage] = useState('')
+  const [saveOfferError, setSaveOfferError] = useState('')
   const [existingApplication, setExistingApplication] = useState(null)
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false)
   const [applicationFormData, setApplicationFormData] = useState({
     coverLetter: '',
     availability: 'Inmediata',
     availableFromDate: '',
-    scheduleType: 'Full time',
+    scheduleType: 'Tiempo completo',
   })
   const currentUserRole = Number(currentUser?.rol)
   const isStudent = currentUserRole === 1
   const shouldShowCta = !currentUser || isStudent
   const currentCvUrl = getCvDocumentUrl(currentUser)
+  const isOfferSaved = isStudent && isOfferSavedByStudent(currentUser?.savedOfferIds, offer?.id)
   const applyActionTo = currentUser
     ? getDefaultRouteForRole(currentUser.rol)
     : ROUTES.register
@@ -165,7 +245,7 @@ export default function JobDetails() {
         }
       } catch {
         if (isMounted) {
-          setApplicationError('No se pudo comprobar tu postulacion actual.')
+          setApplicationError('No se pudo comprobar tu postulación actual.')
         }
       }
     }
@@ -198,6 +278,11 @@ export default function JobDetails() {
     }
   }, [isApplicationModalOpen, isApplying])
 
+  useEffect(() => {
+    setSaveOfferMessage('')
+    setSaveOfferError('')
+  }, [currentUser?.uid, offer?.id])
+
   function handleApplicationFormChange(event) {
     const { name, value } = event.target
 
@@ -214,7 +299,7 @@ export default function JobDetails() {
       coverLetter: '',
       availability: 'Inmediata',
       availableFromDate: '',
-      scheduleType: 'Full time',
+      scheduleType: 'Tiempo completo',
     })
     setIsApplicationModalOpen(true)
   }
@@ -262,7 +347,7 @@ export default function JobDetails() {
       const application = await createApplication({
         offerId: offer.id,
         studentId: currentUser.uid,
-        status: 'submitted',
+        status: APPLICATION_STATUSES.pending,
         coverLetter: applicationFormData.coverLetter,
         availability: applicationFormData.availability,
         availableFromDate:
@@ -275,32 +360,63 @@ export default function JobDetails() {
       })
 
       setExistingApplication(application)
-      setApplicationMessage('Postulacion enviada correctamente.')
+      setApplicationMessage('Postulación enviada correctamente.')
       setIsApplicationModalOpen(false)
     } catch (error) {
-      setApplicationError(error.message || 'No se pudo enviar la postulacion.')
+      setApplicationError(error.message || 'No se pudo enviar la postulación.')
     } finally {
       setIsApplying(false)
     }
   }
 
+  async function handleSaveOffer() {
+    if (!currentUser) {
+      navigate(ROUTES.login)
+      return
+    }
+
+    if (!isStudent || !offer?.id) {
+      return
+    }
+
+    try {
+      setIsSavingOffer(true)
+      setSaveOfferMessage('')
+      setSaveOfferError('')
+
+      if (isOfferSaved) {
+        await removeSavedOfferForStudent(currentUser.uid, offer.id)
+        await refreshUserProfile(currentUser.uid)
+        setSaveOfferMessage('La oferta se quitó de tus guardadas.')
+      } else {
+        await saveOfferForStudent(currentUser.uid, offer.id)
+        await refreshUserProfile(currentUser.uid)
+        setSaveOfferMessage('Oferta guardada correctamente.')
+      }
+    } catch (error) {
+      setSaveOfferError(error.message || 'No se pudo actualizar esta oferta guardada.')
+    } finally {
+      setIsSavingOffer(false)
+    }
+  }
+
   if (isLoading && !offer) {
-    return <div className="job-container">Loading offer...</div>
+    return <div className="job-container">Cargando oferta...</div>
   }
 
   if (!offer) {
     return (
       <div className="job-container">
         <nav className="breadcrumbs">
-          <Link to={ROUTES.home}>Home</Link>
+          <Link to={ROUTES.home}>Inicio</Link>
           <span>{'>'}</span>
-          <Link to={ROUTES.internships}>Practicas</Link>
+          <Link to={ROUTES.internships}>Prácticas</Link>
         </nav>
 
         <section>
-          <h1>Offer not found</h1>
-          <p>This internship does not exist or is no longer available.</p>
-          <Link to={ROUTES.internships}>Back to all offers</Link>
+          <h1>Oferta no encontrada</h1>
+          <p>Esta práctica no existe o ya no está disponible.</p>
+          <Link to={ROUTES.internships}>Volver a todas las ofertas</Link>
         </section>
       </div>
     )
@@ -314,9 +430,9 @@ export default function JobDetails() {
   return (
     <div className="job-container">
       <nav className="breadcrumbs">
-        <Link to={ROUTES.home}>Home</Link>
+        <Link to={ROUTES.home}>Inicio</Link>
         <span>{' > '}</span>
-        <Link to={ROUTES.internships}>Practicas</Link>
+        <Link to={ROUTES.internships}>Prácticas</Link>
         <span>{' > '}</span>
         <span className="current">{offer.title}</span>
       </nav>
@@ -332,15 +448,15 @@ export default function JobDetails() {
           <div className="info">
             <h1>{offer.title}</h1>
             <p className="meta">
-              <span>{offer.companyName || offer.company || 'InternHub company'}</span>
+              <span>{offer.companyName || offer.company || 'Empresa de InternHub'}</span>
               <span aria-hidden="true">{'\u2022'}</span>
               <span>{formatPublishedAt(offer.createdAt, offer.publishedAtLabel)}</span>
             </p>
 
             <div className="tags">
-              <span className="tag primary">{offer.modality || 'Hybrid'}</span>
-              <span className="tag success">{offer.category || 'Internship'}</span>
-              <span className="tag">{offer.location || 'Spain'}</span>
+              <span className="tag primary">{translateModality(offer.modality) || 'Híbrido'}</span>
+              <span className="tag success">{translateCategory(offer.category) || 'Prácticas'}</span>
+              <span className="tag">{offer.location || 'España'}</span>
             </div>
           </div>
         </div>
@@ -349,14 +465,16 @@ export default function JobDetails() {
       {shouldShowCta ? (
         <div className="card cta">
           <div>
-            <p className="cta-title">Ready to take the next step?</p>
+            <p className="cta-title">¿Listo para dar el siguiente paso?</p>
             <p className="cta-sub">
               {isStudent
-                ? 'Revisa la oferta y envia tu postulacion en un solo clic.'
+                ? 'Revisa la oferta y envía tu postulación con un solo clic.'
                 : 'Crea tu cuenta para poder postularte a esta oferta.'}
             </p>
             {applicationMessage ? <p className="cta-feedback success">{applicationMessage}</p> : null}
             {applicationError ? <p className="cta-feedback error">{applicationError}</p> : null}
+            {saveOfferMessage ? <p className="cta-feedback success">{saveOfferMessage}</p> : null}
+            {saveOfferError ? <p className="cta-feedback error">{saveOfferError}</p> : null}
           </div>
           <div className="cta-actions">
             {isStudent ? (
@@ -366,17 +484,29 @@ export default function JobDetails() {
                 onClick={handleApplyNow}
                 disabled={isApplying || Boolean(existingApplication)}
               >
-                {existingApplication ? 'Already Applied' : isApplying ? 'Applying...' : 'Apply Now'}
+                {existingApplication
+                  ? 'Ya postulaste'
+                  : isApplying
+                    ? 'Postulando...'
+                    : 'Postularme'}
               </button>
             ) : (
               <Link to={applyActionTo} className="btn primary">
-                Apply Now
+                Postularme
               </Link>
             )}
-            <Link to={ROUTES.internships} className="icon-btn" aria-label="Save offer">
-              <Icon name="bookmark" />
-            </Link>
-            <button type="button" className="icon-btn" aria-label="Share offer">
+            <button
+              type="button"
+              className={`icon-btn ${isOfferSaved ? 'saved' : ''}`.trim()}
+              onClick={handleSaveOffer}
+              aria-label={isOfferSaved ? 'Quitar oferta guardada' : 'Guardar oferta'}
+              aria-pressed={isOfferSaved}
+              disabled={isSavingOffer}
+              title={isOfferSaved ? 'Quitar oferta guardada' : 'Guardar oferta'}
+            >
+              <Icon name={isOfferSaved ? 'bookmark_added' : 'bookmark'} />
+            </button>
+            <button type="button" className="icon-btn" aria-label="Compartir oferta">
               <Icon name="share" />
             </button>
           </div>
@@ -386,12 +516,12 @@ export default function JobDetails() {
       {errorMessage ? <p>{errorMessage}</p> : null}
 
       <section>
-        <h2>About the role</h2>
+        <h2>Sobre el puesto</h2>
         <p>{offer.summary || offer.description}</p>
       </section>
 
       <section>
-        <h2>Responsibilities</h2>
+        <h2>Responsabilidades</h2>
         <ul>
           {offerResponsibilities.map((responsibility) => (
             <li key={responsibility}>{responsibility}</li>
@@ -400,16 +530,16 @@ export default function JobDetails() {
       </section>
 
       <section>
-        <h2>Offer details</h2>
+        <h2>Detalles de la oferta</h2>
         <ul>
-          <li>Category: {offer.category || 'General internship'}</li>
-          <li>Salary: {offer.salary || 'To be defined'}</li>
-          <li>Modality: {offer.modality || 'Flexible'}</li>
+          <li>Categoría: {translateCategory(offer.category) || 'Prácticas generales'}</li>
+          <li>Salario: {offer.salary || 'Por definir'}</li>
+          <li>Modalidad: {translateModality(offer.modality) || 'Flexible'}</li>
         </ul>
       </section>
 
       <section>
-        <h2>Location</h2>
+        <h2>Ubicación</h2>
         <div className="location-box">
           {hasLocationCoordinates ? (
             <OfferMap latitude={locationLatitude} longitude={locationLongitude} />
@@ -430,9 +560,9 @@ export default function JobDetails() {
           >
             <div className="offer-application-modal-header">
               <div>
-                <p className="offer-application-modal-eyebrow">Postulacion</p>
-                <h3 id="offer-application-modal-title">Apply to {offer.title}</h3>
-                <p>Completa esta informacion para enviar tu candidatura a la empresa.</p>
+                <p className="offer-application-modal-eyebrow">Postulación</p>
+                <h3 id="offer-application-modal-title">Postularme a {offer.title}</h3>
+                <p>Completa esta información para enviar tu candidatura a la empresa.</p>
               </div>
 
               <button
@@ -461,9 +591,9 @@ export default function JobDetails() {
                   </div>
                 ) : (
                   <div className="offer-application-cv-card missing">
-                    <p>Aun no tienes tu CV?</p>
+                    <p>¿Aún no tienes tu CV?</p>
                     <Link to={ROUTES.studentProfile} onClick={closeApplicationModal}>
-                      Ir a perfil
+                      Ir al perfil
                     </Link>
                   </div>
                 )}
@@ -474,7 +604,7 @@ export default function JobDetails() {
                 <textarea
                   name="coverLetter"
                   rows="5"
-                  placeholder="Explica brevemente por que te interesa esta oferta y que puedes aportar."
+                  placeholder="Explica brevemente por qué te interesa esta oferta y qué puedes aportar."
                   value={applicationFormData.coverLetter}
                   onChange={handleApplicationFormChange}
                   required
@@ -506,8 +636,8 @@ export default function JobDetails() {
                       value={applicationFormData.scheduleType}
                       onChange={handleApplicationFormChange}
                     >
-                      <option value="Full time">Full time</option>
-                      <option value="Part time">Part time</option>
+                      <option value="Tiempo completo">Tiempo completo</option>
+                      <option value="Tiempo parcial">Tiempo parcial</option>
                       <option value="Flexible">Flexible</option>
                     </select>
                     <Icon name="expand_more" className="offer-application-select-icon" />
@@ -548,7 +678,7 @@ export default function JobDetails() {
                   className="offer-application-primary-button"
                   disabled={isApplying || !currentCvUrl}
                 >
-                  {isApplying ? 'Enviando...' : 'Enviar postulacion'}
+                  {isApplying ? 'Enviando...' : 'Enviar postulación'}
                 </button>
               </div>
             </form>

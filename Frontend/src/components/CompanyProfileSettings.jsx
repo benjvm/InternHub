@@ -14,7 +14,26 @@ const sectorOptions = [
   'Consulting',
 ]
 
-const locationTypes = ['Office', 'Factory', 'Remote Hub', 'Warehouse']
+const sectorLabels = {
+  'Technology & Software': 'Tecnología y software',
+  'Finance & Banking': 'Finanzas y banca',
+  Healthcare: 'Salud',
+  Education: 'Educación',
+  'Marketing & Creative': 'Marketing y creatividad',
+  Manufacturing: 'Manufactura',
+  Consulting: 'Consultoría',
+}
+
+const locationTypeOptions = [
+  { value: 'Office', label: 'Oficina' },
+  { value: 'Factory', label: 'Fábrica' },
+  { value: 'Remote Hub', label: 'Centro remoto' },
+  { value: 'Warehouse', label: 'Almacén' },
+]
+
+const locationTypeLabels = Object.fromEntries(
+  locationTypeOptions.map((option) => [option.value, option.label]),
+)
 
 const emptyLocation = {
   id: '',
@@ -23,7 +42,7 @@ const emptyLocation = {
   pais: '',
   latitud: '',
   longitud: '',
-  tipo: locationTypes[0],
+  tipo: locationTypeOptions[0].value,
 }
 
 function Icon({ name, className = '' }) {
@@ -52,7 +71,7 @@ function getCompanyLocations(user) {
     pais: location.pais || location.country || '',
     latitud: location.latitud ?? location.latitude ?? '',
     longitud: location.longitud ?? location.longitude ?? '',
-    tipo: location.tipo || location.label || location.type || locationTypes[0],
+    tipo: location.tipo || location.label || location.type || locationTypeOptions[0].value,
   }))
 }
 
@@ -177,7 +196,7 @@ export default function CompanyProfileSettings() {
     const longitude = Number(locationDraft.longitud)
 
     if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
-      setErrorMessage('La latitud y longitud deben ser valores numericos.')
+      setErrorMessage('La latitud y longitud deben ser valores numéricos.')
       return
     }
 
@@ -243,8 +262,8 @@ export default function CompanyProfileSettings() {
     <main className="company-profile-page">
       <div className="container company-profile-shell">
         <header className="company-profile-header">
-          <h1>Company Profile Settings</h1>
-          <p>Manage your organization's public information and global office presence.</p>
+          <h1>Configuración del perfil de empresa</h1>
+          <p>Gestiona la información pública de tu organización y la presencia de sus sedes.</p>
         </header>
 
         <form className="company-profile-form" id="company-profile-form" onSubmit={handleSubmit}>
@@ -252,13 +271,13 @@ export default function CompanyProfileSettings() {
             <div className="company-profile-section-title">
               <div>
                 <Icon name="business" className="company-profile-section-icon" />
-                <h2>General Information</h2>
+                <h2>Información general</h2>
               </div>
             </div>
 
             <div className="company-profile-grid">
               <label className="company-profile-field" htmlFor="nombreEmpresa">
-                <span>Company Name</span>
+                <span>Nombre de la empresa</span>
                 <input
                   id="nombreEmpresa"
                   name="nombreEmpresa"
@@ -281,11 +300,11 @@ export default function CompanyProfileSettings() {
                     required
                   >
                     <option value="" disabled>
-                      Select a sector
+                      Selecciona un sector
                     </option>
                     {sectors.map((sector) => (
                       <option key={sector} value={sector}>
-                        {sector}
+                        {sectorLabels[sector] || sector}
                       </option>
                     ))}
                   </select>
@@ -294,7 +313,7 @@ export default function CompanyProfileSettings() {
               </label>
 
               <label className="company-profile-field company-profile-full" htmlFor="email">
-                <span>Email</span>
+                <span>Correo electrónico</span>
                 <input
                   id="email"
                   name="email"
@@ -304,24 +323,24 @@ export default function CompanyProfileSettings() {
                   onChange={handleChange}
                   required
                 />
-                <small>This email will be used for applicant communications.</small>
+                <small>Este correo se usará para comunicarte con las personas candidatas.</small>
               </label>
 
               <label
                 className="company-profile-field company-profile-full"
                 htmlFor="descripcionEmpresa"
               >
-                <span>Company Description</span>
+                <span>Descripción de la empresa</span>
                 <textarea
                   id="descripcionEmpresa"
                   name="descripcionEmpresa"
                   rows="5"
-                  placeholder="Tell students about your company culture, mission, and why they should join..."
+                  placeholder="Cuenta a los estudiantes cuál es la cultura de tu empresa, su misión y por qué deberían unirse..."
                   value={formData.descripcionEmpresa}
                   onChange={handleChange}
                   maxLength={700}
                 />
-                <small>{`${formData.descripcionEmpresa.length} / 700 characters`}</small>
+                <small>{`${formData.descripcionEmpresa.length} / 700 caracteres`}</small>
               </label>
             </div>
           </section>
@@ -330,7 +349,7 @@ export default function CompanyProfileSettings() {
             <div className="company-profile-section-title">
               <div>
                 <Icon name="location_on" className="company-profile-section-icon" />
-                <h2>Office Locations</h2>
+                <h2>Ubicaciones de la empresa</h2>
               </div>
 
               <button
@@ -339,7 +358,7 @@ export default function CompanyProfileSettings() {
                 onClick={handleOpenLocationForm}
               >
                 <Icon name="add" className="company-profile-button-icon" />
-                Add Location
+                Añadir ubicación
               </button>
             </div>
 
@@ -359,7 +378,9 @@ export default function CompanyProfileSettings() {
                         <div className="company-profile-location-meta">
                           <span>Lat: {location.latitud}</span>
                           <span>Long: {location.longitud}</span>
-                          <span className="company-profile-location-type">{location.tipo}</span>
+                          <span className="company-profile-location-type">
+                            {locationTypeLabels[location.tipo] || location.tipo}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -369,7 +390,7 @@ export default function CompanyProfileSettings() {
                         type="button"
                         className="company-profile-icon-button"
                         onClick={() => handleEditLocation(location)}
-                        aria-label={`Edit ${location.nombre}`}
+                        aria-label={`Editar ${location.nombre}`}
                       >
                         <Icon name="edit" />
                       </button>
@@ -377,7 +398,7 @@ export default function CompanyProfileSettings() {
                         type="button"
                         className="company-profile-icon-button danger"
                         onClick={() => handleDeleteLocation(location.id)}
-                        aria-label={`Delete ${location.nombre}`}
+                        aria-label={`Eliminar ${location.nombre}`}
                       >
                         <Icon name="delete" />
                       </button>
@@ -387,7 +408,7 @@ export default function CompanyProfileSettings() {
               ) : (
                 <div className="company-profile-empty-state">
                   <Icon name="add_location_alt" />
-                  <p>Add at least one location to show students where your teams work.</p>
+                  <p>Añade al menos una ubicación para mostrar a los estudiantes dónde trabaja tu equipo.</p>
                 </div>
               )}
 
@@ -395,48 +416,48 @@ export default function CompanyProfileSettings() {
                 <div className="company-profile-location-editor">
                   <h3>
                     <Icon name={editingLocationId ? 'edit_location_alt' : 'add_circle'} />
-                    {editingLocationId ? 'Edit Location Details' : 'New Location Details'}
+                    {editingLocationId ? 'Editar ubicación' : 'Nueva ubicación'}
                   </h3>
 
                   <div className="company-profile-location-grid">
                     <label className="company-profile-field compact" htmlFor="location-name">
-                      <span>Name</span>
+                      <span>Nombre</span>
                       <input
                         id="location-name"
                         name="nombre"
                         type="text"
-                        placeholder="e.g. Engineering Hub"
+                        placeholder="Ej. Hub de Ingeniería"
                         value={locationDraft.nombre}
                         onChange={handleLocationChange}
                       />
                     </label>
 
                     <label className="company-profile-field compact" htmlFor="location-city">
-                      <span>City</span>
+                      <span>Ciudad</span>
                       <input
                         id="location-city"
                         name="ciudad"
                         type="text"
-                        placeholder="London"
+                        placeholder="Madrid"
                         value={locationDraft.ciudad}
                         onChange={handleLocationChange}
                       />
                     </label>
 
                     <label className="company-profile-field compact" htmlFor="location-country">
-                      <span>Country</span>
+                      <span>País</span>
                       <input
                         id="location-country"
                         name="pais"
                         type="text"
-                        placeholder="United Kingdom"
+                        placeholder="España"
                         value={locationDraft.pais}
                         onChange={handleLocationChange}
                       />
                     </label>
 
                     <label className="company-profile-field compact" htmlFor="location-latitude">
-                      <span>Latitude</span>
+                      <span>Latitud</span>
                       <input
                         id="location-latitude"
                         name="latitud"
@@ -449,7 +470,7 @@ export default function CompanyProfileSettings() {
                     </label>
 
                     <label className="company-profile-field compact" htmlFor="location-longitude">
-                      <span>Longitude</span>
+                      <span>Longitud</span>
                       <input
                         id="location-longitude"
                         name="longitud"
@@ -462,7 +483,7 @@ export default function CompanyProfileSettings() {
                     </label>
 
                     <label className="company-profile-field compact" htmlFor="location-type">
-                      <span>Label</span>
+                      <span>Tipo</span>
                       <div className="company-profile-select-wrap">
                         <select
                           id="location-type"
@@ -470,9 +491,9 @@ export default function CompanyProfileSettings() {
                           value={locationDraft.tipo}
                           onChange={handleLocationChange}
                         >
-                          {locationTypes.map((type) => (
-                            <option key={type} value={type}>
-                              {type}
+                          {locationTypeOptions.map((type) => (
+                            <option key={type.value} value={type.value}>
+                              {type.label}
                             </option>
                           ))}
                         </select>
@@ -482,11 +503,19 @@ export default function CompanyProfileSettings() {
                   </div>
 
                   <div className="company-profile-location-editor-actions">
-                    <button type="button" className="company-profile-text-button" onClick={handleCancelLocation}>
-                      Cancel
+                    <button
+                      type="button"
+                      className="company-profile-text-button"
+                      onClick={handleCancelLocation}
+                    >
+                      Cancelar
                     </button>
-                    <button type="button" className="company-profile-light-button" onClick={handleSaveLocation}>
-                      Save Location
+                    <button
+                      type="button"
+                      className="company-profile-light-button"
+                      onClick={handleSaveLocation}
+                    >
+                      Guardar ubicación
                     </button>
                   </div>
                 </div>
@@ -512,7 +541,7 @@ export default function CompanyProfileSettings() {
               onClick={handleReset}
               disabled={isSaving}
             >
-              Discard Changes
+              Descartar cambios
             </button>
             <button
               type="submit"
@@ -521,7 +550,7 @@ export default function CompanyProfileSettings() {
               disabled={isSaving}
             >
               <Icon name="save" className="company-profile-button-icon" />
-              {isSaving ? 'Saving...' : 'Save Profile Changes'}
+              {isSaving ? 'Guardando...' : 'Guardar cambios del perfil'}
             </button>
           </div>
         </div>

@@ -17,14 +17,20 @@ import {
 import { updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
 
-const universities = ['Stanford University', 'MIT', 'UC Berkeley', 'Other']
+const universities = ['Stanford University', 'MIT', 'UC Berkeley', 'Otra']
 
 const careerFocusOptions = [
-  'Software Engineering',
-  'Product Design',
-  'Digital Marketing',
+  'Ingeniería de software',
+  'Diseño de producto',
+  'Marketing digital',
   'FinTech',
 ]
+
+const careerFocusLabels = {
+  'Software Engineering': 'Ingeniería de software',
+  'Product Design': 'Diseño de producto',
+  'Digital Marketing': 'Marketing digital',
+}
 
 function Icon({ name, className = '' }) {
   return (
@@ -322,7 +328,9 @@ export default function StudentProfileSettings() {
       }
 
       setStatusMessage(
-        uploadedImageUrl ? 'Profile and image saved successfully.' : 'Profile saved successfully.',
+        uploadedImageUrl
+          ? 'Perfil e imagen guardados correctamente.'
+          : 'Perfil guardado correctamente.',
       )
     } catch (error) {
       setErrorMessage(error.message || 'No se pudo guardar el perfil.')
@@ -337,13 +345,13 @@ export default function StudentProfileSettings() {
         <section className="student-profile-header">
           <div className="student-profile-avatar-wrap">
             <div className="student-profile-avatar">
-              <img src={displayedProfileImage} alt="Profile" />
+              <img src={displayedProfileImage} alt="Perfil" />
             </div>
             <button
               type="button"
               className="student-profile-camera-button"
               onClick={handleImageButtonClick}
-              aria-label="Upload profile photo"
+              aria-label="Subir foto de perfil"
               disabled={isSaving}
             >
               <Icon name="photo_camera" className="student-profile-camera-icon" />
@@ -357,9 +365,9 @@ export default function StudentProfileSettings() {
             />
           </div>
 
-          <h2>Student Profile</h2>
-          <p>Update your information and keep your student profile synced with Firebase.</p>
-          {selectedImage ? <p>Selected image ready to upload when you save the profile.</p> : null}
+          <h2>Perfil del estudiante</h2>
+          <p>Actualiza tu información y mantén tu perfil sincronizado con Firebase.</p>
+          {selectedImage ? <p>La imagen seleccionada se subirá cuando guardes el perfil.</p> : null}
         </section>
 
         <section className="student-profile-card">
@@ -367,11 +375,11 @@ export default function StudentProfileSettings() {
             <form className="student-profile-form" onSubmit={handleSubmit} id="student-profile-form">
               <div className="student-profile-grid">
                 <label className="student-profile-field">
-                  <span>Name</span>
+                  <span>Nombre</span>
                   <input
                     name="nombre"
                     type="text"
-                    placeholder="e.g. Alex"
+                    placeholder="Ej. Alex"
                     value={formData.nombre}
                     onChange={handleChange}
                     required
@@ -379,11 +387,11 @@ export default function StudentProfileSettings() {
                 </label>
 
                 <label className="student-profile-field">
-                  <span>Surname</span>
+                  <span>Apellidos</span>
                   <input
                     name="apellido"
                     type="text"
-                    placeholder="e.g. Johnson"
+                    placeholder="Ej. Johnson"
                     value={formData.apellido}
                     onChange={handleChange}
                     required
@@ -392,21 +400,21 @@ export default function StudentProfileSettings() {
               </div>
 
               <label className="student-profile-field">
-                <span>Bio</span>
+                <span>Biografía</span>
                 <textarea
                   name="bio"
                   rows="4"
-                  placeholder="Tell us about your background, interests, and goals..."
+                  placeholder="Cuéntanos sobre tu trayectoria, intereses y objetivos..."
                   value={formData.bio}
                   onChange={handleChange}
                   maxLength={300}
                 />
-                <small>{`${formData.bio.length} / 300 characters`}</small>
+                <small>{`${formData.bio.length} / 300 caracteres`}</small>
               </label>
 
               <div className="student-profile-grid">
                 <label className="student-profile-field">
-                  <span>University</span>
+                  <span>Universidad</span>
                   <div className="student-profile-select-wrap">
                     <select
                       name="universidad"
@@ -415,7 +423,7 @@ export default function StudentProfileSettings() {
                       required
                     >
                       <option value="" disabled>
-                        Select your institution
+                        Selecciona tu institución
                       </option>
                       {universityOptions.map((university) => (
                         <option key={university} value={university}>
@@ -441,7 +449,7 @@ export default function StudentProfileSettings() {
                       </option>
                       {focusOptions.map((option) => (
                         <option key={option} value={option}>
-                          {option}
+                          {careerFocusLabels[option] || option}
                         </option>
                       ))}
                     </select>
@@ -453,11 +461,11 @@ export default function StudentProfileSettings() {
 
             <section className="student-profile-cv-panel">
               <div className="student-profile-cv-copy">
-                <p className="student-profile-cv-eyebrow">Curriculum Vitae</p>
-                <h3>Sube tu CV o crealo con IA</h3>
+                <p className="student-profile-cv-eyebrow">Currículum vitae</p>
+                <h3>Sube tu CV o créalo con IA</h3>
                 <p>
                   Guarda un PDF en tu perfil o responde unas preguntas para que la IA prepare una
-                  version profesional y lista para descargar.
+                  versión profesional y lista para descargar.
                 </p>
               </div>
 
@@ -530,7 +538,7 @@ export default function StudentProfileSettings() {
               onClick={handleReset}
               disabled={isBusy}
             >
-              Reset Changes
+              Restablecer cambios
             </button>
             <button
               type="submit"
@@ -539,7 +547,7 @@ export default function StudentProfileSettings() {
               disabled={isBusy}
             >
               <Icon name="save" className="student-profile-save-icon" />
-              {isSaving ? 'Saving...' : 'Save Profile'}
+              {isSaving ? 'Guardando...' : 'Guardar perfil'}
             </button>
           </div>
 
@@ -562,7 +570,7 @@ export default function StudentProfileSettings() {
                 <p className="student-profile-cv-eyebrow">Asistente de CV</p>
                 <h3 id="student-profile-ai-cv-title">Crea tu CV con IA</h3>
                 <p>
-                  Cuanta mas informacion real compartas, mejor podra estructurar la IA un CV
+                  Cuanta más información real compartas, mejor podrá estructurar la IA un CV
                   profesional y honesto.
                 </p>
               </div>

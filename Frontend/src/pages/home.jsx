@@ -14,10 +14,10 @@ const quickFilters = [
 
 const categories = [
   { icon: 'campaign', title: 'Marketing' },
-  { icon: 'engineering', title: 'Ingenieria' },
-  { icon: 'palette', title: 'Diseno' },
+  { icon: 'engineering', title: 'Ingeniería' },
+  { icon: 'palette', title: 'Diseño' },
   { icon: 'payments', title: 'Ventas' },
-  { icon: 'business_center', title: 'Administracion' },
+  { icon: 'business_center', title: 'Administración' },
   { icon: 'code', title: 'IT & Software' },
 ]
 
@@ -47,11 +47,11 @@ export default function Home() {
         <section className="hero-section">
           <div className="container hero-content">
             <h1>
-              {'Encuentra las practicas'}
+              {'Encuentra las prácticas'}
               <br className="hero-break" /> {'de tus '}<span>{'sueños'}</span>
             </h1>
             <p>
-              {'InternHub conecta talento joven con empresas reales, procesos rapidos y '}
+              {'InternHub conecta talento joven con empresas reales, procesos rápidos y '}
               {'oportunidades pensadas para crecer.'}
             </p>
 
@@ -64,7 +64,7 @@ export default function Home() {
 
                 <label className="search-field">
                   <Icon name="location_on" className="search-icon" />
-                  <input type="text" placeholder="Ciudad o codigo postal" readOnly />
+                  <input type="text" placeholder="Ciudad o código postal" readOnly />
                 </label>
 
                 <Link to={ROUTES.internships} className="primary-button search-button">
@@ -74,7 +74,7 @@ export default function Home() {
             </div>
 
             <div className="quick-filters">
-              <span className="quick-filters-label">{'Filtros rapidos:'}</span>
+              <span className="quick-filters-label">{'Filtros rápidos:'}</span>
               {quickFilters.map((filter) => (
                 <Link key={filter.label} to={ROUTES.internships} className="filter-pill">
                   <Icon name={filter.icon} className="filter-pill-icon" />
@@ -89,10 +89,10 @@ export default function Home() {
           <div className="container">
             <div className="section-heading">
               <div>
-                <h2>{'Explora por categoria'}</h2>
-                <p>{'Descubre oportunidades en el sector que mas te motive'}</p>
+                <h2>{'Explora por categoría'}</h2>
+                <p>{'Descubre oportunidades en el sector que más te motive'}</p>
               </div>
-              <Link to={ROUTES.internships}>{'Ver todas las categorias'}</Link>
+              <Link to={ROUTES.internships}>{'Ver todas las categorías'}</Link>
             </div>
 
             <div className="category-grid" id="categorias">
@@ -110,7 +110,7 @@ export default function Home() {
 
         <section className="featured-section">
           <div className="container">
-            <h2 className="featured-title">{'Practicas destacadas'}</h2>
+            <h2 className="featured-title">{'Prácticas destacadas'}</h2>
 
             <div className="internship-grid">
               {featuredInternships.map((internship) => (
@@ -141,7 +141,7 @@ export default function Home() {
                   <div className="internship-footer">
                     <span>{internship.publishedAtLabel}</span>
                     <Link to={ROUTES.internshipDetail(internship.id)}>
-                      {'Ver mas'}
+                      {'Ver más'}
                       <Icon name="arrow_forward" className="meta-icon small" />
                     </Link>
                   </div>
@@ -162,9 +162,9 @@ export default function Home() {
             <div className="container">
               <div className="company-cta-card">
                 <div className="company-cta-copy">
-                  <h2>{'Buscas el mejor talento joven?'}</h2>
+                  <h2>{'¿Buscas el mejor talento joven?'}</h2>
                   <p>
-                    {'Publica tu oferta hoy y deja que estudiantes, profesores y recruiters '}
+                    {'Publica tu oferta hoy y deja que estudiantes, profesores y reclutadores '}
                     {'se muevan por una app conectada de punta a punta.'}
                   </p>
                 </div>
@@ -175,7 +175,7 @@ export default function Home() {
                     Publicar una oferta
                   </Link>
                   <Link to={secondaryActionTo} className="secondary-button">
-                    {currentUser ? 'Ir a mi cuenta' : 'Iniciar sesion'}
+                    {currentUser ? 'Ir a mi cuenta' : 'Iniciar sesión'}
                   </Link>
                 </div>
               </div>
