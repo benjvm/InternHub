@@ -1,4 +1,14 @@
-import { addDoc, collection, doc, getDoc, getDocs, serverTimestamp } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  where,
+} from 'firebase/firestore'
 import { db } from '../firebase'
 
 const OFFERS_COLLECTION = 'offers'
@@ -109,4 +119,36 @@ export async function getOfferById(offerId) {
   }
 
   return mapOfferDocument(snapshot)
+}
+
+export async function getOffersByCompanyId(companyId) {
+  const sanitizedCompanyId = companyId?.trim() ?? ''
+
+  if (!sanitizedCompanyId) {
+    return []
+  }
+
+  const offersQuery = query(
+    collection(db, OFFERS_COLLECTION),
+    where('companyId', '==', sanitizedCompanyId),
+  )
+
+  const snapshot = await getDocs(offersQuery)
+  const offers = snapshot.docs.map(mapOfferDocument)
+
+  return offers.sort((left, right) => {
+    const leftSeconds = left.createdAt?.seconds ?? 0
+    const rightSeconds = right.createdAt?.seconds ?? 0
+    return rightSeconds - leftSeconds
+  })
+}
+
+export async function deleteOffer(offerId) {
+  const sanitizedOfferId = offerId?.trim() ?? ''
+
+  if (!sanitizedOfferId) {
+    throw new Error('Se necesita una oferta válida para eliminarla.')
+  }
+
+  await deleteDoc(doc(db, OFFERS_COLLECTION, sanitizedOfferId))
 }

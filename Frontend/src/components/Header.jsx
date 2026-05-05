@@ -45,7 +45,8 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            {isStudent ? <Link to={ROUTES.studentApplications}>Candidaturas</Link> : null}
+            {isStudent ? <Link to={ROUTES.studentApplications}>Panel estudiante</Link> : null}
+            {isCompany ? <Link to={ROUTES.companyCandidates}>Candidatos</Link> : null}
             {isCompany ? <Link to={ROUTES.companyProfile}>Perfil empresa</Link> : null}
             {isCompany ? <Link to={ROUTES.postOffer}>Publicar oferta</Link> : null}
             {isStudent ? <Link to={ROUTES.studentProfile}>Mi perfil</Link> : null}

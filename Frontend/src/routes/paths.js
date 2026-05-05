@@ -8,6 +8,7 @@ export const ROUTES = {
   internships: '/internships',
   internshipDetail: (offerId = ':offerId') => `/internships/${offerId}`,
   studentApplications: '/student/candidaturas',
+  companyCandidates: '/company/candidaturas',
   postOffer: '/offers/new',
   studentProfile: '/profile/student',
   companyProfile: '/profile/company',
@@ -19,7 +20,7 @@ export function getDefaultRouteForRole(role) {
     case 1:
       return ROUTES.studentProfile
     case 2:
-      return ROUTES.companyProfile
+      return ROUTES.companyCandidates
     case 3:
       return ROUTES.teacherProfile
     default:
