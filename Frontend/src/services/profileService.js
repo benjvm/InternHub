@@ -31,7 +31,7 @@ export async function updateUserProfile(uid, profileData) {
 
 export async function deleteUserAccount(uid) {
   if (!uid) {
-    throw new Error('No authenticated user was found.')
+    throw new Error('No se encontró un usuario autenticado.')
   }
 
   await deleteDoc(doc(db, USERS_COLLECTION, uid))
