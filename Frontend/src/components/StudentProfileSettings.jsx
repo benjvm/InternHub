@@ -14,7 +14,10 @@ import {
   generateStudentCvContent,
   getStudentCvFileName,
 } from '../services/AiService'
-import { updateUserProfile } from '../services/profileService'
+import { logoutUser } from '../services/authService'
+import { ROUTES } from '../routes/paths'
+import { useRouter } from '../routes/router'
+import { deleteUserAccount, updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
 
 const universities = ['Stanford University', 'MIT', 'UC Berkeley', 'Otra']
@@ -61,10 +64,12 @@ function downloadBlobFile(blob, fileName) {
 
 export default function StudentProfileSettings() {
   const { currentUser, refreshUserProfile } = useUser()
+  const { navigate } = useRouter()
   const fileInputRef = useRef(null)
   const cvInputRef = useRef(null)
   const cvQuestions = buildStudentCvQuestions()
   const [isSaving, setIsSaving] = useState(false)
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [isUploadingCv, setIsUploadingCv] = useState(false)
   const [isGeneratingCv, setIsGeneratingCv] = useState(false)
   const [isCvModalOpen, setIsCvModalOpen] = useState(false)
@@ -120,7 +125,7 @@ export default function StudentProfileSettings() {
   )
   const displayedProfileImage = selectedImagePreview || getProfileImageUrl(currentUser)
   const currentCvUrl = getCvDocumentUrl(currentUser)
-  const isBusy = isSaving || isUploadingCv || isGeneratingCv
+  const isBusy = isSaving || isUploadingCv || isGeneratingCv || isDeletingAccount
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -339,6 +344,31 @@ export default function StudentProfileSettings() {
     }
   }
 
+  async function handleDeleteAccount() {
+    const confirmed = window.confirm(
+      '¿Seguro que quieres eliminar tu cuenta? Esta acción borrará tu perfil y no se puede deshacer.',
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    setErrorMessage('')
+    setStatusMessage('')
+    setCvErrorMessage('')
+    setCvStatusMessage('')
+    setIsDeletingAccount(true)
+
+    try {
+      await deleteUserAccount(currentUser?.uid)
+      await logoutUser()
+      navigate(ROUTES.home, { replace: true })
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo eliminar la cuenta.')
+      setIsDeletingAccount(false)
+    }
+  }
+
   return (
     <main className="student-profile-page">
       <div className="container student-profile-shell">
@@ -539,6 +569,14 @@ export default function StudentProfileSettings() {
               disabled={isBusy}
             >
               Restablecer cambios
+            </button>
+            <button
+              type="button"
+              className="student-profile-delete-button"
+              onClick={handleDeleteAccount}
+              disabled={isBusy}
+            >
+              {isDeletingAccount ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
             </button>
             <button
               type="submit"

@@ -1,4 +1,4 @@
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { deleteDoc, doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 
 const USERS_COLLECTION = 'users'
@@ -27,4 +27,12 @@ export async function updateUserProfile(uid, profileData) {
   )
 
   return sanitizedProfile
+}
+
+export async function deleteUserAccount(uid) {
+  if (!uid) {
+    throw new Error('No authenticated user was found.')
+  }
+
+  await deleteDoc(doc(db, USERS_COLLECTION, uid))
 }

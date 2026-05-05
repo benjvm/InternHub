@@ -162,6 +162,7 @@
 .company-profile-add-location-button,
 .company-profile-light-button,
 .company-profile-save-button,
+.company-profile-delete-button,
 .company-profile-reset-button,
 .company-profile-text-button,
 .company-profile-icon-button {
@@ -426,7 +427,8 @@
 }
 
 .company-profile-reset-button,
-.company-profile-save-button {
+.company-profile-save-button,
+.company-profile-delete-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -450,6 +452,18 @@
   box-shadow: 0 16px 30px rgba(255, 140, 0, 0.22);
 }
 
+.company-profile-delete-button {
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+}
+
+.company-profile-delete-button:hover {
+  border-color: #fca5a5;
+  background: #ffe4e6;
+  transform: translateY(-1px);
+}
+
 .company-profile-button-icon {
   font-size: 1.15rem;
 }
@@ -457,6 +471,7 @@
 .company-profile-add-location-button:disabled,
 .company-profile-light-button:disabled,
 .company-profile-save-button:disabled,
+.company-profile-delete-button:disabled,
 .company-profile-reset-button:disabled,
 .company-profile-text-button:disabled {
   cursor: not-allowed;
@@ -485,6 +500,7 @@
 
   .company-profile-add-location-button,
   .company-profile-light-button,
+  .company-profile-delete-button,
   .company-profile-reset-button,
   .company-profile-save-button,
   .company-profile-text-button {

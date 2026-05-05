@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { deleteField } from 'firebase/firestore'
 import '../assets/styles/companyProfileSettings.css'
-import { updateUserProfile } from '../services/profileService'
+import { logoutUser } from '../services/authService'
+import { ROUTES } from '../routes/paths'
+import { useRouter } from '../routes/router'
+import { deleteUserAccount, updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
 
 const sectorOptions = [
@@ -98,7 +101,9 @@ function cleanLocation(location) {
 
 export default function CompanyProfileSettings() {
   const { currentUser, refreshUserProfile } = useUser()
+  const { navigate } = useRouter()
   const [isSaving, setIsSaving] = useState(false)
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [formData, setFormData] = useState(() => getInitialFormData(currentUser))
@@ -255,6 +260,29 @@ export default function CompanyProfileSettings() {
       setErrorMessage(error.message || 'No se pudo guardar el perfil de empresa.')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  async function handleDeleteAccount() {
+    const confirmed = window.confirm(
+      '¿Seguro que quieres eliminar tu cuenta? Esta acción borrará tu perfil y no se puede deshacer.',
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    setErrorMessage('')
+    setStatusMessage('')
+    setIsDeletingAccount(true)
+
+    try {
+      await deleteUserAccount(currentUser?.uid)
+      await logoutUser()
+      navigate(ROUTES.home, { replace: true })
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo eliminar la cuenta.')
+      setIsDeletingAccount(false)
     }
   }
 
@@ -539,15 +567,23 @@ export default function CompanyProfileSettings() {
               type="button"
               className="company-profile-reset-button"
               onClick={handleReset}
-              disabled={isSaving}
+              disabled={isSaving || isDeletingAccount}
             >
               Descartar cambios
+            </button>
+            <button
+              type="button"
+              className="company-profile-delete-button"
+              onClick={handleDeleteAccount}
+              disabled={isSaving || isDeletingAccount}
+            >
+              {isDeletingAccount ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
             </button>
             <button
               type="submit"
               form="company-profile-form"
               className="company-profile-save-button"
-              disabled={isSaving}
+              disabled={isSaving || isDeletingAccount}
             >
               <Icon name="save" className="company-profile-button-icon" />
               {isSaving ? 'Guardando...' : 'Guardar cambios del perfil'}

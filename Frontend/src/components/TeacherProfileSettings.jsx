@@ -5,7 +5,10 @@ import {
   getProfileImageUrl,
   uploadProfileImage,
 } from '../services/cloudinaryService'
-import { updateUserProfile } from '../services/profileService'
+import { logoutUser } from '../services/authService'
+import { ROUTES } from '../routes/paths'
+import { useRouter } from '../routes/router'
+import { deleteUserAccount, updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
 
 const educationalAreas = [
@@ -45,8 +48,10 @@ function getInitialFormData(user) {
 
 export default function TeacherProfileSettings() {
   const { currentUser, refreshUserProfile } = useUser()
+  const { navigate } = useRouter()
   const fileInputRef = useRef(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [selectedImage, setSelectedImage] = useState(null)
@@ -162,6 +167,29 @@ export default function TeacherProfileSettings() {
     }
   }
 
+  async function handleDeleteAccount() {
+    const confirmed = window.confirm(
+      '¿Seguro que quieres eliminar tu cuenta? Esta acción borrará tu perfil y no se puede deshacer.',
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    setErrorMessage('')
+    setStatusMessage('')
+    setIsDeletingAccount(true)
+
+    try {
+      await deleteUserAccount(currentUser?.uid)
+      await logoutUser()
+      navigate(ROUTES.home, { replace: true })
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo eliminar la cuenta.')
+      setIsDeletingAccount(false)
+    }
+  }
+
   return (
     <main className="teacher-profile-page">
       <section className="container teacher-profile-hero">
@@ -270,7 +298,7 @@ export default function TeacherProfileSettings() {
               type="submit"
               form="teacher-profile-form"
               className="teacher-profile-save-button"
-              disabled={isSaving}
+              disabled={isSaving || isDeletingAccount}
             >
               <Icon name="save" className="teacher-profile-save-icon" />
               {isSaving ? 'Guardando...' : 'Guardar cambios'}
@@ -279,9 +307,17 @@ export default function TeacherProfileSettings() {
               type="button"
               className="teacher-profile-reset-button"
               onClick={handleReset}
-              disabled={isSaving}
+              disabled={isSaving || isDeletingAccount}
             >
               Descartar
+            </button>
+            <button
+              type="button"
+              className="teacher-profile-delete-button"
+              onClick={handleDeleteAccount}
+              disabled={isSaving || isDeletingAccount}
+            >
+              {isDeletingAccount ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
             </button>
           </div>
 
