@@ -375,6 +375,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
+  margin-top: 20px;
 }
 
 .internship-card {
@@ -476,7 +477,7 @@
 }
 
 .company-cta-section {
-  padding: 1rem 0 4rem;
+  padding: 4rem 0 4rem;
 }
 
 .company-cta-card {
@@ -488,7 +489,6 @@
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 247, 237, 0.95));
   border: 1px solid rgba(255, 140, 0, 0.12);
-  box-shadow: 0 24px 46px rgba(255, 140, 0, 0.08);
 }
 
 .company-cta-actions {

@@ -94,9 +94,18 @@ function CandidateRow({
       </div>
 
       <div className="company-candidates-row-actions" onClick={(event) => event.stopPropagation()}>
-        <button type="button" className="company-candidates-ghost-button" disabled>
-          Ver perfil
-        </button>
+        {application.studentId ? (
+          <Link
+            to={ROUTES.publicStudentProfile(application.studentId)}
+            className="company-candidates-ghost-button"
+          >
+            Ver perfil
+          </Link>
+        ) : (
+          <button type="button" className="company-candidates-ghost-button" disabled>
+            Ver perfil
+          </button>
+        )}
         <button
           type="button"
           className="company-candidates-accept-button"

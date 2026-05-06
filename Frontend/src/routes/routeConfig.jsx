@@ -10,6 +10,7 @@ import PostOfferPage from '../pages/postOffer'
 import StudentApplicationsPage from '../pages/studentApplications'
 import CompanyCandidatesPage from '../pages/companyCandidates'
 import StudentProfileSettingsPage from '../pages/studentProfileSettings'
+import PublicStudentProfilePage from '../pages/publicStudentProfile'
 import CompanyProfileSettingsPage from '../pages/companyProfileSettings'
 import TeacherProfileSettingsPage from '../pages/teacherProfileSettings'
 import { ROUTES } from './paths'
@@ -41,6 +42,12 @@ export const appRoutes = [
     component: StudentProfileSettingsPage,
     protected: true,
     roles: [1],
+  },
+  {
+    path: ROUTES.publicStudentProfile(),
+    component: PublicStudentProfilePage,
+    protected: true,
+    roles: [2],
   },
   {
     path: ROUTES.companyProfile,

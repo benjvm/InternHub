@@ -15,6 +15,11 @@ import {
   getStudentCvFileName,
 } from '../services/AiService'
 import { logoutUser } from '../services/authService'
+import {
+  generateFileHash,
+  mapGeneratedCvDataToParsedProfile,
+  processStudentCV,
+} from '../services/cvParsingService'
 import { ROUTES } from '../routes/paths'
 import { useRouter } from '../routes/router'
 import { deleteUserAccount, updateUserProfile } from '../services/profileService'
@@ -221,19 +226,22 @@ export default function StudentProfileSettings() {
     }
 
     setCvErrorMessage('')
-    setCvStatusMessage('')
+    setCvStatusMessage('Analizando CV...')
     setIsUploadingCv(true)
 
     try {
-      const uploadResult = await uploadCvPdf(selectedCvFile, {
-        publicId: `student-cv-${currentUser?.uid}-${Date.now()}`,
-      })
+      const fileHash = await generateFileHash(selectedCvFile)
+      const shouldUploadNewVersion =
+        currentUser?.cvData?.cvHash !== fileHash || !currentCvUrl
+      const cvUpload = shouldUploadNewVersion
+        ? await uploadCvPdf(selectedCvFile, {
+            publicId: currentUser?.cvPublicId || `student-cv-${currentUser?.uid}`,
+          })
+        : null
 
-      await updateUserProfile(currentUser?.uid, {
-        cvUrl: uploadResult.url,
-        cvFileName: selectedCvFile.name,
-        cvPublicId: uploadResult.publicId,
-        cvUpdatedAt: new Date().toISOString(),
+      const processingResult = await processStudentCV(currentUser?.uid, selectedCvFile, {
+        fileHash,
+        cvUpload,
       })
 
       await refreshUserProfile(currentUser?.uid)
@@ -243,9 +251,14 @@ export default function StudentProfileSettings() {
         cvInputRef.current.value = ''
       }
 
-      setCvStatusMessage('El CV se ha subido y guardado correctamente.')
+      setCvStatusMessage(
+        processingResult.aiProcessingStatus === 'failed'
+          ? 'El CV se guardo y se extrajo el texto, pero el analisis automatico no estuvo disponible.'
+          : 'Perfil actualizado automaticamente.',
+      )
     } catch (error) {
       setCvErrorMessage(error.message || 'No se pudo subir el CV.')
+      setCvStatusMessage('')
     } finally {
       setIsUploadingCv(false)
     }
@@ -267,15 +280,16 @@ export default function StudentProfileSettings() {
       const generatedPdfFile = new File([pdfBlob], generatedFileName, {
         type: 'application/pdf',
       })
+      const fileHash = await generateFileHash(generatedPdfFile)
       const uploadResult = await uploadCvPdf(generatedPdfFile, {
-        publicId: `student-cv-${currentUser?.uid}-${Date.now()}`,
+        publicId: currentUser?.cvPublicId || `student-cv-${currentUser?.uid}`,
       })
+      const generatedParsedProfile = mapGeneratedCvDataToParsedProfile(generatedCvData, currentUser)
 
-      await updateUserProfile(currentUser?.uid, {
-        cvUrl: uploadResult.url,
-        cvFileName: generatedPdfFile.name,
-        cvPublicId: uploadResult.publicId,
-        cvUpdatedAt: new Date().toISOString(),
+      await processStudentCV(currentUser?.uid, generatedPdfFile, {
+        fileHash,
+        cvUpload: uploadResult,
+        preParsedProfile: generatedParsedProfile,
       })
 
       await refreshUserProfile(currentUser?.uid)
@@ -517,7 +531,7 @@ export default function StudentProfileSettings() {
                   disabled={isBusy || !selectedCvFile}
                 >
                   <Icon name="picture_as_pdf" className="student-profile-save-icon" />
-                  {isUploadingCv ? 'Guardando CV...' : 'Guardar CV'}
+                  {isUploadingCv ? 'Analizando CV...' : 'Guardar CV'}
                 </button>
 
                 <button

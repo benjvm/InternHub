@@ -11,6 +11,7 @@ export const ROUTES = {
   companyCandidates: '/company/candidaturas',
   postOffer: '/offers/new',
   studentProfile: '/profile/student',
+  publicStudentProfile: (studentId = ':studentId') => `/students/${studentId}/public-profile`,
   companyProfile: '/profile/company',
   teacherProfile: '/profile/teacher',
 }
