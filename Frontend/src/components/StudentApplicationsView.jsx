@@ -1,6 +1,6 @@
-import { getProfileImageUrl } from '../services/cloudinaryService'
 import { ROUTES } from '../routes/paths'
 import { Link } from '../routes/router'
+import StudentPanelSidebar from './StudentPanelSidebar'
 
 function Icon({ name, className = '' }) {
   return (
@@ -32,16 +32,6 @@ function formatCreatedAt(createdAt) {
   }
 
   return 'Sin fecha'
-}
-
-function getStudentDisplayName(user) {
-  const fullName = [user?.nombre, user?.apellido].filter(Boolean).join(' ').trim()
-
-  if (fullName) {
-    return fullName
-  }
-
-  return user?.correo || user?.email || 'Estudiante'
 }
 
 function normalizeModality(modality) {
@@ -218,7 +208,9 @@ function SavedOfferCard({ offer }) {
       </div>
 
       <div className="student-applications-card-footer">
-        <span className="student-applications-chip">{translateModality(offer.modality) || 'Flexible'}</span>
+        <span className="student-applications-chip">
+          {translateModality(offer.modality) || 'Flexible'}
+        </span>
         <Link to={ROUTES.internshipDetail(offer.id)} className="student-applications-card-link">
           Ver detalles
         </Link>
@@ -241,11 +233,8 @@ export default function StudentApplicationsView({
   errorMessage,
 }) {
   const totalApplications = applications.length
-  const studentName = getStudentDisplayName(currentUser)
-  const profileImageUrl = getProfileImageUrl(currentUser)
 
-  const headingTitle =
-    activeSection === 'saved' ? 'Ofertas guardadas' : 'Mis candidaturas'
+  const headingTitle = activeSection === 'saved' ? 'Ofertas guardadas' : 'Mis candidaturas'
   const headingDescription =
     activeSection === 'saved'
       ? `Tienes ${savedOffers.length} oferta${savedOffers.length === 1 ? '' : 's'} guardada${
@@ -258,54 +247,7 @@ export default function StudentApplicationsView({
   return (
     <main className="student-applications-page">
       <div className="container student-applications-shell">
-        <aside className="student-applications-sidebar">
-          <Link to={ROUTES.studentProfile} className="student-applications-profile-card">
-            <div className="student-applications-profile-avatar">
-              <img src={profileImageUrl} alt={studentName} />
-            </div>
-            <div>
-              <h2>{studentName}</h2>
-              <p>Estudiante</p>
-            </div>
-          </Link>
-
-          <div className="student-applications-sidebar-menu">
-            <button
-              type="button"
-              className={`student-applications-sidebar-link ${
-                activeSection === 'applications' ? 'active' : ''
-              }`}
-              onClick={() => onSectionChange('applications')}
-            >
-              <Icon name="work" />
-              Mis candidaturas
-            </button>
-
-            <button
-              type="button"
-              className={`student-applications-sidebar-link ${
-                activeSection === 'saved' ? 'active' : ''
-              }`}
-              onClick={() => onSectionChange('saved')}
-            >
-              <Icon name="bookmark" />
-              Ofertas guardadas
-            </button>
-
-            <button
-              type="button"
-              className="student-applications-sidebar-link disabled"
-              disabled
-            >
-              <Icon name="settings" />
-              Configuración
-            </button>
-          </div>
-
-          <Link to={ROUTES.internships} className="student-applications-discover-link">
-            Buscar nuevas ofertas
-          </Link>
-        </aside>
+        <StudentPanelSidebar currentUser={currentUser} activeSection="applications" />
 
         <section className="student-applications-content">
           <header className="student-applications-heading">
@@ -313,6 +255,27 @@ export default function StudentApplicationsView({
             <h1>{headingTitle}</h1>
             <p>{headingDescription}</p>
           </header>
+
+          <div className="student-applications-filter-row">
+            <button
+              type="button"
+              className={`student-applications-filter-pill ${
+                activeSection === 'applications' ? 'active' : ''
+              }`}
+              onClick={() => onSectionChange('applications')}
+            >
+              Candidaturas
+            </button>
+            <button
+              type="button"
+              className={`student-applications-filter-pill ${
+                activeSection === 'saved' ? 'active' : ''
+              }`}
+              onClick={() => onSectionChange('saved')}
+            >
+              Guardadas
+            </button>
+          </div>
 
           {activeSection === 'applications' ? (
             <div className="student-applications-filter-row">

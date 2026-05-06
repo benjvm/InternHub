@@ -333,6 +333,31 @@ export async function getInternshipsByCompanyId(companyId) {
   return enrichInternships(internships)
 }
 
+export async function getInternshipsByStudentId(studentId) {
+  const sanitizedStudentId = normalizeText(studentId)
+
+  if (!sanitizedStudentId) {
+    return []
+  }
+
+  const internshipsQuery = query(
+    collection(db, INTERNSHIPS_COLLECTION),
+    where('studentId', '==', sanitizedStudentId),
+  )
+
+  const snapshot = await getDocs(internshipsQuery)
+  const internships = snapshot.docs
+    .map(mapInternshipDocument)
+    .sort((left, right) => getTimestampValue(right.createdAt) - getTimestampValue(left.createdAt))
+
+  const enrichedInternships = await enrichInternships(internships)
+
+  return enrichedInternships.map((internship) => ({
+    ...internship,
+    companyName: internship.offer?.companyName || internship.offer?.company || '',
+  }))
+}
+
 export async function getInternshipById(internshipId) {
   const sanitizedInternshipId = normalizeText(internshipId)
 

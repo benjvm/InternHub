@@ -1,0 +1,483 @@
+.student-internships-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 237, 213, 0.72), transparent 26%),
+    radial-gradient(circle at left center, rgba(220, 252, 231, 0.48), transparent 24%);
+}
+
+.student-internships-content {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.student-internships-layout {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.student-internships-topbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.student-internships-selector,
+.student-internships-summary-card,
+.student-internships-form-card,
+.student-internships-calendar-card,
+.student-internships-weekly-card,
+.student-internships-empty-state,
+.student-internships-week-card {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+}
+
+.student-internships-selector {
+  min-width: min(100%, 360px);
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem 1.1rem;
+}
+
+.student-internships-selector span,
+.student-internships-summary-grid span,
+.student-internships-progress-copy span,
+.student-internships-form label span,
+.student-internships-week-total span,
+.student-internships-existing-log dt {
+  color: #64748b;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.student-internships-selector select,
+.student-internships-form textarea,
+.student-internships-form input,
+.student-internships-form select {
+  width: 100%;
+  border: 1px solid #d8e1ec;
+  border-radius: 18px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+
+.student-internships-selector select,
+.student-internships-form input,
+.student-internships-form select {
+  min-height: 52px;
+  padding: 0 1rem;
+}
+
+.student-internships-form textarea {
+  padding: 1rem;
+  resize: vertical;
+}
+
+.student-internships-summary-card,
+.student-internships-form-card,
+.student-internships-calendar-card,
+.student-internships-weekly-card,
+.student-internships-empty-state {
+  padding: 1.5rem;
+}
+
+.student-internships-summary-head,
+.student-internships-form-head,
+.student-internships-calendar-head,
+.student-internships-progress-copy,
+.student-internships-calendar-actions,
+.student-internships-week-total,
+.student-internships-existing-log dl div,
+.student-internships-week-card li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.student-internships-summary-kicker {
+  margin: 0 0 0.35rem;
+  color: #ea580c;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.student-internships-summary-head h2,
+.student-internships-calendar-head h2,
+.student-internships-form-head h2,
+.student-internships-weekly-card h2,
+.student-internships-week-card h3,
+.student-internships-empty-state h3 {
+  margin: 0;
+  color: #0f172a;
+  letter-spacing: -0.04em;
+}
+
+.student-internships-summary-head p,
+.student-internships-calendar-head p,
+.student-internships-form-head p,
+.student-internships-weekly-card p,
+.student-internships-empty-state p,
+.student-internships-existing-log p,
+.student-internships-existing-log dd {
+  margin: 0;
+  color: #64748b;
+}
+
+.student-internships-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-internships-status-badge.activo {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.student-internships-status-badge.pendiente {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.student-internships-status-badge.completado {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.student-internships-status-badge.cancelado {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.student-internships-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.student-internships-summary-grid div {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border-radius: 22px;
+  background: #f8fafc;
+}
+
+.student-internships-summary-grid strong,
+.student-internships-progress-copy strong,
+.student-internships-existing-log dd,
+.student-internships-week-card strong {
+  color: #0f172a;
+}
+
+.student-internships-progress-block {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.student-internships-progress-bar {
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.student-internships-progress-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #ff8c00, #ea580c);
+}
+
+.student-internships-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.student-internships-copy-button,
+.student-internships-save-button,
+.student-internships-calendar-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.student-internships-copy-button {
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 16px;
+  background: rgba(15, 118, 110, 0.08);
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.student-internships-date-warning,
+.student-internships-existing-log {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border-radius: 22px;
+}
+
+.student-internships-date-warning {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.student-internships-existing-log {
+  display: grid;
+  gap: 1rem;
+  background: #f8fafc;
+}
+
+.student-internships-existing-log dl {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+}
+
+.student-internships-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.student-internships-form label {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.student-internships-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.student-internships-save-button {
+  min-height: 54px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff8c00, #ea580c);
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 18px 28px rgba(255, 140, 0, 0.18);
+}
+
+.student-internships-save-button:disabled,
+.student-internships-copy-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.student-internships-calendar-actions button {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.student-internships-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+}
+
+.student-internships-calendar-weekday {
+  padding: 0.8rem 0;
+  color: #64748b;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-internships-calendar-day {
+  position: relative;
+  min-height: 88px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.student-internships-calendar-day:hover {
+  transform: translateY(-1px);
+}
+
+.student-internships-calendar-day.muted {
+  color: #94a3b8;
+  background: #f8fafc;
+}
+
+.student-internships-calendar-day.active-range {
+  background: rgba(255, 140, 0, 0.08);
+  border-color: rgba(255, 140, 0, 0.16);
+}
+
+.student-internships-calendar-day.completed {
+  background: rgba(22, 163, 74, 0.12);
+  border-color: rgba(22, 163, 74, 0.24);
+  color: #166534;
+}
+
+.student-internships-calendar-day.selected {
+  box-shadow: inset 0 0 0 2px #ea580c;
+}
+
+.student-internships-calendar-check {
+  color: #16a34a;
+  font-size: 1.1rem;
+}
+
+.student-internships-calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.student-internships-calendar-legend div {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.student-internships-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+}
+
+.student-internships-legend-dot.active-range {
+  background: #fdba74;
+}
+
+.student-internships-legend-dot.completed {
+  background: #22c55e;
+}
+
+.student-internships-weekly-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.student-internships-week-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem;
+  background:
+    linear-gradient(180deg, rgba(255, 247, 237, 0.88), rgba(255, 255, 255, 0.96));
+}
+
+.student-internships-week-card ul {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.student-internships-week-card li {
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-transform: capitalize;
+}
+
+.student-internships-week-total {
+  padding-top: 0.2rem;
+}
+
+.student-internships-empty-state {
+  display: grid;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.student-internships-empty-state p {
+  max-width: 580px;
+  justify-self: center;
+  line-height: 1.7;
+}
+
+.student-internships-feedback.success {
+  margin: 0;
+  color: #15803d;
+  font-weight: 700;
+}
+
+@media (max-width: 1120px) {
+  .student-internships-summary-grid,
+  .student-internships-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .student-internships-topbar,
+  .student-internships-summary-head,
+  .student-internships-form-head,
+  .student-internships-calendar-head,
+  .student-internships-progress-copy,
+  .student-internships-existing-log dl div,
+  .student-internships-week-card li,
+  .student-internships-week-total {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .student-internships-selector {
+    min-width: 100%;
+  }
+
+  .student-internships-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .student-internships-calendar-grid {
+    gap: 0.2rem;
+  }
+
+  .student-internships-calendar-day {
+    min-height: 72px;
+    padding: 0.65rem;
+    border-radius: 16px;
+  }
+}

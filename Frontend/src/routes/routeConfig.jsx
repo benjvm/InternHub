@@ -8,6 +8,7 @@ import InternshipBoardPage from '../pages/internshipBoard'
 import JobDetailPage from '../pages/jobDetail'
 import PostOfferPage from '../pages/postOffer'
 import StudentApplicationsPage from '../pages/studentApplications'
+import StudentInternshipsPage from '../pages/studentInternships'
 import CompanyCandidatesPage from '../pages/companyCandidates'
 import CompanyInternshipsPage from '../pages/companyInternships'
 import StudentProfileSettingsPage from '../pages/studentProfileSettings'
@@ -29,6 +30,12 @@ export const appRoutes = [
   {
     path: ROUTES.studentApplications,
     component: StudentApplicationsPage,
+    protected: true,
+    roles: [1],
+  },
+  {
+    path: ROUTES.studentInternships,
+    component: StudentInternshipsPage,
     protected: true,
     roles: [1],
   },
