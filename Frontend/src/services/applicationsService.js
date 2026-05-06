@@ -15,6 +15,7 @@ import {
   getApplicationStatusLabel,
   normalizeApplicationStatus,
 } from './applicationStatus'
+import { createInternshipFromApplication } from './internshipService'
 import { getOffersByCompanyId } from './offerService'
 
 const APPLICATIONS_COLLECTION = 'applications'
@@ -215,4 +216,37 @@ export async function updateApplicationStatus(applicationId, nextStatus) {
   })
 
   return normalizedStatus
+}
+
+export async function acceptApplication(applicationData) {
+  const applicationId = applicationData?.id?.trim() ?? ''
+  const previousStatus = normalizeApplicationStatus(applicationData?.status)
+
+  if (!applicationId) {
+    throw new Error('Se necesita una candidatura válida para aceptar al candidato.')
+  }
+
+  const normalizedStatus = await updateApplicationStatus(
+    applicationId,
+    APPLICATION_STATUSES.accepted,
+  )
+
+  try {
+    const internship = await createInternshipFromApplication(applicationData)
+
+    return {
+      status: normalizedStatus,
+      internship,
+    }
+  } catch (error) {
+    if (previousStatus !== APPLICATION_STATUSES.accepted) {
+      try {
+        await updateApplicationStatus(applicationId, previousStatus)
+      } catch {
+        // Si la reversión falla, dejamos que el error principal siga su curso.
+      }
+    }
+
+    throw error
+  }
 }

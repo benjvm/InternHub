@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { getProfileImageUrl } from '../services/cloudinaryService'
 import { ROUTES } from '../routes/paths'
 import { Link } from '../routes/router'
+import CompanyPanelSidebar from './CompanyPanelSidebar'
 
 function Icon({ name, className = '' }) {
   return (
@@ -33,10 +34,6 @@ function formatCreatedAt(createdAt) {
   }
 
   return 'Sin fecha'
-}
-
-function getCompanyName(user) {
-  return user?.nombreEmpresa || user?.companyName || 'Empresa'
 }
 
 function EmptyState({ title, description, actionLabel, actionTo }) {
@@ -276,44 +273,10 @@ export default function CompanyCandidatesView({
   errorMessage,
   updatingApplicationId,
 }) {
-  const companyName = getCompanyName(currentUser)
-  const profileImageUrl = getProfileImageUrl(currentUser)
-
   return (
     <main className="company-candidates-page">
       <div className="container company-candidates-shell">
-        <aside className="company-candidates-sidebar">
-          <Link to={ROUTES.companyProfile} className="company-candidates-profile-card">
-            <div className="company-candidates-profile-avatar">
-              <img src={profileImageUrl} alt={companyName} />
-            </div>
-            <div>
-              <h2>{companyName}</h2>
-              <p>Empresa</p>
-            </div>
-          </Link>
-
-          <div className="company-candidates-sidebar-menu">
-            <Link to={ROUTES.companyCandidates} className="company-candidates-sidebar-link active">
-              <Icon name="groups" />
-              Candidatos
-            </Link>
-
-            <Link to={ROUTES.postOffer} className="company-candidates-sidebar-link">
-              <Icon name="work" />
-              Publicar oferta
-            </Link>
-
-            <button type="button" className="company-candidates-sidebar-link disabled" disabled>
-              <Icon name="settings" />
-              Configuracion
-            </button>
-          </div>
-
-          <Link to={ROUTES.postOffer} className="company-candidates-primary-link">
-            Crear nueva oferta
-          </Link>
-        </aside>
+        <CompanyPanelSidebar currentUser={currentUser} activeSection="candidates" />
 
         <section className="company-candidates-content">
           <header className="company-candidates-heading">

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import '../assets/styles/companyCandidates.css'
 import { APPLICATION_FILTERS, matchesApplicationFilter } from '../services/applicationStatus'
 import {
+  acceptApplication,
   getCompanyApplications,
   updateApplicationStatus,
 } from '../services/applicationsService'
@@ -106,6 +107,44 @@ export default function CompanyCandidatesHub() {
     }
   }
 
+  async function handleAcceptApplication(applicationId) {
+    const selectedApplicationData =
+      applications.find((application) => application.id === applicationId) || null
+
+    if (!selectedApplicationData) {
+      setErrorMessage('No se ha encontrado la candidatura seleccionada.')
+      return
+    }
+
+    try {
+      setUpdatingApplicationId(applicationId)
+      setErrorMessage('')
+
+      const { status } = await acceptApplication(selectedApplicationData)
+
+      setApplications((current) =>
+        current.map((application) =>
+          application.id === applicationId
+            ? {
+                ...application,
+                status,
+                statusLabel:
+                  status === 'aceptado'
+                    ? 'Aceptada'
+                    : status === 'rechazado'
+                      ? 'Rechazada'
+                      : 'Pendiente',
+              }
+            : application,
+        ),
+      )
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo aceptar la candidatura.')
+    } finally {
+      setUpdatingApplicationId('')
+    }
+  }
+
   return (
     <CompanyCandidatesView
       currentUser={currentUser}
@@ -117,7 +156,7 @@ export default function CompanyCandidatesHub() {
       selectedApplication={selectedApplication}
       onSelectApplication={setSelectedApplicationId}
       onCloseModal={() => setSelectedApplicationId('')}
-      onAcceptApplication={(applicationId) => handleStatusChange(applicationId, 'aceptado')}
+      onAcceptApplication={handleAcceptApplication}
       onRejectApplication={(applicationId) => handleStatusChange(applicationId, 'rechazado')}
       isLoading={isLoading}
       errorMessage={errorMessage}

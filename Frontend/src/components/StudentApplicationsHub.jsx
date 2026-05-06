@@ -17,9 +17,11 @@ export default function StudentApplicationsHub() {
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
 
-  const savedOfferIdsSignature = Array.isArray(currentUser?.savedOfferIds)
-    ? currentUser.savedOfferIds.join('|')
-    : ''
+  const savedOfferIds = useMemo(
+    () => (Array.isArray(currentUser?.savedOfferIds) ? currentUser.savedOfferIds : []),
+    [currentUser?.savedOfferIds],
+  )
+  const savedOfferIdsSignature = savedOfferIds.join('|')
 
   useEffect(() => {
     let isMounted = true
@@ -40,7 +42,7 @@ export default function StudentApplicationsHub() {
 
         const [applicationsResult, savedOffersResult] = await Promise.all([
           getStudentApplications(currentUser.uid),
-          getStudentSavedOffers(currentUser.savedOfferIds || []),
+          getStudentSavedOffers(savedOfferIds),
         ])
 
         if (!isMounted) {
@@ -65,7 +67,7 @@ export default function StudentApplicationsHub() {
     return () => {
       isMounted = false
     }
-  }, [currentUser?.uid, savedOfferIdsSignature])
+  }, [currentUser?.uid, savedOfferIds, savedOfferIdsSignature])
 
   const filteredApplications = useMemo(
     () =>
