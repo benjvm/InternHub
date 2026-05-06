@@ -9,7 +9,7 @@ import {
   getApplicationByOfferAndStudent,
 } from '../services/applicationsService'
 import { getCvDocumentUrl } from '../services/cloudinaryService'
-import { getOfferById } from '../services/offerService'
+import { deleteOffer, getOfferById } from '../services/offerService'
 import {
   isOfferSavedByStudent,
   removeSavedOfferForStudent,
@@ -164,6 +164,7 @@ export default function JobDetails() {
   const [errorMessage, setErrorMessage] = useState('')
   const [isApplying, setIsApplying] = useState(false)
   const [isSavingOffer, setIsSavingOffer] = useState(false)
+  const [isDeletingOffer, setIsDeletingOffer] = useState(false)
   const [applicationMessage, setApplicationMessage] = useState('')
   const [applicationError, setApplicationError] = useState('')
   const [saveOfferMessage, setSaveOfferMessage] = useState('')
@@ -178,9 +179,11 @@ export default function JobDetails() {
   })
   const currentUserRole = Number(currentUser?.rol)
   const isStudent = currentUserRole === 1
+  const isCompany = currentUserRole === 2
   const shouldShowCta = !currentUser || isStudent
   const currentCvUrl = getCvDocumentUrl(currentUser)
   const isOfferSaved = isStudent && isOfferSavedByStudent(currentUser?.savedOfferIds, offer?.id)
+  const isOfferOwner = isCompany && currentUser?.uid && offer?.companyId === currentUser.uid
   const applyActionTo = currentUser
     ? getDefaultRouteForRole(currentUser.rol)
     : ROUTES.register
@@ -400,6 +403,30 @@ export default function JobDetails() {
     }
   }
 
+  async function handleDeleteOffer() {
+    if (!isOfferOwner || !offer?.id) {
+      return
+    }
+
+    const confirmed = window.confirm(
+      '¿Seguro que quieres eliminar esta oferta? Esta acción no se puede deshacer.',
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    try {
+      setIsDeletingOffer(true)
+      setErrorMessage('')
+      await deleteOffer(offer.id)
+      navigate(ROUTES.companyCandidates, { replace: true })
+    } catch (error) {
+      setErrorMessage(error.message || 'No se pudo eliminar la oferta.')
+      setIsDeletingOffer(false)
+    }
+  }
+
   if (isLoading && !offer) {
     return <div className="job-container">Cargando oferta...</div>
   }
@@ -508,6 +535,27 @@ export default function JobDetails() {
             </button>
             <button type="button" className="icon-btn" aria-label="Compartir oferta">
               <Icon name="share" />
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {isOfferOwner ? (
+        <div className="card cta offer-owner-actions">
+          <div>
+            <p className="cta-title">Gestiona esta oferta</p>
+            <p className="cta-sub">
+              Solo la empresa creadora puede eliminar esta publicación.
+            </p>
+          </div>
+          <div className="cta-actions">
+            <button
+              type="button"
+              className="btn danger"
+              onClick={handleDeleteOffer}
+              disabled={isDeletingOffer}
+            >
+              {isDeletingOffer ? 'Eliminando...' : 'Eliminar oferta'}
             </button>
           </div>
         </div>

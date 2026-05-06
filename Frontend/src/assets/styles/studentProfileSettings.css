@@ -189,7 +189,8 @@
 }
 
 .student-profile-reset-button,
-.student-profile-save-button {
+.student-profile-save-button,
+.student-profile-delete-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -224,6 +225,18 @@
   background: #ff8c00;
   color: #fff;
   box-shadow: 0 16px 30px rgba(255, 140, 0, 0.22);
+}
+
+.student-profile-delete-button {
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+}
+
+.student-profile-delete-button:hover {
+  transform: translateY(-1px);
+  border-color: #fca5a5;
+  background: #ffe4e6;
 }
 
 .student-profile-secondary-button {
@@ -411,6 +424,7 @@
 
   .student-profile-reset-button,
   .student-profile-save-button,
+  .student-profile-delete-button,
   .student-profile-secondary-button {
     width: 100%;
   }

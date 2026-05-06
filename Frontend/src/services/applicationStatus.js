@@ -1,12 +1,14 @@
 export const APPLICATION_STATUSES = {
   pending: 'pendiente',
   accepted: 'aceptado',
+  rejected: 'rechazado',
 }
 
 export const APPLICATION_FILTERS = [
   { id: 'all', label: 'Todas' },
   { id: APPLICATION_STATUSES.pending, label: 'Pendientes' },
   { id: APPLICATION_STATUSES.accepted, label: 'Aceptadas' },
+  { id: APPLICATION_STATUSES.rejected, label: 'Rechazadas' },
 ]
 
 const LEGACY_APPLICATION_STATUS_MAP = {
@@ -15,6 +17,8 @@ const LEGACY_APPLICATION_STATUS_MAP = {
   pendiente: APPLICATION_STATUSES.pending,
   accepted: APPLICATION_STATUSES.accepted,
   aceptado: APPLICATION_STATUSES.accepted,
+  rejected: APPLICATION_STATUSES.rejected,
+  rechazado: APPLICATION_STATUSES.rejected,
 }
 
 export function normalizeApplicationStatus(status) {
@@ -34,6 +38,8 @@ export function getApplicationStatusLabel(status) {
   switch (normalizeApplicationStatus(status)) {
     case APPLICATION_STATUSES.accepted:
       return 'Aceptada'
+    case APPLICATION_STATUSES.rejected:
+      return 'Rechazada'
     case APPLICATION_STATUSES.pending:
     default:
       return 'Pendiente'
