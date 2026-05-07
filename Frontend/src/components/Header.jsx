@@ -50,7 +50,8 @@ export default function Header() {
             {isCompany ? <Link to={ROUTES.companyProfile}>Perfil empresa</Link> : null}
             {isCompany ? <Link to={ROUTES.postOffer}>Publicar oferta</Link> : null}
             {isStudent ? <Link to={ROUTES.studentProfile}>Mi perfil</Link> : null}
-            {isTeacher ? <Link to={ROUTES.teacherProfile}>Perfil profesor</Link> : null}
+            {isTeacher ? <Link to={ROUTES.teacherTracking}>Seguimiento</Link> : null}
+            {isTeacher ? <Link to={ROUTES.teacherSettings}>Configuracion</Link> : null}
           </nav>
         </div>
 
@@ -61,7 +62,7 @@ export default function Header() {
                 to={getDefaultRouteForRole(currentUser.rol)}
                 className="ghost-primary-button header-desktop-only"
               >
-                {isCompany ? 'Panel empresa' : 'Mi perfil'}
+                {isCompany ? 'Panel empresa' : isTeacher ? 'Panel profesor' : 'Mi perfil'}
               </Link>
               <button
                 type="button"

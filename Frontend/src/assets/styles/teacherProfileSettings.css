@@ -246,6 +246,82 @@
   color: #b91c1c;
 }
 
+.teacher-profile-panel {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.teacher-profile-panel-header,
+.teacher-profile-panel-copy {
+  display: grid;
+}
+
+.teacher-profile-panel-header {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06);
+}
+
+.teacher-profile-panel-avatar-wrap {
+  position: relative;
+}
+
+.teacher-profile-panel-avatar {
+  width: 112px;
+  height: 112px;
+  overflow: hidden;
+  border: 4px solid #fff;
+  border-radius: 32px;
+  background: #e2e8f0;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
+}
+
+.teacher-profile-panel-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.teacher-profile-panel-copy {
+  gap: 0.55rem;
+}
+
+.teacher-profile-panel-kicker {
+  margin: 0;
+  color: #ea580c;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.teacher-profile-panel-copy h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.teacher-profile-panel-copy p,
+.teacher-profile-panel-helper {
+  margin: 0;
+  color: #64748b;
+}
+
+.teacher-profile-panel-helper {
+  font-weight: 700;
+}
+
+.teacher-profile-card-panel {
+  border-radius: 28px;
+}
+
 @media (max-width: 640px) {
   .teacher-profile-page {
     padding-bottom: 3rem;
@@ -271,5 +347,11 @@
   .teacher-profile-reset-button,
   .teacher-profile-delete-button {
     width: 100%;
+  }
+
+  .teacher-profile-panel-header {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
   }
 }

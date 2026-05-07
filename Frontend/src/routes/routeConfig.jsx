@@ -15,6 +15,7 @@ import StudentProfileSettingsPage from '../pages/studentProfileSettings'
 import PublicStudentProfilePage from '../pages/publicStudentProfile'
 import CompanyProfileSettingsPage from '../pages/companyProfileSettings'
 import TeacherProfileSettingsPage from '../pages/teacherProfileSettings'
+import TeacherTrackingPage from '../pages/teacherTracking'
 import { ROUTES } from './paths'
 
 export const appRoutes = [
@@ -61,7 +62,19 @@ export const appRoutes = [
     path: ROUTES.publicStudentProfile(),
     component: PublicStudentProfilePage,
     protected: true,
-    roles: [2],
+    roles: [2, 3],
+  },
+  {
+    path: ROUTES.teacherTracking,
+    component: TeacherTrackingPage,
+    protected: true,
+    roles: [3],
+  },
+  {
+    path: ROUTES.teacherSettings,
+    component: TeacherProfileSettingsPage,
+    protected: true,
+    roles: [3],
   },
   {
     path: ROUTES.companyProfile,

@@ -47,7 +47,7 @@ export default function TeacherRegisterCard() {
       })
 
       await refreshUserProfile(registeredUser.uid)
-      navigate(ROUTES.teacherProfile, { replace: true })
+      navigate(ROUTES.teacherTracking, { replace: true })
     } catch (error) {
       setErrorMessage(error.message || 'No se pudo crear la cuenta.')
     } finally {

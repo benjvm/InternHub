@@ -11,6 +11,8 @@ export const ROUTES = {
   studentInternships: '/student/practicas',
   companyCandidates: '/company/candidaturas',
   companyInternships: '/company/practicas',
+  teacherTracking: '/teacher/seguimiento',
+  teacherSettings: '/teacher/configuracion',
   postOffer: '/offers/new',
   studentProfile: '/profile/student',
   publicStudentProfile: (studentId = ':studentId') => `/students/${studentId}/public-profile`,
@@ -25,7 +27,7 @@ export function getDefaultRouteForRole(role) {
     case 2:
       return ROUTES.companyCandidates
     case 3:
-      return ROUTES.teacherProfile
+      return ROUTES.teacherTracking
     default:
       return ROUTES.home
   }

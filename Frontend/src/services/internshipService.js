@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -61,11 +62,14 @@ function getTimestampValue(timestamp) {
 
 function mapInternshipDocument(documentSnapshot) {
   const data = documentSnapshot.data()
+  const requiredHours = data.requiredHours ?? data.totalHours ?? data.weeklyHours ?? null
 
   return {
     id: documentSnapshot.id,
     ...data,
-    totalHours: data.totalHours ?? data.weeklyHours ?? null,
+    requiredHours,
+    totalHours: data.totalHours ?? requiredHours,
+    completedHours: Number(data.completedHours || 0),
     status: normalizeInternshipStatus(data.status),
   }
 }
@@ -103,6 +107,25 @@ function mapOffer(snapshot) {
   return {
     id: snapshot.id,
     ...snapshot.data(),
+  }
+}
+
+function getCompanyDisplayName(company) {
+  return company?.nombreEmpresa || company?.companyName || 'Empresa'
+}
+
+function mapCompanyProfile(snapshot) {
+  if (!snapshot.exists()) {
+    return null
+  }
+
+  const data = snapshot.data()
+
+  return {
+    id: snapshot.id,
+    ...data,
+    displayName: getCompanyDisplayName(data),
+    email: data.email || data.correo || '',
   }
 }
 
@@ -147,10 +170,14 @@ async function enrichInternships(internships) {
   const uniqueOfferIds = Array.from(
     new Set(internships.map((item) => item.offerId).filter(Boolean)),
   )
+  const uniqueCompanyIds = Array.from(
+    new Set(internships.map((item) => item.companyId).filter(Boolean)),
+  )
 
-  const [studentSnapshots, offerSnapshots] = await Promise.all([
+  const [studentSnapshots, offerSnapshots, companySnapshots] = await Promise.all([
     Promise.all(uniqueStudentIds.map((studentId) => getDoc(doc(db, USERS_COLLECTION, studentId)))),
     Promise.all(uniqueOfferIds.map((offerId) => getDoc(doc(db, OFFERS_COLLECTION, offerId)))),
+    Promise.all(uniqueCompanyIds.map((companyId) => getDoc(doc(db, USERS_COLLECTION, companyId)))),
   ])
 
   const studentMap = new Map(
@@ -165,17 +192,26 @@ async function enrichInternships(internships) {
       .filter(([, offer]) => Boolean(offer)),
   )
 
+  const companyMap = new Map(
+    companySnapshots
+      .map((snapshot) => [snapshot.id, mapCompanyProfile(snapshot)])
+      .filter(([, company]) => Boolean(company)),
+  )
+
   return internships.map((internship) => {
     const student = studentMap.get(internship.studentId) || null
     const offer = offerMap.get(internship.offerId) || null
+    const company = companyMap.get(internship.companyId) || null
 
     return {
       ...internship,
       student,
       offer,
+      company,
       studentName: student?.displayName || 'Estudiante',
       studentEmail: student?.email || '',
       offerTitle: offer?.title || 'Oferta sin título',
+      companyName: offer?.companyName || offer?.company || company?.displayName || 'Empresa',
       statusLabel: getInternshipStatusLabel(internship.status),
     }
   })
@@ -298,13 +334,13 @@ export async function createInternshipFromApplication(applicationData) {
     updatedAt: serverTimestamp(),
     startDate: null,
     endDate: null,
+    requiredHours: null,
     totalHours: null,
     tutorCompanyName: '',
     notes: '',
     lastUpdate: null,
   }
 
-  // Guardamos applicationId para que la creación sea idempotente si la aceptación se repite.
   await setDoc(internshipReference, payload)
 
   return {
@@ -354,8 +390,39 @@ export async function getInternshipsByStudentId(studentId) {
 
   return enrichedInternships.map((internship) => ({
     ...internship,
-    companyName: internship.offer?.companyName || internship.offer?.company || '',
+    companyName:
+      internship.companyName || internship.offer?.companyName || internship.offer?.company || '',
   }))
+}
+
+export async function getInternshipsByProfessorId(professorId) {
+  const sanitizedProfessorId = normalizeText(professorId)
+
+  if (!sanitizedProfessorId) {
+    return []
+  }
+
+  const internshipsQuery = query(
+    collection(db, INTERNSHIPS_COLLECTION),
+    where('professorId', '==', sanitizedProfessorId),
+  )
+
+  const snapshot = await getDocs(internshipsQuery)
+  const internships = snapshot.docs
+    .map(mapInternshipDocument)
+    .sort((left, right) => getTimestampValue(right.createdAt) - getTimestampValue(left.createdAt))
+
+  return enrichInternships(internships)
+}
+
+export async function getInternshipsWithoutProfessor() {
+  const snapshot = await getDocs(collection(db, INTERNSHIPS_COLLECTION))
+  const internships = snapshot.docs
+    .map(mapInternshipDocument)
+    .filter((internship) => !normalizeText(internship.professorId))
+    .sort((left, right) => getTimestampValue(right.createdAt) - getTimestampValue(left.createdAt))
+
+  return enrichInternships(internships)
 }
 
 export async function getInternshipById(internshipId) {
@@ -404,6 +471,7 @@ export async function updateInternshipDetails(internshipId, data) {
     startDate,
     endDate,
     totalHours,
+    requiredHours: totalHours,
     tutorCompanyName,
     notes,
     status: INTERNSHIP_STATUSES.active,
@@ -434,4 +502,42 @@ export async function updateInternshipStatus(internshipId, status) {
   })
 
   return normalizedStatus
+}
+
+export async function assignProfessorToInternship(internshipId, professorId) {
+  const sanitizedInternshipId = normalizeText(internshipId)
+  const sanitizedProfessorId = normalizeText(professorId)
+
+  if (!sanitizedInternshipId) {
+    throw new Error('Se necesita una practica valida para asignar el seguimiento.')
+  }
+
+  if (!sanitizedProfessorId) {
+    throw new Error('No se ha encontrado el profesor responsable.')
+  }
+
+  const internshipRef = doc(db, INTERNSHIPS_COLLECTION, sanitizedInternshipId)
+
+  await runTransaction(db, async (transaction) => {
+    const internshipSnapshot = await transaction.get(internshipRef)
+
+    if (!internshipSnapshot.exists()) {
+      throw new Error('La practica seleccionada ya no esta disponible.')
+    }
+
+    const internshipData = internshipSnapshot.data()
+    const currentProfessorId = normalizeText(internshipData.professorId)
+
+    if (currentProfessorId && currentProfessorId !== sanitizedProfessorId) {
+      throw new Error('Esta practica ya tiene otro profesor responsable asignado.')
+    }
+
+    transaction.update(internshipRef, {
+      professorId: sanitizedProfessorId,
+      updatedAt: serverTimestamp(),
+      lastUpdate: serverTimestamp(),
+    })
+  })
+
+  return getInternshipById(sanitizedInternshipId)
 }

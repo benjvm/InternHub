@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import '../assets/styles/publicStudentProfile.css'
-import { fetchUserProfile } from '../services/userService'
+import { fetchUserProfile, useUser } from '../services/userService'
 import { getCvDocumentUrl, getProfileImageUrl } from '../services/cloudinaryService'
 import { ROUTES } from '../routes/paths'
 import { useRouteParams, useRouter } from '../routes/router'
@@ -137,6 +137,7 @@ function LinkItem({ href, label, icon }) {
 export default function PublicStudentProfile() {
   const { studentId } = useRouteParams()
   const { navigate } = useRouter()
+  const { currentUser } = useUser()
   const [studentProfile, setStudentProfile] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -195,7 +196,9 @@ export default function PublicStudentProfile() {
       return
     }
 
-    navigate(ROUTES.companyCandidates, { replace: true })
+    navigate(Number(currentUser?.rol) === 3 ? ROUTES.teacherTracking : ROUTES.companyCandidates, {
+      replace: true,
+    })
   }
 
   if (isLoading) {
