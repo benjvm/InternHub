@@ -1,16 +1,92 @@
-# React + Vite
+# InternHub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+InternHub is a role-based internship management platform designed to connect students, companies, and academic supervisors in one centralized ecosystem.
 
-Currently, two official plugins are available:
+Built with React, Vite, and Firebase, InternHub streamlines the complete internship lifecycle — from opportunity discovery and candidate application to company recruitment and academic oversight.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Overview
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+InternHub addresses a common challenge in educational institutions: inefficient communication between students seeking internships, companies recruiting interns, and professors supervising academic progress.
 
-## Expanding the ESLint configuration
+The platform provides a digital bridge where:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Students** discover internship opportunities, apply with personalized profiles and CVs, and track their progress.
+- **Companies** publish offers, evaluate candidates, and manage internship placements.
+- **Professors** supervise internship processes and support academic validation.
+
+---
+
+## Core Features
+
+### Student Portal
+- Student registration & authentication
+- Professional profile settings
+- CV upload & management
+- Internship board
+- Application tracking
+- Active internship dashboard
+
+### Company Portal
+- Company registration & authentication
+- Internship posting system
+- Candidate review dashboard
+- Accept / Reject workflows
+- Internship management
+
+### Professor Portal
+- Teacher registration
+- Profile management
+- Academic internship supervision
+
+---
+
+## Technical Stack
+
+### Frontend
+- React 19
+- Vite 7
+- Custom Router System
+- React Leaflet + Leaflet
+- jsPDF + PDF.js
+
+### Backend / Services
+- Firebase Authentication
+- Firebase Firestore
+- Cloudinary (media & document storage)
+
+---
+
+## Architecture Highlights
+
+- Role-Based Access Control (RBAC)
+- Protected Routes
+- Modular Component Structure
+- Real-Time Firestore Integration
+- Scalable Internship Workflow
+
+---
+
+## User Roles
+
+| Role | Purpose |
+|------|---------|
+| Student | Apply and manage internships |
+| Company | Recruit and manage interns |
+| Professor | Academic supervision |
+
+---
+
+## Project Structure
+
+```bash
+Frontend/
+│── src/
+│   ├── pages/
+│   ├── routes/
+│   ├── services/
+│   ├── components/
+│   └── assets/
+│── public/
+│── package.json
