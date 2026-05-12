@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import logo from '../assets/images/logo_no_bg.png'
+import logo from '../assets/images/logo_title.png'
 import { logoutUser } from '../services/authService'
 import { useUser } from '../services/userService'
 import { getDefaultRouteForRole, ROUTES } from '../routes/paths'
