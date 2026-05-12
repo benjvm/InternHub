@@ -1,5 +1,6 @@
-# InternHub
+<img src="src/assets/images/logo_title-removebg.png" alt="title" width="600">
 
+# InternHub
 InternHub is a role-based internship management platform designed to connect students, companies, and academic supervisors in one centralized ecosystem.
 
 Built with React, Vite, and Firebase, InternHub streamlines the complete internship lifecycle — from opportunity discovery and candidate application to company recruitment and academic oversight.
