@@ -491,3 +491,97 @@
     width: 100%;
   }
 }
+
+/* Mobile: post offer form, responsibilities, and location editor */
+@media (max-width: 768px) {
+  .post-offer-page {
+    padding: 1.5rem 0 3rem;
+  }
+
+  .post-offer-shell {
+    width: min(100% - 1.25rem, 860px);
+  }
+
+  .post-offer-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .post-offer-header h1 {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .post-offer-header p {
+    font-size: 1rem;
+  }
+
+  .post-offer-card {
+    padding: 1.1rem;
+    border-radius: 22px;
+  }
+
+  .post-offer-form {
+    gap: 1.25rem;
+  }
+
+  .post-offer-two-column,
+  .post-offer-location-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .post-offer-location-header,
+  .post-offer-responsibility-header,
+  .post-offer-location-editor-actions,
+  .post-offer-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .post-offer-add-location-button {
+    width: 100%;
+    min-height: 44px;
+    white-space: normal;
+  }
+
+  .post-offer-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .post-offer-toolbar-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .post-offer-editor textarea {
+    min-height: 180px;
+  }
+
+  .post-offer-responsibility-item {
+    grid-template-columns: 1fr;
+  }
+
+  .post-offer-location-editor {
+    padding: 1rem;
+  }
+
+  .post-offer-light-button,
+  .post-offer-text-button,
+  .post-offer-secondary-button,
+  .post-offer-primary-button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .post-offer-pills {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .post-offer-pill-item label {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .post-offer-coordinate-help {
+    font-size: 0.88rem;
+  }
+}

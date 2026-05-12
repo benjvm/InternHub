@@ -304,3 +304,62 @@
     align-items: flex-start;
   }
 }
+
+/* Mobile: internship board hero, filters, and cards */
+@media (max-width: 768px) {
+  .internship-board-page {
+    padding: 1.25rem 0 3rem;
+  }
+
+  .internship-board-copy {
+    margin-bottom: 1.5rem;
+  }
+
+  .internship-board-copy h1 {
+    font-size: clamp(2.25rem, 10vw, 3.2rem);
+  }
+
+  .internship-board-copy p {
+    font-size: 1rem;
+  }
+
+  .internship-board-filters {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.75rem;
+    border-radius: 20px;
+  }
+
+  .internship-board-filter-grid,
+  .internship-board-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .internship-board-search-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+  }
+
+  .internship-board-results {
+    margin-top: 1.75rem;
+  }
+
+  .internship-board-card {
+    padding: 1.25rem;
+  }
+
+  .internship-board-card h3 {
+    font-size: 1.15rem;
+  }
+
+  .internship-board-action-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .internship-board-link-button {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

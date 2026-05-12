@@ -481,3 +481,81 @@
     border-radius: 16px;
   }
 }
+
+/* Mobile: student internship tracking, forms, and calendar */
+@media (max-width: 768px) {
+  .student-internships-content,
+  .student-internships-layout {
+    gap: 1.25rem;
+  }
+
+  .student-internships-topbar,
+  .student-internships-summary-head,
+  .student-internships-form-head,
+  .student-internships-calendar-head,
+  .student-internships-progress-copy,
+  .student-internships-existing-log dl div,
+  .student-internships-week-card li,
+  .student-internships-week-total {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .student-internships-selector,
+  .student-internships-summary-card,
+  .student-internships-form-card,
+  .student-internships-calendar-card,
+  .student-internships-weekly-card,
+  .student-internships-empty-state,
+  .student-internships-week-card {
+    padding: 1.1rem;
+    border-radius: 22px;
+  }
+
+  .student-internships-selector {
+    min-width: 100%;
+  }
+
+  .student-internships-summary-head h2,
+  .student-internships-calendar-head h2,
+  .student-internships-form-head h2 {
+    font-size: 1.45rem;
+  }
+
+  .student-internships-copy-button,
+  .student-internships-save-button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .student-internships-form-row,
+  .student-internships-weekly-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-internships-calendar-grid {
+    gap: 0.2rem;
+  }
+
+  .student-internships-calendar-weekday {
+    padding: 0.45rem 0;
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+  }
+
+  .student-internships-calendar-day {
+    min-height: 56px;
+    padding: 0.45rem;
+    border-radius: 14px;
+    font-size: 0.85rem;
+  }
+
+  .student-internships-calendar-check {
+    font-size: 1rem;
+  }
+
+  .student-internships-calendar-legend {
+    display: grid;
+    gap: 0.6rem;
+  }
+}

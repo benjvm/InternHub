@@ -527,3 +527,82 @@
     justify-content: flex-end;
   }
 }
+
+/* Mobile: company profile settings and location editor */
+@media (max-width: 768px) {
+  .company-profile-page {
+    padding: 1.5rem 0 3rem;
+  }
+
+  .company-profile-shell {
+    width: min(100% - 1.25rem, 1240px);
+  }
+
+  .company-profile-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .company-profile-header h1 {
+    font-size: clamp(1.9rem, 9vw, 2.5rem);
+  }
+
+  .company-profile-header p {
+    font-size: 1rem;
+  }
+
+  .company-profile-section-title,
+  .company-profile-location-item,
+  .company-profile-action-bar,
+  .company-profile-location-main {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .company-profile-section-title,
+  .company-profile-grid,
+  .company-profile-location-list {
+    padding: 1rem;
+  }
+
+  .company-profile-card,
+  .company-profile-location-editor,
+  .company-profile-empty-state {
+    border-radius: 20px;
+  }
+
+  .company-profile-section-title > div {
+    width: 100%;
+  }
+
+  .company-profile-add-location-button,
+  .company-profile-light-button,
+  .company-profile-delete-button,
+  .company-profile-reset-button,
+  .company-profile-save-button,
+  .company-profile-text-button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .company-profile-location-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .company-profile-location-actions,
+  .company-profile-action-buttons,
+  .company-profile-location-editor-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .company-profile-icon-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .company-profile-messages {
+    width: 100%;
+  }
+}

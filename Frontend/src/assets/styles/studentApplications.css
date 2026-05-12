@@ -424,3 +424,69 @@
     width: 100%;
   }
 }
+
+/* Mobile: student applications dashboard and saved offers */
+@media (max-width: 768px) {
+  .student-applications-page {
+    padding: 1rem 0 2.5rem;
+  }
+
+  .student-applications-shell {
+    width: min(100% - 1.25rem, 1380px);
+    gap: 1rem;
+  }
+
+  .student-applications-content,
+  .student-applications-sidebar,
+  .student-applications-card,
+  .student-applications-empty-state {
+    padding: 1rem;
+    border-radius: 22px;
+  }
+
+  .student-applications-profile-card,
+  .student-applications-card-top,
+  .student-applications-card-footer,
+  .student-applications-card-meta,
+  .student-applications-card-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .student-applications-heading h1 {
+    font-size: clamp(2rem, 9vw, 2.45rem);
+  }
+
+  .student-applications-heading p {
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+
+  .student-applications-filter-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+  }
+
+  .student-applications-filter-pill,
+  .student-applications-card-link,
+  .student-applications-discover-link,
+  .student-applications-sidebar-link {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .student-applications-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .student-applications-card-brand {
+    align-items: flex-start;
+  }
+
+  .student-applications-card h3 {
+    font-size: 1.25rem;
+  }
+}

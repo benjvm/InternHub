@@ -568,3 +568,105 @@ button.icon-btn {
     width: 100%;
   }
 }
+
+/* Mobile: offer detail page, CTA, and application modal */
+@media (max-width: 768px) {
+  .job-container {
+    width: min(100% - 1.25rem, 720px);
+    padding: 1.25rem 0 3rem;
+  }
+
+  .breadcrumbs {
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.8rem;
+  }
+
+  .job-container .card.header,
+  .cta {
+    padding: 1.1rem;
+  }
+
+  .header-content,
+  .cta,
+  .cta-actions,
+  .offer-application-modal-header,
+  .offer-application-modal-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .logo {
+    width: 60px;
+    height: 60px;
+    flex-basis: 60px;
+  }
+
+  .info h1 {
+    font-size: clamp(1.6rem, 8vw, 2.2rem);
+  }
+
+  .meta {
+    font-size: 0.9rem;
+  }
+
+  .cta-actions,
+  .btn.primary,
+  .btn.danger,
+  .icon-btn,
+  .offer-application-secondary-button,
+  .offer-application-primary-button {
+    width: 100%;
+  }
+
+  .btn.primary,
+  .btn.danger,
+  .icon-btn,
+  .offer-application-secondary-button,
+  .offer-application-primary-button {
+    min-height: 44px;
+  }
+
+  .job-container section {
+    margin-top: 1.5rem;
+  }
+
+  .job-container section h2 {
+    font-size: 1.1rem;
+  }
+
+  .job-container section p,
+  .job-container section li {
+    font-size: 0.95rem;
+  }
+
+  .location-box {
+    min-height: 240px;
+  }
+
+  .location-box span,
+  .offer-map {
+    min-height: 240px;
+    height: 240px;
+  }
+
+  .offer-application-modal-backdrop {
+    padding: 0.75rem;
+  }
+
+  .offer-application-modal {
+    max-height: calc(100vh - 1.5rem);
+  }
+
+  .offer-application-modal-close {
+    align-self: flex-end;
+  }
+
+  .offer-application-modal-form {
+    padding: 1rem;
+  }
+
+  .offer-application-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}

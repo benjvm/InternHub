@@ -672,3 +672,96 @@
     flex-direction: column;
   }
 }
+
+/* Mobile: company candidates, internships, and modals */
+@media (max-width: 768px) {
+  .company-candidates-page {
+    padding: 1rem 0 2.5rem;
+  }
+
+  .company-candidates-shell {
+    width: min(100% - 1.25rem, 1380px);
+    gap: 1rem;
+  }
+
+  .company-candidates-content,
+  .company-candidates-sidebar,
+  .company-candidates-modal {
+    padding: 1rem;
+    border-radius: 22px;
+  }
+
+  .company-candidates-profile-card,
+  .company-candidates-toolbar,
+  .company-candidates-row-student,
+  .company-candidates-row-actions,
+  .company-candidates-modal-header,
+  .company-candidates-modal-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .company-candidates-heading h1 {
+    font-size: clamp(2rem, 9vw, 2.5rem);
+  }
+
+  .company-candidates-heading p {
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+
+  .company-candidates-filter-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    width: 100%;
+  }
+
+  .company-candidates-filter-pill,
+  .company-candidates-count-pill,
+  .company-candidates-primary-link,
+  .company-candidates-secondary-button,
+  .company-candidates-primary-button,
+  .company-candidates-ghost-button,
+  .company-candidates-accept-button,
+  .company-candidates-reject-button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .company-candidates-count-pill {
+    justify-content: flex-start;
+  }
+
+  .company-candidates-row {
+    padding: 1.1rem;
+    gap: 0.85rem;
+  }
+
+  .company-candidates-row-copy h3 {
+    font-size: 1.1rem;
+  }
+
+  .company-candidates-row-university,
+  .company-internships-status,
+  .company-internships-date,
+  .company-internships-action {
+    justify-self: stretch;
+  }
+
+  .company-candidates-modal-backdrop {
+    padding: 0.75rem;
+  }
+
+  .company-candidates-modal {
+    max-height: calc(100vh - 1.5rem);
+  }
+
+  .company-candidates-modal-close {
+    align-self: flex-end;
+  }
+
+  .company-candidates-modal-actions > * {
+    width: 100%;
+  }
+}

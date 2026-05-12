@@ -701,3 +701,90 @@
     width: 100%;
   }
 }
+
+/* Mobile: teacher dashboard, search, and tracking cards */
+@media (max-width: 768px) {
+  .teacher-dashboard-page {
+    padding: 1rem 0 2.5rem;
+  }
+
+  .teacher-dashboard-shell {
+    width: min(100% - 1.25rem, 1380px);
+    gap: 1rem;
+  }
+
+  .teacher-dashboard-content,
+  .teacher-dashboard-sidebar,
+  .teacher-dashboard-search-card,
+  .teacher-dashboard-result-card,
+  .teacher-dashboard-card,
+  .teacher-dashboard-empty-state,
+  .teacher-dashboard-pending-card {
+    padding: 1rem;
+    border-radius: 22px;
+  }
+
+  .teacher-dashboard-profile-card,
+  .teacher-dashboard-search-controls,
+  .teacher-dashboard-pending-head,
+  .teacher-dashboard-student-hero,
+  .teacher-dashboard-progress-card,
+  .teacher-dashboard-metric-card,
+  .teacher-dashboard-timeline-head,
+  .teacher-dashboard-weekly-total {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .teacher-dashboard-page-heading h1 {
+    font-size: clamp(2rem, 9vw, 2.45rem);
+  }
+
+  .teacher-dashboard-search-input,
+  .teacher-dashboard-primary-link,
+  .teacher-dashboard-primary-button,
+  .teacher-dashboard-secondary-link {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .teacher-dashboard-count-pill {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .teacher-dashboard-results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-dashboard-result-card {
+    padding: 0.95rem;
+  }
+
+  .teacher-dashboard-progress-ring {
+    width: 104px;
+    height: 104px;
+  }
+
+  .teacher-dashboard-progress-ring > div {
+    width: 74px;
+    height: 74px;
+  }
+
+  .teacher-dashboard-progress-card .teacher-dashboard-stat-grid,
+  .teacher-dashboard-metric-card {
+    width: 100%;
+  }
+
+  .teacher-dashboard-metric-card {
+    min-height: auto;
+    padding: 1rem;
+    gap: 0.45rem;
+  }
+
+  .teacher-dashboard-metric-card strong,
+  .teacher-dashboard-metric-card small {
+    text-align: left;
+    justify-content: flex-start;
+  }
+}

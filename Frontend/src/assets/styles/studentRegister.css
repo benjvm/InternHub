@@ -217,3 +217,42 @@
     font-size: 1.55rem;
   }
 }
+
+/* Mobile: student registration form */
+@media (max-width: 768px) {
+  .student-register-shell {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .student-register-layout {
+    width: 100%;
+  }
+
+  .student-register-brand-block {
+    margin-bottom: 1.5rem;
+  }
+
+  .student-register-brand-block h1 {
+    font-size: clamp(1.8rem, 8vw, 2.2rem);
+  }
+
+  .student-register-card {
+    padding: 1.15rem;
+  }
+
+  .student-register-copy {
+    margin-bottom: 1.5rem;
+  }
+
+  .student-register-copy h2 {
+    font-size: 1.45rem;
+  }
+
+  .student-register-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-register-submit {
+    min-height: 3.15rem;
+  }
+}

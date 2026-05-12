@@ -378,3 +378,86 @@
     justify-content: center;
   }
 }
+
+/* Mobile: public student profile hero, timeline, and side cards */
+@media (max-width: 768px) {
+  .public-student-profile-page {
+    padding: 1.25rem 0 3rem;
+  }
+
+  .public-student-profile-shell {
+    gap: 1.25rem;
+  }
+
+  .public-student-profile-back-button {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .public-student-profile-hero-card,
+  .public-student-profile-card,
+  .public-student-profile-empty {
+    padding: 1rem;
+    border-radius: 22px;
+  }
+
+  .public-student-profile-hero-card,
+  .public-student-profile-grid,
+  .public-student-profile-projects {
+    grid-template-columns: 1fr;
+  }
+
+  .public-student-profile-hero-card {
+    gap: 1rem;
+  }
+
+  .public-student-profile-hero-media {
+    max-width: 100%;
+    aspect-ratio: 1 / 1.15;
+  }
+
+  .public-student-profile-hero-copy {
+    gap: 1.1rem;
+  }
+
+  .public-student-profile-hero-top,
+  .public-student-profile-timeline-header,
+  .public-student-profile-language-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .public-student-profile-hero-top h1 {
+    font-size: clamp(2.05rem, 9vw, 2.8rem);
+  }
+
+  .public-student-profile-hero-top p {
+    font-size: 1rem;
+  }
+
+  .public-student-profile-hero-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .public-student-profile-hero-actions {
+    flex-direction: column;
+  }
+
+  .public-student-profile-primary-action,
+  .public-student-profile-secondary-action {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  .public-student-profile-section-title h2 {
+    font-size: 1.45rem;
+  }
+
+  .public-student-profile-date-pill {
+    white-space: normal;
+  }
+}

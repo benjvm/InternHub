@@ -169,3 +169,30 @@
     padding: 1.4rem;
   }
 }
+
+/* Mobile: company registration form */
+@media (max-width: 768px) {
+  .company-register-shell {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .company-register-layout {
+    width: 100%;
+  }
+
+  .company-register-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .company-register-header h1 {
+    font-size: clamp(1.8rem, 8vw, 2.2rem);
+  }
+
+  .company-register-card {
+    padding: 1.15rem;
+  }
+
+  .company-register-submit {
+    min-height: 3.15rem;
+  }
+}
