@@ -7,7 +7,7 @@ export const mockOffers = [
     description:
       'Colabora con el equipo de producto para diseñar flujos, interfaces y prototipos orientados a estudiantes.',
     location: 'Madrid, España',
-    salary: '800 - 1000 EUR / mes',
+    salary: '800 - 1000',
     modality: 'Híbrido',
     company: 'Innovate Tech',
     publishedAtLabel: 'Publicado hace 2 días',
@@ -27,7 +27,7 @@ export const mockOffers = [
     description:
       'Construye interfaces en React, mejora el rendimiento y lanza experiencias pulidas para nuestra plataforma de prácticas.',
     location: 'Barcelona, España',
-    salary: '1200 EUR / mes',
+    salary: '1200',
     modality: 'Remoto',
     company: 'FinanzGlobal',
     publishedAtLabel: 'Publicado hace 5 días',
@@ -47,7 +47,7 @@ export const mockOffers = [
     description:
       'Apoya campañas de crecimiento, planificación de redes sociales e iniciativas de marca empleadora en toda España.',
     location: 'Valencia, España',
-    salary: '600 EUR / mes',
+    salary: '600',
     modality: 'Presencial',
     company: 'Creative Minds Agency',
     publishedAtLabel: 'Publicado ayer',

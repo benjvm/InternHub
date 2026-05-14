@@ -337,7 +337,7 @@ export default function Home() {
                     </div>
                     <div>
                       <Icon name="payments" className="meta-icon" />
-                      <span>{internship.salary}</span>
+                      <span>{internship.salary + ' € /mes'}</span>
                     </div>
                   </div>
 

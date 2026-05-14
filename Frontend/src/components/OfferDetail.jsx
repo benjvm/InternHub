@@ -581,7 +581,7 @@ export default function JobDetails() {
         <h2>Detalles de la oferta</h2>
         <ul>
           <li>Categoría: {translateCategory(offer.category) || 'Prácticas generales'}</li>
-          <li>Salario: {offer.salary || 'Por definir'}</li>
+          <li>Salario: {offer.salary + ' € /mes'|| 'Por definir'}</li>
           <li>Modalidad: {translateModality(offer.modality) || 'Flexible'}</li>
         </ul>
       </section>
