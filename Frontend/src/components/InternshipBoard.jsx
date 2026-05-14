@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import '../assets/styles/internshipBoard.css'
 import { mockOffers } from '../data/mockOffers'
 import { ROUTES } from '../routes/paths'
 import { Link } from '../routes/router'
 import { getOffers } from '../services/offerService'
+import { readOfferSearch, saveOfferSearch } from '../services/offerSearchStorage'
 
 const filters = {
   modalities: [
@@ -33,8 +34,8 @@ function normalizeModality(modality) {
     case 'presencial':
       return 'onsite'
     case 'hybrid':
-    case 'híbrido':
     case 'hibrido':
+    case 'híbrido':
       return 'hybrid'
     default:
       return value || ''
@@ -46,12 +47,12 @@ function normalizeCategory(category) {
 
   switch (value) {
     case 'engineering':
-    case 'ingeniería':
     case 'ingenieria':
+    case 'ingeniería':
       return 'engineering'
     case 'design':
-    case 'diseño':
     case 'diseno':
+    case 'diseño':
       return 'design'
     case 'marketing':
       return 'marketing'
@@ -91,6 +92,33 @@ function translateCategory(category) {
   }
 }
 
+function normalizeText(value) {
+  return (
+    value
+      ?.toString()
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') ?? ''
+  )
+}
+
+function extractOfferLocation(offer) {
+  if (offer?.ubicacion?.ciudad || offer?.ubicacion?.pais) {
+    return [offer.ubicacion.ciudad, offer.ubicacion.pais].filter(Boolean).join(', ')
+  }
+
+  return offer.location || ''
+}
+
+function extractOfferCity(offer) {
+  if (offer?.ubicacion?.ciudad) {
+    return offer.ubicacion.ciudad
+  }
+
+  return offer.location?.split(',')[0]?.trim() ?? ''
+}
+
 function Icon({ name, className = '' }) {
   return (
     <span className={`material-symbols-outlined ${className}`.trim()} aria-hidden="true">
@@ -115,8 +143,10 @@ function InternshipCard({ internship }) {
       <div className="internship-board-card-footer">
         <div className="internship-board-meta">
           <div>
-            <Icon name={normalizeModality(internship.modality) === 'remote' ? 'public' : 'location_on'} />
-            <span>{internship.location}</span>
+            <Icon
+              name={normalizeModality(internship.modality) === 'remote' ? 'public' : 'location_on'}
+            />
+            <span>{extractOfferLocation(internship)}</span>
           </div>
           <div>
             <Icon name="payments" />
@@ -140,8 +170,11 @@ function InternshipCard({ internship }) {
 }
 
 export default function InternshipBoard() {
+  const initialSearch = readOfferSearch()
   const [modalityFilter, setModalityFilter] = useState(filters.modalities[0].value)
   const [categoryFilter, setCategoryFilter] = useState(filters.categories[0].value)
+  const [keywordFilter, setKeywordFilter] = useState(initialSearch.term)
+  const [cityFilter, setCityFilter] = useState(initialSearch.city)
   const [remoteOffers, setRemoteOffers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -176,22 +209,51 @@ export default function InternshipBoard() {
     }
   }, [])
 
-  const mergedOffers = [...remoteOffers]
+  useEffect(() => {
+    saveOfferSearch({ term: keywordFilter, city: cityFilter })
+  }, [keywordFilter, cityFilter])
 
-  mockOffers.forEach((offer) => {
-    if (!mergedOffers.some((remoteOffer) => remoteOffer.id === offer.id)) {
-      mergedOffers.push(offer)
-    }
-  })
+  const mergedOffers = useMemo(() => {
+    const nextOffers = [...remoteOffers]
+
+    mockOffers.forEach((offer) => {
+      if (!nextOffers.some((remoteOffer) => remoteOffer.id === offer.id)) {
+        nextOffers.push(offer)
+      }
+    })
+
+    return nextOffers
+  }, [remoteOffers])
 
   const filteredOffers = mergedOffers.filter((offer) => {
     const matchesModality =
       modalityFilter === 'all' || normalizeModality(offer.modality) === modalityFilter
     const matchesCategory =
       categoryFilter === 'all' || normalizeCategory(offer.category) === categoryFilter
+    const normalizedKeyword = normalizeText(keywordFilter)
+    const normalizedCity = normalizeText(cityFilter)
+    const matchesKeyword =
+      !normalizedKeyword ||
+      [
+        offer.title,
+        offer.description,
+        offer.category,
+        offer.company,
+        offer.companyName,
+      ].some((value) => normalizeText(value).includes(normalizedKeyword))
+    const normalizedOfferLocation = normalizeText(extractOfferLocation(offer))
+    const matchesCity =
+      !normalizedCity ||
+      normalizeText(extractOfferCity(offer)).includes(normalizedCity) ||
+      normalizedOfferLocation.includes(normalizedCity)
 
-    return matchesModality && matchesCategory
+    return matchesModality && matchesCategory && matchesKeyword && matchesCity
   })
+
+  function handleFilterSubmit(event) {
+    event.preventDefault()
+    saveOfferSearch({ term: keywordFilter, city: cityFilter })
+  }
 
   return (
     <main className="internship-board-page">
@@ -206,8 +268,30 @@ export default function InternshipBoard() {
           </p>
         </div>
 
-        <div className="internship-board-filters">
+        <form className="internship-board-filters" onSubmit={handleFilterSubmit}>
           <div className="internship-board-filter-grid">
+            <label className="internship-board-field" htmlFor="keyword">
+              <span>Oferta</span>
+              <input
+                id="keyword"
+                type="text"
+                value={keywordFilter}
+                onChange={(event) => setKeywordFilter(event.target.value)}
+                placeholder="Título, empresa o palabra clave"
+              />
+            </label>
+
+            <label className="internship-board-field" htmlFor="city">
+              <span>Ciudad</span>
+              <input
+                id="city"
+                type="text"
+                value={cityFilter}
+                onChange={(event) => setCityFilter(event.target.value)}
+                placeholder="Madrid, Barcelona..."
+              />
+            </label>
+
             <label className="internship-board-field" htmlFor="modality">
               <span>Modalidad</span>
               <select
@@ -239,11 +323,11 @@ export default function InternshipBoard() {
             </label>
           </div>
 
-          <button type="button" className="internship-board-search-button">
+          <button type="submit" className="internship-board-search-button">
             <Icon name="search" className="internship-board-search-icon" />
-            Filtrar oportunidades
+            Buscar oportunidades
           </button>
-        </div>
+        </form>
       </section>
 
       <section className="container internship-board-results">

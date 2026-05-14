@@ -351,20 +351,27 @@
 }
 
 .company-internships-primary,
-.company-internships-secondary {
+.company-internships-secondary,
+.company-offers-primary,
+.company-offers-secondary {
   display: grid;
   gap: 0.3rem;
   min-width: 0;
 }
 
 .company-internships-primary h3,
-.company-internships-secondary strong {
+.company-internships-secondary strong,
+.company-offers-primary h3,
+.company-offers-secondary strong {
   margin: 0;
 }
 
 .company-internships-primary p,
 .company-internships-secondary span,
-.company-internships-date {
+.company-internships-date,
+.company-offers-primary p,
+.company-offers-secondary span,
+.company-offers-date {
   color: #64748b;
 }
 
@@ -379,9 +386,29 @@
     minmax(108px, 0.68fr);
 }
 
+.company-offers-table-head,
+.company-offers-row {
+  grid-template-columns:
+    minmax(220px, 1.4fr)
+    minmax(180px, 1fr)
+    minmax(120px, 0.72fr)
+    minmax(170px, 0.95fr)
+    minmax(112px, 0.68fr);
+}
+
+.company-offers-row {
+  cursor: default;
+}
+
+.company-offers-row:hover {
+  transform: none;
+}
+
 .company-internships-status,
 .company-internships-date,
-.company-internships-action {
+.company-internships-action,
+.company-offers-date,
+.company-offers-action {
   display: flex;
   align-items: center;
 }
@@ -622,6 +649,14 @@
     grid-template-columns: 1fr;
   }
 
+  .company-offers-table-head {
+    display: none;
+  }
+
+  .company-offers-row {
+    grid-template-columns: 1fr;
+  }
+
   .company-candidates-row-actions {
     justify-content: flex-start;
     flex-wrap: wrap;
@@ -745,7 +780,9 @@
   .company-candidates-row-university,
   .company-internships-status,
   .company-internships-date,
-  .company-internships-action {
+  .company-internships-action,
+  .company-offers-date,
+  .company-offers-action {
     justify-self: stretch;
   }
 

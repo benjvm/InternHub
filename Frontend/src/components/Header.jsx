@@ -76,10 +76,10 @@ export default function Header() {
           ) : (
             <>
               <Link
-                to={ROUTES.registerCompany}
+                to={ROUTES.register}
                 className="ghost-primary-button header-desktop-only"
               >
-                Para empresas
+                Crear cuenta
               </Link>
               <Link to={ROUTES.login} className="secondary-button">
                 Iniciar sesión

@@ -10,6 +10,7 @@ import PostOfferPage from '../pages/postOffer'
 import StudentApplicationsPage from '../pages/studentApplications'
 import StudentInternshipsPage from '../pages/studentInternships'
 import CompanyCandidatesPage from '../pages/companyCandidates'
+import CompanyOffersPage from '../pages/companyOffers'
 import CompanyInternshipsPage from '../pages/companyInternships'
 import StudentProfileSettingsPage from '../pages/studentProfileSettings'
 import PublicStudentProfilePage from '../pages/publicStudentProfile'
@@ -43,6 +44,12 @@ export const appRoutes = [
   {
     path: ROUTES.companyCandidates,
     component: CompanyCandidatesPage,
+    protected: true,
+    roles: [2],
+  },
+  {
+    path: ROUTES.companyOffers,
+    component: CompanyOffersPage,
     protected: true,
     roles: [2],
   },

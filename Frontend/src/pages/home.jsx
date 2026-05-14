@@ -1,8 +1,11 @@
-import Header from '../components/Header'
+import { useEffect, useMemo, useState } from 'react'
 import Footer from '../components/Footer'
+import Header from '../components/Header'
 import { mockOffers } from '../data/mockOffers'
 import { getDefaultRouteForRole, ROUTES } from '../routes/paths'
-import { Link } from '../routes/router'
+import { Link, useRouter } from '../routes/router'
+import { getOffers } from '../services/offerService'
+import { saveOfferSearch } from '../services/offerSearchStorage'
 import { useUser } from '../services/userService'
 
 const quickFilters = [
@@ -29,15 +32,159 @@ function Icon({ name, className = '' }) {
   )
 }
 
+function normalizeText(value) {
+  return (
+    value
+      ?.toString()
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') ?? ''
+  )
+}
+
+function extractOfferLocation(offer) {
+  if (offer?.ubicacion?.ciudad || offer?.ubicacion?.pais) {
+    return [offer.ubicacion.ciudad, offer.ubicacion.pais].filter(Boolean).join(', ')
+  }
+
+  return offer.location || ''
+}
+
+function extractOfferCity(offer) {
+  if (offer?.ubicacion?.ciudad) {
+    return offer.ubicacion.ciudad
+  }
+
+  return offer.location?.split(',')[0]?.trim() ?? ''
+}
+
+function mergeOffers(remoteOffers) {
+  const nextOffers = [...remoteOffers]
+
+  mockOffers.forEach((offer) => {
+    if (!nextOffers.some((remoteOffer) => remoteOffer.id === offer.id)) {
+      nextOffers.push(offer)
+    }
+  })
+
+  return nextOffers
+}
+
 export default function Home() {
   const { currentUser } = useUser()
-  const featuredInternships = mockOffers.slice(0, 3)
+  const { navigate } = useRouter()
+  const [remoteOffers, setRemoteOffers] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [cityTerm, setCityTerm] = useState('')
+  const [isOfferSuggestionsOpen, setIsOfferSuggestionsOpen] = useState(false)
+  const [isCitySuggestionsOpen, setIsCitySuggestionsOpen] = useState(false)
   const isCompany = Number(currentUser?.rol) === 2
   const shouldShowCompanyCta = !currentUser || isCompany
   const companyActionTo = currentUser ? ROUTES.postOffer : ROUTES.register
   const secondaryActionTo = currentUser
     ? getDefaultRouteForRole(currentUser.rol)
     : ROUTES.register
+  const mergedOffers = useMemo(() => mergeOffers(remoteOffers), [remoteOffers])
+  const featuredInternships = mergedOffers.slice(0, 3)
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadOffers() {
+      try {
+        const nextOffers = await getOffers()
+
+        if (isMounted) {
+          setRemoteOffers(nextOffers.filter((offer) => offer.status !== 'draft'))
+        }
+      } catch {
+        if (isMounted) {
+          setRemoteOffers([])
+        }
+      }
+    }
+
+    loadOffers()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const offerSuggestions = useMemo(() => {
+    const normalizedSearch = normalizeText(searchTerm)
+    const suggestions = []
+    const seenLabels = new Set()
+
+    mergedOffers.forEach((offer) => {
+      const label = offer.title?.trim()
+
+      if (!label) {
+        return
+      }
+
+      const normalizedLabel = normalizeText(label)
+
+      if (seenLabels.has(normalizedLabel)) {
+        return
+      }
+
+      if (normalizedSearch && !normalizedLabel.includes(normalizedSearch)) {
+        return
+      }
+
+      seenLabels.add(normalizedLabel)
+      suggestions.push({
+        label,
+        meta: [offer.company || offer.companyName, extractOfferLocation(offer)]
+          .filter(Boolean)
+          .join(' - '),
+      })
+    })
+
+    return suggestions.slice(0, 5)
+  }, [mergedOffers, searchTerm])
+
+  const citySuggestions = useMemo(() => {
+    const normalizedSearch = normalizeText(cityTerm)
+    const suggestions = []
+    const seenCities = new Set()
+
+    mergedOffers.forEach((offer) => {
+      const city = extractOfferCity(offer)
+      const normalizedCity = normalizeText(city)
+
+      if (!normalizedCity || seenCities.has(normalizedCity)) {
+        return
+      }
+
+      if (normalizedSearch && !normalizedCity.includes(normalizedSearch)) {
+        return
+      }
+
+      seenCities.add(normalizedCity)
+      suggestions.push(city)
+    })
+
+    return suggestions.slice(0, 5)
+  }, [mergedOffers, cityTerm])
+
+  function handleSearch(event) {
+    event.preventDefault()
+    saveOfferSearch({ term: searchTerm, city: cityTerm })
+    navigate(ROUTES.internships)
+  }
+
+  function handleSelectOfferSuggestion(value) {
+    setSearchTerm(value)
+    setIsOfferSuggestionsOpen(false)
+  }
+
+  function handleSelectCitySuggestion(value) {
+    setCityTerm(value)
+    setIsCitySuggestionsOpen(false)
+  }
 
   return (
     <div className="homepage-shell">
@@ -55,23 +202,79 @@ export default function Home() {
               {'oportunidades pensadas para crecer.'}
             </p>
 
-            <div className="search-card">
+            <form className="search-card" onSubmit={handleSearch}>
               <div className="search-grid">
-                <label className="search-field">
+                <label className="search-field search-field-with-panel">
                   <Icon name="search" className="search-icon" />
-                  <input type="text" placeholder="Puesto, empresa o palabra clave" readOnly />
+                  <input
+                    type="text"
+                    placeholder="Puesto, empresa o palabra clave"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    onFocus={() => setIsOfferSuggestionsOpen(true)}
+                    onBlur={() => {
+                      window.setTimeout(() => setIsOfferSuggestionsOpen(false), 120)
+                    }}
+                  />
+
+                  {isOfferSuggestionsOpen && offerSuggestions.length ? (
+                    <div className="search-suggestion-panel" role="listbox" aria-label="Ofertas sugeridas">
+                      {offerSuggestions.map((suggestion) => (
+                        <button
+                          key={suggestion.label}
+                          type="button"
+                          className="search-suggestion-item"
+                          onMouseDown={(event) => {
+                            event.preventDefault()
+                            handleSelectOfferSuggestion(suggestion.label)
+                          }}
+                        >
+                          <strong>{suggestion.label}</strong>
+                          <span>{suggestion.meta}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                 </label>
 
-                <label className="search-field">
+                <label className="search-field search-field-with-panel">
                   <Icon name="location_on" className="search-icon" />
-                  <input type="text" placeholder="Ciudad o código postal" readOnly />
+                  <input
+                    type="text"
+                    placeholder="Ciudad o código postal"
+                    value={cityTerm}
+                    onChange={(event) => setCityTerm(event.target.value)}
+                    onFocus={() => setIsCitySuggestionsOpen(true)}
+                    onBlur={() => {
+                      window.setTimeout(() => setIsCitySuggestionsOpen(false), 120)
+                    }}
+                  />
+
+                  {isCitySuggestionsOpen && citySuggestions.length ? (
+                    <div className="search-suggestion-panel" role="listbox" aria-label="Ciudades sugeridas">
+                      {citySuggestions.map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          className="search-suggestion-item"
+                          onMouseDown={(event) => {
+                            event.preventDefault()
+                            handleSelectCitySuggestion(suggestion)
+                          }}
+                        >
+                          <strong>{suggestion}</strong>
+                          <span>Buscar ofertas en esta ciudad</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                 </label>
 
-                <Link to={ROUTES.internships} className="primary-button search-button">
+                <button type="submit" className="primary-button search-button">
                   Buscar
-                </Link>
+                </button>
               </div>
-            </div>
+            </form>
 
             <div className="quick-filters">
               <span className="quick-filters-label">{'Filtros rápidos:'}</span>
@@ -125,12 +328,12 @@ export default function Home() {
                   </div>
 
                   <h3>{internship.title}</h3>
-                  <p className="internship-company">{internship.company}</p>
+                  <p className="internship-company">{internship.company || internship.companyName}</p>
 
                   <div className="internship-meta">
                     <div>
                       <Icon name="location_on" className="meta-icon" />
-                      <span>{internship.location}</span>
+                      <span>{extractOfferLocation(internship)}</span>
                     </div>
                     <div>
                       <Icon name="payments" className="meta-icon" />
@@ -139,7 +342,7 @@ export default function Home() {
                   </div>
 
                   <div className="internship-footer">
-                    <span>{internship.publishedAtLabel}</span>
+                    <span>{internship.publishedAtLabel || 'Oferta disponible ahora'}</span>
                     <Link to={ROUTES.internshipDetail(internship.id)}>
                       {'Ver más'}
                       <Icon name="arrow_forward" className="meta-icon small" />
