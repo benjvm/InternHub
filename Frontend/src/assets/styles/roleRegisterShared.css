@@ -1,0 +1,408 @@
+.role-register-shell {
+  --register-accent: #ff8c00;
+  --register-accent-strong: #ea580c;
+  --register-focus-ring: rgba(255, 140, 0, 0.16);
+  --register-text: #0f172a;
+  --register-muted: #667085;
+  --register-panel-bg: rgba(255, 255, 255, 0.96);
+  --register-input-bg: #f8fafc;
+  --register-input-border: #d7dee8;
+  --register-shell-bg:
+    radial-gradient(circle at 12% 18%, rgba(255, 140, 0, 0.16), transparent 22%),
+    radial-gradient(circle at 86% 84%, rgba(234, 88, 12, 0.1), transparent 26%),
+    linear-gradient(180deg, #fffdf9 0%, #f7f3ec 100%);
+  --register-visual-overlay:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.68) 100%),
+    linear-gradient(135deg, rgba(255, 140, 0, 0.15), rgba(15, 23, 42, 0.1));
+  --register-visual-glow: radial-gradient(circle at 24% 86%, rgba(255, 140, 0, 0.45), transparent 34%);
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 2vw, 2rem);
+  background: var(--register-shell-bg);
+}
+
+.role-register-shell::before,
+.role-register-shell::after {
+  content: '';
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(96px);
+  pointer-events: none;
+}
+
+.role-register-shell::before {
+  width: 18rem;
+  height: 18rem;
+  top: -5rem;
+  left: -5rem;
+  background: rgba(255, 140, 0, 0.12);
+}
+
+.role-register-shell::after {
+  width: 22rem;
+  height: 22rem;
+  right: -7rem;
+  bottom: -7rem;
+  background: rgba(234, 88, 12, 0.12);
+}
+
+.role-register-layout {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, 100%);
+  min-height: min(760px, calc(100vh - 2.5rem));
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(380px, 1.06fr);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 2rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.46);
+  box-shadow: 0 32px 80px rgba(15, 23, 42, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.role-register-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3.9rem);
+  background: var(--register-panel-bg);
+}
+
+.role-register-header,
+.role-register-form {
+  max-width: 27rem;
+}
+
+.role-register-header {
+  margin-bottom: 2rem;
+}
+
+.role-register-brand {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1.35rem;
+}
+
+.role-register-brand-logo {
+  width: 5.75rem;
+  height: auto;
+  object-fit: contain;
+}
+
+.role-register-kicker {
+  margin: 0 0 0.55rem;
+  color: var(--register-accent-strong);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.role-register-header h1 {
+  margin: 0;
+  color: var(--register-text);
+  font-size: clamp(2.15rem, 4vw, 3rem);
+  line-height: 1.05;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+
+.role-register-description {
+  margin: 0.9rem 0 0;
+  color: var(--register-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.role-register-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.role-register-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.role-register-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.role-register-field label {
+  color: #344054;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.role-register-input-wrap {
+  position: relative;
+}
+
+.role-register-field input {
+  width: 100%;
+  min-height: 3.45rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--register-input-border);
+  border-radius: 1rem;
+  background: var(--register-input-bg);
+  color: var(--register-text);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.role-register-input-wrap input {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.role-register-field input::placeholder {
+  color: #98a2b3;
+}
+
+.role-register-field input:hover {
+  border-color: #c5d0dd;
+}
+
+.role-register-field input:focus {
+  background: #fff;
+  border-color: var(--register-accent);
+  box-shadow: 0 0 0 4px var(--register-focus-ring);
+}
+
+.role-register-input-icon,
+.role-register-visibility-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.role-register-input-icon {
+  left: 0.9rem;
+  color: #98a2b3;
+  font-size: 1.25rem;
+}
+
+.role-register-visibility-button {
+  right: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #98a2b3;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.role-register-visibility-button:hover {
+  color: #475467;
+}
+
+.role-register-error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.92rem;
+}
+
+.role-register-submit {
+  width: 100%;
+  min-height: 3.55rem;
+  margin-top: 0.25rem;
+  border: 0;
+  border-radius: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, var(--register-accent), var(--register-accent-strong));
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 22px 40px rgba(255, 140, 0, 0.24);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.role-register-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 28px 46px rgba(255, 140, 0, 0.28);
+}
+
+.role-register-submit:hover:not(:disabled) .role-register-submit-icon {
+  transform: translateX(0.2rem);
+}
+
+.role-register-submit:disabled {
+  opacity: 0.76;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.role-register-submit-icon {
+  transition: transform 0.2s ease;
+}
+
+.role-register-footer {
+  margin-top: 1.6rem;
+  color: var(--register-muted);
+  font-size: 0.95rem;
+}
+
+.role-register-footer p {
+  margin: 0;
+}
+
+.role-register-footer a {
+  margin-left: 0.35rem;
+  color: var(--register-accent-strong);
+  font-weight: 800;
+}
+
+.role-register-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+.role-register-visual {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+  background: #111827;
+}
+
+.role-register-visual-image,
+.role-register-visual-scrim {
+  position: absolute;
+  inset: 0;
+}
+
+.role-register-visual-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.role-register-visual-scrim {
+  background: var(--register-visual-overlay);
+}
+
+.role-register-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--register-visual-glow);
+  mix-blend-mode: screen;
+  opacity: 0.78;
+}
+
+.role-register-visual-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 30rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: grid;
+  gap: 0.9rem;
+  color: #fff;
+}
+
+.role-register-visual-pill {
+  width: fit-content;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(8px);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.role-register-visual-copy strong {
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+}
+
+.role-register-visual-copy p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.65;
+}
+
+@media (max-width: 1040px) {
+  .role-register-layout {
+    min-height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .role-register-header,
+  .role-register-form {
+    max-width: none;
+  }
+
+  .role-register-visual {
+    min-height: 22rem;
+  }
+
+  .role-register-visual-copy {
+    max-width: 34rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .role-register-shell {
+    padding: 0.9rem;
+  }
+
+  .role-register-layout {
+    border-radius: 1.5rem;
+  }
+
+  .role-register-panel {
+    padding: 1.35rem;
+  }
+
+  .role-register-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .role-register-header h1 {
+    font-size: clamp(1.9rem, 8vw, 2.35rem);
+  }
+
+  .role-register-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-register-submit {
+    min-height: 3.2rem;
+  }
+
+  .role-register-footer {
+    text-align: center;
+  }
+
+  .role-register-visual {
+    min-height: 17rem;
+  }
+
+  .role-register-visual-copy strong {
+    font-size: clamp(1.35rem, 6vw, 1.85rem);
+  }
+}

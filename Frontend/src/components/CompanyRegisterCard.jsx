@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import logo from '../assets/images/logo_title-removebg.png'
+import companyRegisterImage from '../assets/images/company-register.png'
 import '../assets/styles/companyRegister.css'
 import { registerUser } from '../services/authService'
 import { useUser } from '../services/userService'
@@ -55,44 +57,58 @@ export default function CompanyRegisterCard() {
   }
 
   return (
-    <section className="company-register-shell">
-      <div className="company-register-layout">
-        <header className="company-register-header">
-          <h1>Regístrate como empresa</h1>
-          <p>Empieza a contratar el mejor talento joven.</p>
-        </header>
+    <section className="role-register-shell company-register-shell">
+      <div className="role-register-layout">
+        <article className="role-register-panel">
+          <header className="role-register-header">
+            <div className="role-register-brand">
+              <img src={logo} alt="InternHub" className="role-register-brand-logo" />
+            </div>
+            <p className="role-register-kicker">Acceso para empresas</p>
+            <h1>Regístrate como empresa</h1>
+            <p className="role-register-description">
+              Empieza a contratar talento joven con una pantalla de registro más clara, cuidada y
+              profesional.
+            </p>
+          </header>
 
-        <article className="company-register-card">
-          <form className="company-register-form" onSubmit={handleSubmit}>
-            <div className="company-register-field">
+          <form className="role-register-form" onSubmit={handleSubmit}>
+            <div className="role-register-field">
               <label htmlFor="nombreEmpresa">Nombre de la empresa</label>
-              <input
-                id="nombreEmpresa"
-                name="company_name"
-                type="text"
-                placeholder="Ej: InternHub S.L."
-                value={formData.nombreEmpresa}
-                onChange={handleChange}
-                required
-              />
+              <div className="role-register-input-wrap">
+                <Icon name="apartment" className="role-register-input-icon" />
+                <input
+                  id="nombreEmpresa"
+                  name="company_name"
+                  type="text"
+                  placeholder="Ej: InternHub S.L."
+                  value={formData.nombreEmpresa}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
 
-            <div className="company-register-field">
+            <div className="role-register-field">
               <label htmlFor="email">Email corporativo</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="tu@empresa.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+              <div className="role-register-input-wrap">
+                <Icon name="mail" className="role-register-input-icon" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="tu@empresa.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
 
-            <div className="company-register-field">
+            <div className="role-register-field">
               <label htmlFor="password">Contraseña</label>
-              <div className="company-register-password-wrap">
+              <div className="role-register-input-wrap">
+                <Icon name="lock" className="role-register-input-icon" />
                 <input
                   id="password"
                   name="password"
@@ -105,7 +121,7 @@ export default function CompanyRegisterCard() {
                 />
                 <button
                   type="button"
-                  className="company-register-visibility-button"
+                  className="role-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   aria-pressed={showPassword}
@@ -116,25 +132,35 @@ export default function CompanyRegisterCard() {
             </div>
 
             {errorMessage ? (
-              <p role="alert" style={{ color: '#b91c1c', margin: 0 }}>
+              <p role="alert" className="role-register-error">
                 {errorMessage}
               </p>
             ) : null}
 
-            <div className="company-register-submit-row">
-              <button type="submit" className="company-register-submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta de empresa'}
-              </button>
-            </div>
+            <button type="submit" className="role-register-submit" disabled={isSubmitting}>
+              <span>{isSubmitting ? 'Creando cuenta...' : 'Crear cuenta de empresa'}</span>
+              <Icon name="arrow_forward" className="role-register-submit-icon" />
+            </button>
           </form>
 
-          <footer className="company-register-footer">
+          <footer className="role-register-footer">
             <p>
               ¿Ya tienes cuenta?
               <Link to={ROUTES.login}>Inicia sesión</Link>
             </p>
           </footer>
         </article>
+
+        <aside className="role-register-visual" aria-hidden="true">
+          <img src={companyRegisterImage} alt="" className="role-register-visual-image" />
+          <div className="role-register-visual-scrim" />
+          <div className="role-register-visual-copy">
+            <span className="role-register-visual-pill">Perfil empresa</span>
+            <strong>
+              Encuentra el talento joven y la frescura que tu equipo necesita para crecer.
+            </strong>
+          </div>
+        </aside>
       </div>
     </section>
   )

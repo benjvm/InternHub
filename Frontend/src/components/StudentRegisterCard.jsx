@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import logo from '../assets/images/logo_title-removebg.png'
+import studentRegisterImage from '../assets/images/student-register.png'
 import '../assets/styles/studentRegister.css'
 import { registerUser } from '../services/authService'
 import { useUser } from '../services/userService'
@@ -58,22 +60,20 @@ export default function StudentRegisterCard() {
   }
 
   return (
-    <section className="student-register-shell">
-      <div className="student-register-layout">
-        <header className="student-register-brand-block">
-          <h1>Regístrate como estudiante</h1>
-          <p>Tu portal hacia el mundo profesional.</p>
-        </header>
+    <section className="role-register-shell student-register-shell">
+      <div className="role-register-layout">
+        <article className="role-register-panel">
+          <header className="role-register-header">
+            <div className="role-register-brand">
+              <img src={logo} alt="InternHub" className="role-register-brand-logo" />
+            </div>
+            <p className="role-register-kicker">Acceso para estudiantes</p>
+            <h1>Regístrate como estudiante</h1>
+          </header>
 
-        <article className="student-register-card">
-          <div className="student-register-copy">
-            <h2>Crea tu perfil de estudiante</h2>
-            <p>Completa tus datos para encontrar tu próxima pasantía.</p>
-          </div>
-
-          <form className="student-register-form" onSubmit={handleSubmit}>
-            <div className="student-register-grid">
-              <div className="student-register-field">
+          <form className="role-register-form" onSubmit={handleSubmit}>
+            <div className="role-register-grid">
+              <div className="role-register-field">
                 <label htmlFor="nombre">Nombre</label>
                 <input
                   id="nombre"
@@ -85,7 +85,7 @@ export default function StudentRegisterCard() {
                 />
               </div>
 
-              <div className="student-register-field">
+              <div className="role-register-field">
                 <label htmlFor="apellido">Apellido</label>
                 <input
                   id="apellido"
@@ -98,10 +98,10 @@ export default function StudentRegisterCard() {
               </div>
             </div>
 
-            <div className="student-register-field">
+            <div className="role-register-field">
               <label htmlFor="universidad">Universidad</label>
-              <div className="student-register-input-wrap">
-                <Icon name="account_balance" className="student-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="account_balance" className="role-register-input-icon" />
                 <input
                   id="universidad"
                   type="text"
@@ -113,10 +113,10 @@ export default function StudentRegisterCard() {
               </div>
             </div>
 
-            <div className="student-register-field">
+            <div className="role-register-field">
               <label htmlFor="carrera">Carrera</label>
-              <div className="student-register-input-wrap">
-                <Icon name="history_edu" className="student-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="history_edu" className="role-register-input-icon" />
                 <input
                   id="carrera"
                   type="text"
@@ -128,10 +128,10 @@ export default function StudentRegisterCard() {
               </div>
             </div>
 
-            <div className="student-register-field">
+            <div className="role-register-field">
               <label htmlFor="correo">Correo electrónico</label>
-              <div className="student-register-input-wrap">
-                <Icon name="mail" className="student-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="mail" className="role-register-input-icon" />
                 <input
                   id="correo"
                   type="email"
@@ -143,10 +143,10 @@ export default function StudentRegisterCard() {
               </div>
             </div>
 
-            <div className="student-register-field">
+            <div className="role-register-field">
               <label htmlFor="password">Contraseña</label>
-              <div className="student-register-input-wrap">
-                <Icon name="lock" className="student-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="lock" className="role-register-input-icon" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -158,7 +158,7 @@ export default function StudentRegisterCard() {
                 />
                 <button
                   type="button"
-                  className="student-register-visibility-button"
+                  className="role-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   aria-pressed={showPassword}
@@ -169,26 +169,35 @@ export default function StudentRegisterCard() {
             </div>
 
             {errorMessage ? (
-              <p role="alert" style={{ color: '#b91c1c', margin: 0 }}>
+              <p role="alert" className="role-register-error">
                 {errorMessage}
               </p>
             ) : null}
 
-            <button type="submit" className="student-register-submit" disabled={isSubmitting}>
-              <span>
-                {isSubmitting ? 'Creando cuenta...' : 'Crear cuenta de estudiante'}
-              </span>
-              <Icon name="arrow_forward" className="student-register-submit-icon" />
+            <button type="submit" className="role-register-submit" disabled={isSubmitting}>
+              <span>{isSubmitting ? 'Creando cuenta...' : 'Crear cuenta de estudiante'}</span>
+              <Icon name="arrow_forward" className="role-register-submit-icon" />
             </button>
           </form>
 
-          <footer className="student-register-footer">
+          <footer className="role-register-footer">
             <p>
               ¿Ya tienes cuenta?
               <Link to={ROUTES.login}>Inicia sesión</Link>
             </p>
           </footer>
         </article>
+
+        <aside className="role-register-visual" aria-hidden="true">
+          <img src={studentRegisterImage} alt="" className="role-register-visual-image" />
+          <div className="role-register-visual-scrim" />
+          <div className="role-register-visual-copy">
+            <span className="role-register-visual-pill">Perfil estudiante</span>
+            <strong>
+              Empieza tu camino profesional y descubre las mejores oportunidades para ti.
+            </strong>
+          </div>
+        </aside>
       </div>
     </section>
   )
