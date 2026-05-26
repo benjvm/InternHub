@@ -120,7 +120,7 @@ function InternshipCard({ internship }) {
           </div>
           <div>
             <Icon name="payments" />
-            <span>{internship.salary}</span>
+            <span>{internship.salary + "€ / mes"}</span>
           </div>
         </div>
 
