@@ -10,6 +10,7 @@ export const ROUTES = {
   studentApplications: '/student/candidaturas',
   studentInternships: '/student/practicas',
   companyCandidates: '/company/candidaturas',
+  companyOffers: '/company/ofertas',
   companyInternships: '/company/practicas',
   teacherTracking: '/teacher/seguimiento',
   teacherSettings: '/teacher/configuracion',

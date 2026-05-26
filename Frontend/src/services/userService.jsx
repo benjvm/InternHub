@@ -68,6 +68,14 @@ export function UserProvider({ children }) {
         return
       }
 
+      if (user.isAnonymous) {
+        setFirebaseUser(user)
+        setUserProfile(null)
+        setUserError(null)
+        setLoadingUser(false)
+        return
+      }
+
       try {
         setFirebaseUser(user)
         setUserError(null)
@@ -87,7 +95,7 @@ export function UserProvider({ children }) {
   const value = {
     firebaseUser,
     userProfile,
-    currentUser: firebaseUser
+    currentUser: firebaseUser && !firebaseUser.isAnonymous
       ? {
           uid: firebaseUser.uid,
           email: firebaseUser.email,

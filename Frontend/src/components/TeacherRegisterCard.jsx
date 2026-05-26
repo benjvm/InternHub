@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import logo from '../assets/images/logo_title-removebg.png'
+import teacherRegisterImage from '../assets/images/professor-register.png'
 import '../assets/styles/teacherRegister.css'
 import { registerUser } from '../services/authService'
 import { useUser } from '../services/userService'
@@ -56,27 +58,29 @@ export default function TeacherRegisterCard() {
   }
 
   return (
-    <section className="teacher-register-shell">
-      <div className="teacher-register-layout">
-        <header className="teacher-register-header">
-          <h1>Regístrate como profesor</h1>
-        </header>
+    <section className="role-register-shell teacher-register-shell">
+      <div className="role-register-layout">
+        <article className="role-register-panel">
+          <header className="role-register-header">
+            <div className="role-register-brand">
+              <img src={logo} alt="InternHub" className="role-register-brand-logo" />
+            </div>
+            <p className="role-register-kicker">Acceso para profesores</p>
+            <h1>Regístrate como profesor</h1>
+            <p className="role-register-description">
+              Únete a la red de mentores de InternHub y acompaña el desarrollo de nuevos perfiles.
+            </p>
+          </header>
 
-        <article className="teacher-register-card">
-          <div className="teacher-register-copy">
-            <h2>Registro de profesor</h2>
-            <p>Únete a la red de mentores de InternHub</p>
-          </div>
-
-          <form className="teacher-register-form" onSubmit={handleSubmit}>
-            <div className="teacher-register-field">
+          <form className="role-register-form" onSubmit={handleSubmit}>
+            <div className="role-register-field">
               <label htmlFor="nombreCompleto">Nombre completo</label>
-              <div className="teacher-register-input-wrap">
-                <Icon name="person" className="teacher-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="person" className="role-register-input-icon" />
                 <input
                   id="nombreCompleto"
                   type="text"
-                  placeholder="Ej. Juan Perez"
+                  placeholder="Ej. Juan Pérez"
                   value={formData.nombreCompleto}
                   onChange={handleChange}
                   required
@@ -84,10 +88,10 @@ export default function TeacherRegisterCard() {
               </div>
             </div>
 
-            <div className="teacher-register-field">
+            <div className="role-register-field">
               <label htmlFor="correo">Correo electrónico</label>
-              <div className="teacher-register-input-wrap">
-                <Icon name="mail" className="teacher-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="mail" className="role-register-input-icon" />
                 <input
                   id="correo"
                   type="email"
@@ -99,10 +103,10 @@ export default function TeacherRegisterCard() {
               </div>
             </div>
 
-            <div className="teacher-register-field">
+            <div className="role-register-field">
               <label htmlFor="telefono">Teléfono</label>
-              <div className="teacher-register-input-wrap">
-                <Icon name="call" className="teacher-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="call" className="role-register-input-icon" />
                 <input
                   id="telefono"
                   type="tel"
@@ -114,10 +118,10 @@ export default function TeacherRegisterCard() {
               </div>
             </div>
 
-            <div className="teacher-register-field">
+            <div className="role-register-field">
               <label htmlFor="password">Contraseña</label>
-              <div className="teacher-register-input-wrap">
-                <Icon name="lock" className="teacher-register-input-icon" />
+              <div className="role-register-input-wrap">
+                <Icon name="lock" className="role-register-input-icon" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -129,7 +133,7 @@ export default function TeacherRegisterCard() {
                 />
                 <button
                   type="button"
-                  className="teacher-register-visibility-button"
+                  className="role-register-visibility-button"
                   onClick={() => setShowPassword((current) => !current)}
                   aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   aria-pressed={showPassword}
@@ -140,24 +144,33 @@ export default function TeacherRegisterCard() {
             </div>
 
             {errorMessage ? (
-              <p role="alert" style={{ color: '#b91c1c', margin: 0 }}>
+              <p role="alert" className="role-register-error">
                 {errorMessage}
               </p>
             ) : null}
 
-            <button type="submit" className="teacher-register-submit" disabled={isSubmitting}>
+            <button type="submit" className="role-register-submit" disabled={isSubmitting}>
               <span>{isSubmitting ? 'Creando cuenta...' : 'Crear cuenta de profesor'}</span>
-              <Icon name="arrow_forward" className="teacher-register-submit-icon" />
+              <Icon name="arrow_forward" className="role-register-submit-icon" />
             </button>
           </form>
 
-          <footer className="teacher-register-footer">
+          <footer className="role-register-footer">
             <p>
               ¿Ya tienes cuenta?
               <Link to={ROUTES.login}>Inicia sesión</Link>
             </p>
           </footer>
         </article>
+
+        <aside className="role-register-visual" aria-hidden="true">
+          <img src={teacherRegisterImage} alt="" className="role-register-visual-image" />
+          <div className="role-register-visual-scrim" />
+          <div className="role-register-visual-copy">
+            <span className="role-register-visual-pill">Perfil profesor</span>
+            <strong>Empieza hoy y lleva un seguimiento continuo del éxito de tus alumnos.</strong>
+          </div>
+        </aside>
       </div>
     </section>
   )

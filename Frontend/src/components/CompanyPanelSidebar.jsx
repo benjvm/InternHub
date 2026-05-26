@@ -42,13 +42,13 @@ export default function CompanyPanelSidebar({ currentUser, activeSection = 'cand
         </Link>
 
         <Link
-          to={ROUTES.postOffer}
+          to={ROUTES.companyOffers}
           className={`company-candidates-sidebar-link ${
             activeSection === 'offers' ? 'active' : ''
           }`}
         >
-          <Icon name="work" />
-          Publicar oferta
+          <Icon name="work_history" />
+          Mis Ofertas
         </Link>
 
         <Link
