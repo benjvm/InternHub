@@ -6,7 +6,7 @@
 }
 
 .container {
-  width: min(1350px, calc(100% - 2rem));
+  width: min(1600px, calc(100% - 1rem));
   margin: 0 auto;
 }
 

@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 980px;
+  max-width: 1120px;
   padding-top: 4rem;
   padding-bottom: 3rem;
   text-align: center;
@@ -88,7 +88,7 @@
 }
 
 .teacher-profile-shell {
-  width: min(980px, calc(100% - 2rem));
+  width: min(1120px, calc(100% - 1rem));
 }
 
 .teacher-profile-card {

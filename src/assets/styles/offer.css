@@ -1,5 +1,5 @@
 .job-container {
-  width: 62.5rem;
+  width: min(72rem, calc(100% - 1rem));
   margin: 0 auto;
   padding: 2rem 0 4rem;
   color: #0f172a;
