@@ -1,13 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
-import { auth, db } from '../firebase'
-
-const USERS_COLLECTION = 'users'
+import { getCurrentAuthUser, onAuthUserChanged } from './supabase/auth/authRepository'
+import { getUserById } from './supabase/repositories/usersRepository'
 
 const UserContext = createContext({
   firebaseUser: null,
+  authUser: null,
   userProfile: null,
   currentUser: null,
   loadingUser: true,
@@ -16,40 +14,48 @@ const UserContext = createContext({
   clearUserState: () => {},
 })
 
-async function fetchUserProfile(uid) {
-  const snapshot = await getDoc(doc(db, USERS_COLLECTION, uid))
+async function resolveProfileUid(uid) {
+  if (uid) {
+    return uid
+  }
 
-  if (!snapshot.exists()) {
+  const authUser = await getCurrentAuthUser()
+  return authUser?.uid || null
+}
+
+export async function fetchUserProfile(uid) {
+  const profileUid = await resolveProfileUid(uid)
+
+  if (!profileUid) {
     return null
   }
 
-  return {
-    id: snapshot.id,
-    ...snapshot.data(),
-  }
+  return getUserById(profileUid)
 }
 
 export function UserProvider({ children }) {
-  const [firebaseUser, setFirebaseUser] = useState(null)
+  const [authUser, setAuthUser] = useState(null)
   const [userProfile, setUserProfile] = useState(null)
   const [loadingUser, setLoadingUser] = useState(true)
   const [userError, setUserError] = useState(null)
 
   const clearUserState = () => {
-    setFirebaseUser(null)
+    setAuthUser(null)
     setUserProfile(null)
     setUserError(null)
   }
 
-  const refreshUserProfile = async (uid = auth.currentUser?.uid) => {
-    if (!uid) {
+  const refreshUserProfile = async (uid) => {
+    const profileUid = await resolveProfileUid(uid || authUser?.uid)
+
+    if (!profileUid) {
       setUserProfile(null)
       return null
     }
 
     try {
       setUserError(null)
-      const profile = await fetchUserProfile(uid)
+      const profile = await fetchUserProfile(profileUid)
       setUserProfile(profile)
       return profile
     } catch (error) {
@@ -59,7 +65,7 @@ export function UserProvider({ children }) {
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthUserChanged(async (user) => {
       setLoadingUser(true)
 
       if (!user) {
@@ -69,7 +75,7 @@ export function UserProvider({ children }) {
       }
 
       if (user.isAnonymous) {
-        setFirebaseUser(user)
+        setAuthUser(user)
         setUserProfile(null)
         setUserError(null)
         setLoadingUser(false)
@@ -77,7 +83,7 @@ export function UserProvider({ children }) {
       }
 
       try {
-        setFirebaseUser(user)
+        setAuthUser(user)
         setUserError(null)
         const profile = await fetchUserProfile(user.uid)
         setUserProfile(profile)
@@ -93,12 +99,13 @@ export function UserProvider({ children }) {
   }, [])
 
   const value = {
-    firebaseUser,
+    firebaseUser: authUser,
+    authUser,
     userProfile,
-    currentUser: firebaseUser && !firebaseUser.isAnonymous
+    currentUser: authUser && !authUser.isAnonymous
       ? {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
+          uid: authUser.uid,
+          email: authUser.email,
           ...userProfile,
         }
       : null,
@@ -114,5 +121,3 @@ export function UserProvider({ children }) {
 export function useUser() {
   return useContext(UserContext)
 }
-
-export { fetchUserProfile }

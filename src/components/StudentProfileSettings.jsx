@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { deleteField } from 'firebase/firestore'
 import '../assets/styles/studentProfileSettings.css'
 import {
   getCvDocumentUrl,
@@ -24,6 +23,7 @@ import { ROUTES } from '../routes/paths'
 import { useRouter } from '../routes/router'
 import { deleteUserAccount, updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
+import { deleteProfileField } from '../services/shared/helpers/deleteField'
 
 const universities = ['Stanford University', 'MIT', 'UC Berkeley', 'Otra']
 
@@ -333,9 +333,9 @@ export default function StudentProfileSettings() {
         universidad: formData.universidad,
         carrera: formData.carrera,
         ...(uploadedImageUrl ? { photoURL: uploadedImageUrl } : {}),
-        authEmail: deleteField(),
-        careerFocus: deleteField(),
-        carrerFocus: deleteField(),
+        authEmail: deleteProfileField(),
+        careerFocus: deleteProfileField(),
+        carrerFocus: deleteProfileField(),
       })
 
       await refreshUserProfile(currentUser?.uid)
@@ -410,7 +410,7 @@ export default function StudentProfileSettings() {
           </div>
 
           <h2>Perfil del estudiante</h2>
-          <p>Actualiza tu información y mantén tu perfil sincronizado con Firebase.</p>
+          <p>Actualiza tu información y mantén tu perfil sincronizado.</p>
           {selectedImage ? <p>La imagen seleccionada se subirá cuando guardes el perfil.</p> : null}
         </section>
 

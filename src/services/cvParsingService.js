@@ -1,9 +1,8 @@
-import { doc, getDoc, serverTimestamp } from 'firebase/firestore'
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
-import { auth, db } from '../firebase'
+import { getCurrentAuthUser } from './supabase/auth/authRepository'
+import { getUserById } from './supabase/repositories/usersRepository'
 import { updateUserProfile } from './profileService'
 
-const USERS_COLLECTION = 'users'
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY
 const OPENROUTER_MODEL = import.meta.env.VITE_OPENROUTER_MODEL || 'openai/gpt-5.2'
@@ -19,8 +18,10 @@ const MAX_AI_TEXT_LENGTH = 24000
 
 let pdfJsModulePromise = null
 
-function ensureAuthenticatedOwner(uid) {
-  if (!uid || auth.currentUser?.uid !== uid) {
+async function ensureAuthenticatedOwner(uid) {
+  const authUser = await getCurrentAuthUser()
+
+  if (!uid || authUser?.uid !== uid) {
     throw new Error('Solo puedes procesar tu propio CV.')
   }
 }
@@ -389,8 +390,7 @@ async function loadPdfJsModule() {
 }
 
 async function getStudentProfile(uid) {
-  const snapshot = await getDoc(doc(db, USERS_COLLECTION, uid))
-  return snapshot.exists() ? snapshot.data() : {}
+  return (await getUserById(uid)) || {}
 }
 
 export function validateCvPdf(file) {
@@ -665,7 +665,7 @@ export function mapGeneratedCvDataToParsedProfile(generatedCvData = {}, fallback
 }
 
 export async function processStudentCV(uid, file, options = {}) {
-  ensureAuthenticatedOwner(uid)
+  await ensureAuthenticatedOwner(uid)
   validateCvPdf(file)
 
   const studentProfile = await getStudentProfile(uid)
@@ -719,7 +719,7 @@ export async function processStudentCV(uid, file, options = {}) {
   const cvData = {
     cvHash: fileHash,
     originalFileName: file.name,
-    lastParsedAt: serverTimestamp(),
+    lastParsedAt: new Date().toISOString(),
     rawExtractedText: truncateText(rawExtractedText, MAX_RAW_TEXT_LENGTH),
     parsedProfile,
     aiProcessingStatus,

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { deleteField } from 'firebase/firestore'
 import '../assets/styles/companyProfileSettings.css'
 import { logoutUser } from '../services/authService'
 import { ROUTES } from '../routes/paths'
 import { useRouter } from '../routes/router'
 import { deleteUserAccount, updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
+import { deleteProfileField } from '../services/shared/helpers/deleteField'
 
 const sectorOptions = [
   'Technology & Software',
@@ -245,13 +245,13 @@ export default function CompanyProfileSettings() {
         email: formData.email,
         descripcionEmpresa: formData.descripcionEmpresa,
         ubicaciones: locations.map(cleanLocation),
-        companyName: deleteField(),
-        company_name: deleteField(),
-        companyDescription: deleteField(),
-        description: deleteField(),
-        hr_email: deleteField(),
-        officeLocations: deleteField(),
-        locations: deleteField(),
+        companyName: deleteProfileField(),
+        company_name: deleteProfileField(),
+        companyDescription: deleteProfileField(),
+        description: deleteProfileField(),
+        hr_email: deleteProfileField(),
+        officeLocations: deleteProfileField(),
+        locations: deleteProfileField(),
       })
 
       await refreshUserProfile(currentUser?.uid)

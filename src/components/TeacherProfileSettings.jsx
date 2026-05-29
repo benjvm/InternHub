@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { deleteField } from 'firebase/firestore'
 import '../assets/styles/teacherProfileSettings.css'
 import { getProfileImageUrl, uploadProfileImage } from '../services/cloudinaryService'
 import { logoutUser } from '../services/authService'
@@ -7,6 +6,7 @@ import { ROUTES } from '../routes/paths'
 import { useRouter } from '../routes/router'
 import { deleteUserAccount, updateUserProfile } from '../services/profileService'
 import { useUser } from '../services/userService'
+import { deleteProfileField } from '../services/shared/helpers/deleteField'
 
 const educationalAreas = [
   'Facultad de Bellas Artes',
@@ -136,13 +136,13 @@ export default function TeacherProfileSettings({ variant = 'standalone' }) {
         telefono: formData.telefono,
         areaEducativa: formData.areaEducativa,
         ...(uploadedImageUrl ? { photoURL: uploadedImageUrl } : {}),
-        full_name: deleteField(),
-        fullName: deleteField(),
-        email: deleteField(),
-        phone: deleteField(),
-        edu_area: deleteField(),
-        educationalArea: deleteField(),
-        authEmail: deleteField(),
+        full_name: deleteProfileField(),
+        fullName: deleteProfileField(),
+        email: deleteProfileField(),
+        phone: deleteProfileField(),
+        edu_area: deleteProfileField(),
+        educationalArea: deleteProfileField(),
+        authEmail: deleteProfileField(),
       })
 
       await refreshUserProfile(currentUser?.uid)

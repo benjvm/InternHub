@@ -1,15 +1,10 @@
 import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-  where,
-} from 'firebase/firestore'
-import { db } from '../firebase'
+  createApplicationRecord,
+  getApplicationRecordByOfferAndStudent,
+  getApplicationRecordsByOfferId,
+  updateApplicationRecordStatus,
+} from './supabase/repositories/applicationsRepository'
+import { getUserById } from './supabase/repositories/usersRepository'
 import {
   APPLICATION_STATUSES,
   getApplicationStatusLabel,
@@ -17,19 +12,6 @@ import {
 } from './applicationStatus'
 import { createInternshipFromApplication } from './internshipService'
 import { getOffersByCompanyId } from './offerService'
-
-const APPLICATIONS_COLLECTION = 'applications'
-const USERS_COLLECTION = 'users'
-
-function mapApplicationDocument(documentSnapshot) {
-  const data = documentSnapshot.data()
-
-  return {
-    id: documentSnapshot.id,
-    ...data,
-    status: normalizeApplicationStatus(data.status),
-  }
-}
 
 function getTimestampValue(timestamp) {
   if (timestamp?.seconds) {
@@ -54,44 +36,32 @@ function getStudentDisplayName(student) {
   return student?.correo || student?.email || 'Estudiante'
 }
 
-function mapStudentProfile(snapshot) {
-  if (!snapshot.exists()) {
+function mapStudentProfile(student) {
+  if (!student) {
     return null
   }
 
-  const data = snapshot.data()
-
   return {
-    id: snapshot.id,
-    ...data,
-    displayName: getStudentDisplayName(data),
-    university: data.universidad || data.university || 'Universidad no indicada',
-    degree: data.carrera || data.degree || '',
-    email: data.correo || data.email || '',
-    cvUrl: data.cvUrl || data.resumeUrl || data.curriculumUrl || '',
-    cvFileName: data.cvFileName || '',
+    ...student,
+    displayName: getStudentDisplayName(student),
+    university: student.universidad || student.university || 'Universidad no indicada',
+    degree: student.carrera || student.degree || '',
+    email: student.correo || student.email || '',
+    cvUrl: student.cvUrl || student.resumeUrl || student.curriculumUrl || '',
+    cvFileName: student.cvFileName || '',
+  }
+}
+
+function mapApplication(application) {
+  return {
+    ...application,
+    status: normalizeApplicationStatus(application.status),
   }
 }
 
 export async function getApplicationByOfferAndStudent(offerId, studentId) {
-  if (!offerId || !studentId) {
-    return null
-  }
-
-  const applicationsQuery = query(
-    collection(db, APPLICATIONS_COLLECTION),
-    where('offerId', '==', offerId),
-    where('studentId', '==', studentId),
-  )
-
-  const snapshot = await getDocs(applicationsQuery)
-  const [applicationDocument] = snapshot.docs
-
-  if (!applicationDocument) {
-    return null
-  }
-
-  return mapApplicationDocument(applicationDocument)
+  const application = await getApplicationRecordByOfferAndStudent(offerId, studentId)
+  return application ? mapApplication(application) : null
 }
 
 export async function createApplication(applicationData) {
@@ -109,15 +79,7 @@ export async function createApplication(applicationData) {
     throw new Error('El identificador de la oferta y del estudiante son obligatorios.')
   }
 
-  const existingApplication = await getApplicationByOfferAndStudent(offerId, studentId)
-
-  if (existingApplication) {
-    return existingApplication
-  }
-
-  const applicationReference = doc(collection(db, APPLICATIONS_COLLECTION))
-  const payload = {
-    applicationId: applicationReference.id,
+  const application = await createApplicationRecord({
     offerId,
     studentId,
     status,
@@ -127,15 +89,9 @@ export async function createApplication(applicationData) {
     scheduleType,
     cvUrl,
     cvFileName,
-    createdAt: serverTimestamp(),
-  }
+  })
 
-  await setDoc(applicationReference, payload)
-
-  return {
-    id: applicationReference.id,
-    ...payload,
-  }
+  return mapApplication(application)
 }
 
 export async function getCompanyApplications(companyId) {
@@ -152,16 +108,12 @@ export async function getCompanyApplications(companyId) {
   }
 
   const offerMap = new Map(offers.map((offer) => [offer.id, offer]))
-  const applicationSnapshots = await Promise.all(
-    offers.map((offer) =>
-      getDocs(
-        query(collection(db, APPLICATIONS_COLLECTION), where('offerId', '==', offer.id)),
-      ),
-    ),
+  const applicationGroups = await Promise.all(
+    offers.map((offer) => getApplicationRecordsByOfferId(offer.id)),
   )
 
-  const applications = applicationSnapshots
-    .flatMap((snapshot) => snapshot.docs.map(mapApplicationDocument))
+  const applications = applicationGroups
+    .flatMap((group) => group.map(mapApplication))
     .sort((left, right) => getTimestampValue(right.createdAt) - getTimestampValue(left.createdAt))
 
   if (!applications.length) {
@@ -172,14 +124,11 @@ export async function getCompanyApplications(companyId) {
     new Set(applications.map((application) => application.studentId).filter(Boolean)),
   )
 
-  const studentSnapshots = await Promise.all(
-    uniqueStudentIds.map((studentId) => getDoc(doc(db, USERS_COLLECTION, studentId))),
-  )
-
+  const students = await Promise.all(uniqueStudentIds.map((studentId) => getUserById(studentId)))
   const studentMap = new Map(
-    studentSnapshots
-      .map((snapshot) => [snapshot.id, mapStudentProfile(snapshot)])
-      .filter(([, student]) => Boolean(student)),
+    students
+      .map((student) => [student?.id || student?.uid, mapStudentProfile(student)])
+      .filter(([studentId, student]) => Boolean(studentId && student)),
   )
 
   return applications.map((application) => {
@@ -189,9 +138,9 @@ export async function getCompanyApplications(companyId) {
     return {
       ...application,
       offer,
-      offerTitle: offer?.title || 'Oferta sin título',
+      offerTitle: offer?.title || 'Oferta sin titulo',
       companyName: offer?.companyName || 'Empresa',
-      location: offer?.location || 'Ubicación no indicada',
+      location: offer?.location || 'Ubicacion no indicada',
       student,
       studentName: student?.displayName || 'Estudiante',
       studentUniversity: student?.university || 'Universidad no indicada',
@@ -207,14 +156,10 @@ export async function updateApplicationStatus(applicationId, nextStatus) {
   const normalizedStatus = normalizeApplicationStatus(nextStatus)
 
   if (!sanitizedApplicationId) {
-    throw new Error('Se necesita una candidatura válida para actualizar su estado.')
+    throw new Error('Se necesita una candidatura valida para actualizar su estado.')
   }
 
-  await updateDoc(doc(db, APPLICATIONS_COLLECTION, sanitizedApplicationId), {
-    status: normalizedStatus,
-    updatedAt: serverTimestamp(),
-  })
-
+  await updateApplicationRecordStatus(sanitizedApplicationId, normalizedStatus)
   return normalizedStatus
 }
 
@@ -223,7 +168,7 @@ export async function acceptApplication(applicationData) {
   const previousStatus = normalizeApplicationStatus(applicationData?.status)
 
   if (!applicationId) {
-    throw new Error('Se necesita una candidatura válida para aceptar al candidato.')
+    throw new Error('Se necesita una candidatura valida para aceptar al candidato.')
   }
 
   const normalizedStatus = await updateApplicationStatus(
@@ -243,7 +188,7 @@ export async function acceptApplication(applicationData) {
       try {
         await updateApplicationStatus(applicationId, previousStatus)
       } catch {
-        // Si la reversión falla, dejamos que el error principal siga su curso.
+        // Si la reversion falla, dejamos que el error principal siga su curso.
       }
     }
 

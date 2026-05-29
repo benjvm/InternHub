@@ -1,35 +1,15 @@
-import {
-  arrayRemove,
-  arrayUnion,
-  collection,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  where,
-} from 'firebase/firestore'
 import { getMockOfferById } from '../data/mockOffers'
-import { db } from '../firebase'
 import {
   APPLICATION_STATUSES,
   getApplicationStatusLabel,
   normalizeApplicationStatus,
 } from './applicationStatus'
+import { getApplicationRecordsByStudentId } from './supabase/repositories/applicationsRepository'
+import {
+  addSavedOffer,
+  removeSavedOffer,
+} from './supabase/repositories/usersRepository'
 import { getOfferById } from './offerService'
-
-const APPLICATIONS_COLLECTION = 'applications'
-const USERS_COLLECTION = 'users'
-
-function mapApplicationDocument(documentSnapshot) {
-  const data = documentSnapshot.data()
-
-  return {
-    id: documentSnapshot.id,
-    ...data,
-    status: normalizeApplicationStatus(data.status),
-  }
-}
 
 function getTimestampValue(timestamp) {
   if (timestamp?.seconds) {
@@ -48,22 +28,22 @@ function createUnavailableOffer(offerId) {
   return {
     id: offerId,
     title: 'Oferta no disponible',
-    description: 'La oferta original ya no está disponible en este momento.',
+    description: 'La oferta original ya no esta disponible en este momento.',
     companyName: 'InternHub',
     company: 'InternHub',
     category: 'General',
     modality: 'Flexible',
-    location: 'Ubicación no disponible',
+    location: 'Ubicacion no disponible',
     salary: 'Por definir',
     icon: 'work',
   }
 }
 
 async function resolveOffer(offerId) {
-  const firestoreOffer = await getOfferById(offerId)
+  const persistedOffer = await getOfferById(offerId)
 
-  if (firestoreOffer) {
-    return firestoreOffer
+  if (persistedOffer) {
+    return persistedOffer
   }
 
   return getMockOfferById(offerId) || createUnavailableOffer(offerId)
@@ -72,10 +52,11 @@ async function resolveOffer(offerId) {
 function enrichApplicationWithOffer(application, offer) {
   return {
     ...application,
+    status: normalizeApplicationStatus(application.status),
     offer,
     offerTitle: offer?.title || 'Oferta no disponible',
     companyName: offer?.companyName || offer?.company || 'InternHub',
-    location: offer?.location || 'Ubicación no disponible',
+    location: offer?.location || 'Ubicacion no disponible',
     category: offer?.category || 'General',
     modality: offer?.modality || 'Flexible',
     statusLabel: getApplicationStatusLabel(application.status),
@@ -94,14 +75,7 @@ export async function saveOfferForStudent(studentId, offerId) {
     throw new Error('Se necesita un estudiante y una oferta validos para guardar la oferta.')
   }
 
-  await setDoc(
-    doc(db, USERS_COLLECTION, sanitizedStudentId),
-    {
-      savedOfferIds: arrayUnion(sanitizedOfferId),
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  )
+  await addSavedOffer(sanitizedStudentId, sanitizedOfferId)
 }
 
 export async function removeSavedOfferForStudent(studentId, offerId) {
@@ -112,14 +86,7 @@ export async function removeSavedOfferForStudent(studentId, offerId) {
     throw new Error('Se necesita un estudiante y una oferta validos para quitar la oferta.')
   }
 
-  await setDoc(
-    doc(db, USERS_COLLECTION, sanitizedStudentId),
-    {
-      savedOfferIds: arrayRemove(sanitizedOfferId),
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  )
+  await removeSavedOffer(sanitizedStudentId, sanitizedOfferId)
 }
 
 export async function getStudentApplications(studentId) {
@@ -129,14 +96,11 @@ export async function getStudentApplications(studentId) {
     return []
   }
 
-  const applicationsQuery = query(
-    collection(db, APPLICATIONS_COLLECTION),
-    where('studentId', '==', sanitizedStudentId),
-  )
-
-  const snapshot = await getDocs(applicationsQuery)
-  const applications = snapshot.docs
-    .map(mapApplicationDocument)
+  const applications = (await getApplicationRecordsByStudentId(sanitizedStudentId))
+    .map((application) => ({
+      ...application,
+      status: normalizeApplicationStatus(application.status),
+    }))
     .sort((left, right) => getTimestampValue(right.createdAt) - getTimestampValue(left.createdAt))
 
   if (!applications.length) {
