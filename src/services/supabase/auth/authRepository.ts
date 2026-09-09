@@ -1,4 +1,3 @@
-import { getPreferredDataBackend, DATA_BACKENDS } from '../../shared/constants/backend'
 import { getSupabaseClient } from '../client'
 import { upsertUserProfile } from '../repositories/usersRepository'
 
@@ -50,57 +49,7 @@ function mapAuthUser(user: any) {
   }
 }
 
-async function registerWithFirebase(userData: Record<string, any>) {
-  const { createUserWithEmailAndPassword } = await import('firebase/auth')
-  const { doc, serverTimestamp, setDoc } = await import('firebase/firestore')
-  const { auth, db } = await import('../../../firebase')
-
-  const role = normalizeRole(userData.rol)
-  const email = resolveEmail(role, userData)
-  const password = userData.password ?? userData.contrasena ?? ''
-
-  if (!email || !password) {
-    throw new Error('Correo y contrasena son obligatorios.')
-  }
-
-  const credential = await createUserWithEmailAndPassword(auth, email, password)
-  const { user } = credential
-  const profile = buildUserProfile(role, userData)
-  const emailField = role === 2 ? 'email' : 'correo'
-  profile[emailField] = email
-
-  await setDoc(doc(db, 'users', user.uid), {
-    uid: user.uid,
-    ...profile,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  })
-
-  return {
-    uid: user.uid,
-    email: user.email,
-    ...profile,
-  }
-}
-
-async function loginWithFirebase({ email, password }: { email: string; password: string }) {
-  const { signInWithEmailAndPassword } = await import('firebase/auth')
-  const { auth } = await import('../../../firebase')
-  const credential = await signInWithEmailAndPassword(auth, email.trim().toLowerCase(), password)
-  return mapAuthUser(credential.user)
-}
-
-async function logoutWithFirebase() {
-  const { signOut } = await import('firebase/auth')
-  const { auth } = await import('../../../firebase')
-  return signOut(auth)
-}
-
 export async function registerAuthUser(userData: Record<string, any>) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return registerWithFirebase(userData)
-  }
-
   const role = normalizeRole(userData.rol)
   const email = resolveEmail(role, userData)
   const password = userData.password ?? userData.contrasena ?? ''
@@ -151,10 +100,6 @@ export async function loginAuthUser(credentials: { email: string; password: stri
     throw new Error('Correo y contrasena son obligatorios.')
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return loginWithFirebase(credentials)
-  }
-
   const supabase = getSupabaseClient()
   const { data, error } = await supabase.auth.signInWithPassword({
     email: credentials.email.trim().toLowerCase(),
@@ -169,10 +114,6 @@ export async function loginAuthUser(credentials: { email: string; password: stri
 }
 
 export async function logoutAuthUser() {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return logoutWithFirebase()
-  }
-
   const supabase = getSupabaseClient()
   const { error } = await supabase.auth.signOut()
 
@@ -188,16 +129,8 @@ export async function resetAuthPassword(email: string) {
     throw new Error('Indica tu correo electronico para restablecer la contrasena.')
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    const { sendPasswordResetEmail } = await import('firebase/auth')
-    const { auth } = await import('../../../firebase')
-    return sendPasswordResetEmail(auth, normalizedEmail)
-  }
-
   const supabase = getSupabaseClient()
-  const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-    redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined,
-  })
+  const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail)
 
   if (error) {
     throw error
@@ -205,11 +138,6 @@ export async function resetAuthPassword(email: string) {
 }
 
 export async function getCurrentAuthUser() {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    const { auth } = await import('../../../firebase')
-    return mapAuthUser(auth.currentUser)
-  }
-
   const supabase = getSupabaseClient()
   const { data, error } = await supabase.auth.getUser()
 
@@ -221,27 +149,16 @@ export async function getCurrentAuthUser() {
 }
 
 export function onAuthUserChanged(callback: (user: any) => void) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    let unsubscribe = () => {}
+  const supabase = getSupabaseClient()
+  const { data: authListener, error } = supabase.auth.onAuthStateChange((event, session) => {
+    callback(mapAuthUser(session?.user))
+  })
 
-    import('firebase/auth')
-      .then(({ onAuthStateChanged }) => import('../../../firebase').then(({ auth }) => {
-        unsubscribe = onAuthStateChanged(auth, (user) => callback(mapAuthUser(user)))
-      }))
-      .catch(() => callback(null))
-
-    return () => unsubscribe()
+  if (error) {
+    callback(null)
+    return () => {}
   }
 
-  const supabase = getSupabaseClient()
-
-  supabase.auth.getSession().then(({ data }) => {
-    callback(mapAuthUser(data.session?.user || null))
-  })
-
-  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-    callback(mapAuthUser(session?.user || null))
-  })
-
-  return () => data.subscription.unsubscribe()
+  return () => authListener?.subscription?.unsubscribe?.() ?? authListener?.unsubscribe?.()
 }
+

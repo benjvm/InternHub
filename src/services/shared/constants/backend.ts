@@ -1,5 +1,4 @@
 export const DATA_BACKENDS = {
-  firebase: 'firebase',
   supabase: 'supabase',
 } as const
 
@@ -10,19 +9,15 @@ export function isSupabaseConfigured() {
 }
 
 export function getPreferredDataBackend(): DataBackend {
-  const configuredBackend = String(import.meta.env.VITE_DATA_BACKEND || '').trim().toLowerCase()
-
-  if (configuredBackend === DATA_BACKENDS.firebase) {
-    return DATA_BACKENDS.firebase
+  if (!isSupabaseConfigured()) {
+    throw new Error(
+      'Supabase no está configurado. Define VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en tus variables de entorno.',
+    )
   }
 
-  if (configuredBackend === DATA_BACKENDS.supabase && isSupabaseConfigured()) {
-    return DATA_BACKENDS.supabase
-  }
-
-  return isSupabaseConfigured() ? DATA_BACKENDS.supabase : DATA_BACKENDS.firebase
+  return DATA_BACKENDS.supabase
 }
 
 export function shouldUseSupabase() {
-  return getPreferredDataBackend() === DATA_BACKENDS.supabase
+  return true
 }

@@ -195,14 +195,14 @@ export default function JobDetails() {
       try {
         setIsLoading(true)
         setErrorMessage('')
-        const firestoreOffer = await getOfferById(offerId)
+        const remoteOffer = await getOfferById(offerId)
 
         if (isMounted) {
-          setOffer(firestoreOffer ?? getMockOfferById(offerId))
+          setOffer(remoteOffer ?? getMockOfferById(offerId))
         }
       } catch {
         if (isMounted) {
-          setErrorMessage('No se pudo cargar la oferta desde Firebase.')
+          setErrorMessage('No se pudo cargar la oferta remota.')
           setOffer(getMockOfferById(offerId))
         }
       } finally {

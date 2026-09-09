@@ -1,4 +1,3 @@
-import { DATA_BACKENDS, getPreferredDataBackend } from '../../shared/constants/backend'
 import { isDeleteField, stripUndefinedValues } from '../../shared/helpers/deleteField'
 import { createTimestamp, mapTimestampFields } from '../../shared/helpers/timestamps'
 import { getSupabaseClient } from '../client'
@@ -101,86 +100,8 @@ function mapUserRow(row: any) {
   })
 }
 
-async function getFirebaseUserById(uid: string) {
-  const { doc, getDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const snapshot = await getDoc(doc(db, 'users', uid))
 
-  if (!snapshot.exists()) {
-    return null
-  }
-
-  return {
-    id: snapshot.id,
-    ...snapshot.data(),
-  }
-}
-
-async function upsertFirebaseUserProfile(uid: string, profileData: Record<string, any>) {
-  const { deleteField, doc, serverTimestamp, setDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const sanitizedProfile = normalizePatch(profileData)
-  const firebasePayload = Object.entries(sanitizedProfile).reduce<Record<string, any>>(
-    (accumulator, [key, value]) => {
-      accumulator[key] = isDeleteField(value) ? deleteField() : value
-      return accumulator
-    },
-    {},
-  )
-
-  await setDoc(
-    doc(db, 'users', uid),
-    {
-      ...firebasePayload,
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  )
-
-  return sanitizedProfile
-}
-
-async function deleteFirebaseUserProfile(uid: string) {
-  const { deleteDoc, doc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  await deleteDoc(doc(db, 'users', uid))
-}
-
-async function addFirebaseSavedOffer(studentId: string, offerId: string) {
-  const { arrayUnion, doc, serverTimestamp, setDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  await setDoc(
-    doc(db, 'users', studentId),
-    {
-      savedOfferIds: arrayUnion(offerId),
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  )
-}
-
-async function removeFirebaseSavedOffer(studentId: string, offerId: string) {
-  const { arrayRemove, doc, serverTimestamp, setDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  await setDoc(
-    doc(db, 'users', studentId),
-    {
-      savedOfferIds: arrayRemove(offerId),
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  )
-}
-
-export async function getUserById(uid: string) {
-  if (!uid) {
-    return null
-  }
-
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return getFirebaseUserById(uid)
-  }
-
+async function fetchSupabaseUserRowById(uid: string) {
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from('users')
@@ -200,16 +121,71 @@ export async function getUserById(uid: string) {
     throw error
   }
 
-  return mapUserRow(data)
+  return data
+}
+
+async function fetchSupabaseUserRowByLegacyUid(legacyUid: string) {
+  const supabase = getSupabaseClient()
+  const { data, error } = await supabase
+    .from('users')
+    .select(
+      `
+      *,
+      student_profiles(*),
+      company_profiles(*, company_locations(*)),
+      professor_profiles(*),
+      saved_offers(offer_id)
+    `,
+    )
+    .eq('legacy_firebase_uid', legacyUid)
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+export async function getUserById(uid: string) {
+  if (!uid) {
+    return null
+  }
+
+  const userRow = await fetchSupabaseUserRowById(uid)
+
+  if (userRow) {
+    return mapUserRow(userRow)
+  }
+
+  const legacyUserRow = await fetchSupabaseUserRowByLegacyUid(uid)
+
+  if (legacyUserRow) {
+    return mapUserRow(legacyUserRow)
+  }
+
+  const supabase = getSupabaseClient()
+  const { data: mapping, error: mappingError } = await supabase
+    .from('firebase_user_mapping')
+    .select('supabase_user_id')
+    .eq('firebase_uid', uid)
+    .maybeSingle()
+
+  if (mappingError) {
+    throw mappingError
+  }
+
+  if (mapping?.supabase_user_id) {
+    const mappedUserRow = await fetchSupabaseUserRowById(mapping.supabase_user_id)
+    return mapUserRow(mappedUserRow)
+  }
+
+  return null
 }
 
 export async function upsertUserProfile(uid: string, profileData: Record<string, any>) {
   if (!uid) {
     throw new Error('No authenticated user was found.')
-  }
-
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return upsertFirebaseUserProfile(uid, profileData)
   }
 
   const supabase = getSupabaseClient()
@@ -334,28 +310,40 @@ export async function deleteUserProfile(uid: string) {
     throw new Error('No se encontro un usuario autenticado.')
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return deleteFirebaseUserProfile(uid)
+  const supabase = getSupabaseClient()
+
+  const profileDeletions = [
+    { table: 'saved_offers', filter: (query: any) => query.eq('student_id', uid) },
+    { table: 'student_profiles', filter: (query: any) => query.eq('user_id', uid) },
+    { table: 'company_profiles', filter: (query: any) => query.eq('user_id', uid) },
+    { table: 'professor_profiles', filter: (query: any) => query.eq('user_id', uid) },
+  ]
+
+  for (const deletion of profileDeletions) {
+    let query = supabase.from(deletion.table).delete()
+    query = deletion.filter(query)
+    const { error } = await query
+
+    if (error) {
+      throw error
+    }
   }
 
-  const supabase = getSupabaseClient()
-  const { error } = await supabase.from('users').delete().eq('id', uid)
+  const { error: userError } = await supabase.from('users').delete().eq('id', uid)
 
-  if (error) {
-    throw error
+  if (userError) {
+    throw userError
   }
 }
 
 export async function addSavedOffer(studentId: string, offerId: string) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return addFirebaseSavedOffer(studentId, offerId)
-  }
-
   const supabase = getSupabaseClient()
-  const { error } = await supabase.from('saved_offers').upsert({
-    student_id: studentId,
-    offer_id: offerId,
-  })
+  const { error } = await supabase
+    .from('saved_offers')
+    .upsert({
+      student_id: studentId,
+      offer_id: offerId,
+    })
 
   if (error) {
     throw error
@@ -363,10 +351,6 @@ export async function addSavedOffer(studentId: string, offerId: string) {
 }
 
 export async function removeSavedOffer(studentId: string, offerId: string) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return removeFirebaseSavedOffer(studentId, offerId)
-  }
-
   const supabase = getSupabaseClient()
   const { error } = await supabase
     .from('saved_offers')

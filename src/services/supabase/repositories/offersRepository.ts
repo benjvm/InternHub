@@ -1,4 +1,3 @@
-import { DATA_BACKENDS, getPreferredDataBackend } from '../../shared/constants/backend'
 import { createTimestamp, mapTimestampFields } from '../../shared/helpers/timestamps'
 import { getSupabaseClient } from '../client'
 
@@ -59,68 +58,6 @@ function mapOfferRow(row: any) {
   })
 }
 
-function mapOfferDocument(documentSnapshot: any) {
-  const data = documentSnapshot.data()
-
-  return {
-    id: documentSnapshot.id,
-    ...data,
-    ubicacion: cleanOfferLocation(data.ubicacion),
-    responsibilities: cleanResponsibilities(data.responsibilities),
-  }
-}
-
-async function createFirebaseOffer(payload: Record<string, any>) {
-  const { addDoc, collection, serverTimestamp } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const documentReference = await addDoc(collection(db, 'offers'), {
-    ...payload,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  })
-
-  return {
-    id: documentReference.id,
-    ...payload,
-  }
-}
-
-async function getFirebaseOffers() {
-  const { collection, getDocs } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const snapshot = await getDocs(collection(db, 'offers'))
-  return snapshot.docs.map(mapOfferDocument)
-}
-
-async function getFirebaseOfferById(offerId: string) {
-  const { doc, getDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const snapshot = await getDoc(doc(db, 'offers', offerId))
-  return snapshot.exists() ? mapOfferDocument(snapshot) : null
-}
-
-async function getFirebaseOffersByCompanyId(companyId: string) {
-  const { collection, getDocs, query, where } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const offersQuery = query(collection(db, 'offers'), where('companyId', '==', companyId))
-  const snapshot = await getDocs(offersQuery)
-  return snapshot.docs.map(mapOfferDocument)
-}
-
-async function deleteFirebaseOffer(offerId: string) {
-  const { deleteDoc, doc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  await deleteDoc(doc(db, 'offers', offerId))
-}
-
-function sortOffersByNewest(offers: any[]) {
-  return offers.sort((left, right) => {
-    const leftSeconds = left.createdAt?.seconds ?? 0
-    const rightSeconds = right.createdAt?.seconds ?? 0
-    return rightSeconds - leftSeconds
-  })
-}
-
 export async function createOfferRecord(offerData: Record<string, any>) {
   const offerLocation = cleanOfferLocation(offerData.ubicacion || offerData.locationDetails)
   const responsibilities = cleanResponsibilities(offerData.responsibilities)
@@ -146,10 +83,6 @@ export async function createOfferRecord(offerData: Record<string, any>) {
 
   if (!payload.responsibilities.length) {
     throw new Error('Anade al menos una responsabilidad para la oferta.')
-  }
-
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return createFirebaseOffer(payload)
   }
 
   const now = createTimestamp()
@@ -184,10 +117,6 @@ export async function createOfferRecord(offerData: Record<string, any>) {
 }
 
 export async function getOfferRecords() {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return sortOffersByNewest(await getFirebaseOffers())
-  }
-
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from('offers')
@@ -206,10 +135,6 @@ export async function getOfferRecordById(offerId: string) {
     return null
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return getFirebaseOfferById(offerId)
-  }
-
   const supabase = getSupabaseClient()
   const { data, error } = await supabase.from('offers').select('*').eq('id', offerId).maybeSingle()
 
@@ -225,10 +150,6 @@ export async function getOfferRecordsByCompanyId(companyId: string) {
 
   if (!sanitizedCompanyId) {
     return []
-  }
-
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return sortOffersByNewest(await getFirebaseOffersByCompanyId(sanitizedCompanyId))
   }
 
   const supabase = getSupabaseClient()
@@ -250,10 +171,6 @@ export async function deleteOfferRecord(offerId: string) {
 
   if (!sanitizedOfferId) {
     throw new Error('Se necesita una oferta valida para eliminarla.')
-  }
-
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return deleteFirebaseOffer(sanitizedOfferId)
   }
 
   const supabase = getSupabaseClient()

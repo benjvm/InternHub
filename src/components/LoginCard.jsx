@@ -46,8 +46,8 @@ export default function LoginCard() {
     setIsSubmitting(true)
 
     try {
-      const firebaseUser = await loginUser(formData)
-      const profile = await refreshUserProfile(firebaseUser.uid)
+      const authUser = await loginUser(formData)
+      const profile = await refreshUserProfile(authUser.uid)
       navigate(getDefaultRouteForRole(profile?.rol), { replace: true })
     } catch (error) {
       setErrorMessage(error.message || 'No se pudo iniciar sesión.')

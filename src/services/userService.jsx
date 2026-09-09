@@ -4,7 +4,6 @@ import { getCurrentAuthUser, onAuthUserChanged } from './supabase/auth/authRepos
 import { getUserById } from './supabase/repositories/usersRepository'
 
 const UserContext = createContext({
-  firebaseUser: null,
   authUser: null,
   userProfile: null,
   currentUser: null,
@@ -99,7 +98,6 @@ export function UserProvider({ children }) {
   }, [])
 
   const value = {
-    firebaseUser: authUser,
     authUser,
     userProfile,
     currentUser: authUser && !authUser.isAnonymous

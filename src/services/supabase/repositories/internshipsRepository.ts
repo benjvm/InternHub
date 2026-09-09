@@ -1,4 +1,3 @@
-import { DATA_BACKENDS, getPreferredDataBackend } from '../../shared/constants/backend'
 import { createTimestamp, mapTimestampFields } from '../../shared/helpers/timestamps'
 import { getSupabaseClient } from '../client'
 
@@ -50,168 +49,6 @@ function mapDailyLogRow(row: any) {
   })
 }
 
-function mapInternshipDocument(documentSnapshot: any) {
-  const data = documentSnapshot.data()
-  const requiredHours = data.requiredHours ?? data.totalHours ?? data.weeklyHours ?? null
-
-  return {
-    id: documentSnapshot.id,
-    ...data,
-    requiredHours,
-    totalHours: data.totalHours ?? requiredHours,
-    completedHours: Number(data.completedHours || 0),
-  }
-}
-
-function mapDailyLogDocument(snapshot: any) {
-  const data = snapshot.data()
-
-  return {
-    id: snapshot.id,
-    ...data,
-    date: data.date || snapshot.id,
-  }
-}
-
-async function getFirebaseInternshipsByField(field: string, value: string) {
-  const { collection, getDocs, query, where } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const snapshot = await getDocs(query(collection(db, 'internships'), where(field, '==', value)))
-  return snapshot.docs.map(mapInternshipDocument)
-}
-
-async function getFirebaseInternshipById(internshipId: string) {
-  const { doc, getDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const snapshot = await getDoc(doc(db, 'internships', internshipId))
-  return snapshot.exists() ? mapInternshipDocument(snapshot) : null
-}
-
-async function getFirebaseAllInternships() {
-  const { collection, getDocs } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const snapshot = await getDocs(collection(db, 'internships'))
-  return snapshot.docs.map(mapInternshipDocument)
-}
-
-async function createFirebaseInternship(payload: Record<string, any>) {
-  const { collection, doc, serverTimestamp, setDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const internshipReference = doc(collection(db, 'internships'))
-  const firebasePayload = {
-    id: internshipReference.id,
-    ...payload,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  }
-
-  await setDoc(internshipReference, firebasePayload)
-
-  return {
-    id: internshipReference.id,
-    ...firebasePayload,
-  }
-}
-
-async function updateFirebaseInternship(internshipId: string, payload: Record<string, any>) {
-  const { doc, serverTimestamp, updateDoc } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  await updateDoc(doc(db, 'internships', internshipId), {
-    ...payload,
-    updatedAt: serverTimestamp(),
-    lastUpdate: payload.lastUpdate || serverTimestamp(),
-  })
-}
-
-async function assignFirebaseProfessor(internshipId: string, professorId: string) {
-  const { doc, runTransaction, serverTimestamp } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const internshipRef = doc(db, 'internships', internshipId)
-
-  await runTransaction(db, async (transaction: any) => {
-    const internshipSnapshot = await transaction.get(internshipRef)
-
-    if (!internshipSnapshot.exists()) {
-      throw new Error('La practica seleccionada ya no esta disponible.')
-    }
-
-    const internshipData = internshipSnapshot.data()
-    const currentProfessorId = normalizeText(internshipData.professorId)
-
-    if (currentProfessorId && currentProfessorId !== professorId) {
-      throw new Error('Esta practica ya tiene otro profesor responsable asignado.')
-    }
-
-    transaction.update(internshipRef, {
-      professorId,
-      updatedAt: serverTimestamp(),
-      lastUpdate: serverTimestamp(),
-    })
-  })
-}
-
-async function getFirebaseDailyLogs(internshipId: string) {
-  const { collection, doc, getDocs, query } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const dailyLogsQuery = query(collection(doc(db, 'internships', internshipId), 'dailyLogs'))
-  const snapshot = await getDocs(dailyLogsQuery)
-  return snapshot.docs.map(mapDailyLogDocument)
-}
-
-async function createFirebaseDailyLog(internshipId: string, dailyLog: Record<string, any>) {
-  const { doc, increment, runTransaction, serverTimestamp } = await import('firebase/firestore')
-  const { db } = await import('../../../firebase')
-  const internshipRef = doc(db, 'internships', internshipId)
-  const dailyLogRef = doc(internshipRef, 'dailyLogs', dailyLog.date)
-
-  await runTransaction(db, async (transaction: any) => {
-    const internshipSnapshot = await transaction.get(internshipRef)
-
-    if (!internshipSnapshot.exists()) {
-      throw new Error('La practica ya no esta disponible.')
-    }
-
-    const dailyLogSnapshot = await transaction.get(dailyLogRef)
-
-    if (dailyLogSnapshot.exists()) {
-      throw new Error('Ese dia ya esta registrado. No es posible guardarlo dos veces.')
-    }
-
-    transaction.set(dailyLogRef, {
-      date: dailyLog.date,
-      description: dailyLog.description,
-      hoursWorked: dailyLog.hoursWorked,
-      type: dailyLog.type,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    })
-    transaction.update(internshipRef, {
-      completedHours: increment(dailyLog.hoursWorked),
-      updatedAt: serverTimestamp(),
-      lastUpdate: serverTimestamp(),
-    })
-  })
-}
-
-function getTimestampValue(timestamp: any) {
-  if (timestamp?.seconds) {
-    return timestamp.seconds * 1000
-  }
-
-  if (typeof timestamp === 'string' || timestamp instanceof Date) {
-    const dateValue = new Date(timestamp).getTime()
-    return Number.isNaN(dateValue) ? 0 : dateValue
-  }
-
-  return 0
-}
-
-function sortInternshipsByNewest(internships: any[]) {
-  return internships.sort(
-    (left, right) => getTimestampValue(right.createdAt) - getTimestampValue(left.createdAt),
-  )
-}
-
 async function getSupabaseInternshipsByColumn(column: string, value: string) {
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
@@ -232,11 +69,6 @@ export async function getInternshipRecordByApplicationId(applicationId: string) 
     return null
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    const [internship] = await getFirebaseInternshipsByField('applicationId', applicationId)
-    return internship || null
-  }
-
   const [internship] = await getSupabaseInternshipsByColumn('application_id', applicationId)
   return internship || null
 }
@@ -244,11 +76,6 @@ export async function getInternshipRecordByApplicationId(applicationId: string) 
 export async function getInternshipRecordByOfferAndStudent(offerId: string, studentId: string) {
   if (!offerId || !studentId) {
     return null
-  }
-
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    const internships = await getFirebaseInternshipsByField('offerId', offerId)
-    return internships.find((internship: any) => internship.studentId === studentId) || null
   }
 
   const supabase = getSupabaseClient()
@@ -267,10 +94,6 @@ export async function getInternshipRecordByOfferAndStudent(offerId: string, stud
 }
 
 export async function createInternshipRecord(payload: Record<string, any>) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return createFirebaseInternship(payload)
-  }
-
   const now = createTimestamp()
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
@@ -308,20 +131,12 @@ export async function getInternshipRecordsByCompanyId(companyId: string) {
     return []
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return sortInternshipsByNewest(await getFirebaseInternshipsByField('companyId', companyId))
-  }
-
   return getSupabaseInternshipsByColumn('company_id', companyId)
 }
 
 export async function getInternshipRecordsByStudentId(studentId: string) {
   if (!studentId) {
     return []
-  }
-
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return sortInternshipsByNewest(await getFirebaseInternshipsByField('studentId', studentId))
   }
 
   return getSupabaseInternshipsByColumn('student_id', studentId)
@@ -332,22 +147,10 @@ export async function getInternshipRecordsByProfessorId(professorId: string) {
     return []
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return sortInternshipsByNewest(await getFirebaseInternshipsByField('professorId', professorId))
-  }
-
   return getSupabaseInternshipsByColumn('professor_id', professorId)
 }
 
 export async function getInternshipRecordsWithoutProfessor() {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return sortInternshipsByNewest(
-      (await getFirebaseAllInternships()).filter(
-        (internship: any) => !normalizeText(internship.professorId),
-      ),
-    )
-  }
-
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from('internships')
@@ -367,10 +170,6 @@ export async function getInternshipRecordById(internshipId: string) {
     return null
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return getFirebaseInternshipById(internshipId)
-  }
-
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from('internships')
@@ -386,10 +185,6 @@ export async function getInternshipRecordById(internshipId: string) {
 }
 
 export async function updateInternshipRecord(internshipId: string, payload: Record<string, any>) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return updateFirebaseInternship(internshipId, payload)
-  }
-
   const supabase = getSupabaseClient()
   const updatePayload: Record<string, any> = {
     updated_at: createTimestamp(),
@@ -414,11 +209,6 @@ export async function updateInternshipRecord(internshipId: string, payload: Reco
 }
 
 export async function assignProfessorRecord(internshipId: string, professorId: string) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return assignFirebaseProfessor(internshipId, professorId)
-  }
-
-  const supabase = getSupabaseClient()
   const currentInternship = await getInternshipRecordById(internshipId)
 
   if (!currentInternship) {
@@ -437,12 +227,6 @@ export async function getDailyLogRecords(internshipId: string) {
     return []
   }
 
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    return (await getFirebaseDailyLogs(internshipId)).sort((left: any, right: any) =>
-      left.date.localeCompare(right.date),
-    )
-  }
-
   const supabase = getSupabaseClient()
   const { data, error } = await supabase
     .from('internship_daily_logs')
@@ -458,11 +242,6 @@ export async function getDailyLogRecords(internshipId: string) {
 }
 
 export async function createDailyLogRecord(internshipId: string, dailyLog: Record<string, any>) {
-  if (getPreferredDataBackend() === DATA_BACKENDS.firebase) {
-    await createFirebaseDailyLog(internshipId, dailyLog)
-    return dailyLog
-  }
-
   const supabase = getSupabaseClient()
   const { error } = await supabase.rpc('create_internship_daily_log', {
     target_internship_id: internshipId,

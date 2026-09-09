@@ -28,7 +28,7 @@ export async function createOpenRouterChatCompletion(options: {
   }
 
   if (OPENROUTER_SITE_URL) {
-    headers['HTTP-Referer'] = OPENROUTER_SITE_URL
+    headers['Referer'] = OPENROUTER_SITE_URL
   }
 
   if (OPENROUTER_APP_NAME) {

@@ -193,7 +193,7 @@ export default function InternshipBoard() {
         }
       } catch {
         if (isMounted) {
-          setErrorMessage('No se pudieron cargar las ofertas de Firebase. Mostrando ejemplos.')
+          setErrorMessage('No se pudieron cargar las ofertas remotas. Mostrando ejemplos.')
         }
       } finally {
         if (isMounted) {
